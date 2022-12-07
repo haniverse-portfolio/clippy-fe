@@ -91,7 +91,7 @@ export default function Home() {
           팔로우 중인 실시간 방송 (누르면 클립 생성)
         </Title>
         <Flex align="center" justify="center" mt={30} dir="row" wrap="wrap">
-          {followed.map((stream) => {
+          {followed.map((stream: any) => {
             return (
               <Card
                 shadow="sm"

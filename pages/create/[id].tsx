@@ -8,14 +8,14 @@ const Create = () => {
   const [currentId, setCurrentId] = useState(id);
   const [start, setStart] = useState(false);
 
-  const twitchIdToName = async (id) => {
+  const twitchIdToName = async (id: any) => {
     const url = `https://twapi.haenu.com/user/name/${id}`;
     const res = await axios.get(url);
     return res.data.id;
   };
 
   // extractor 호출
-  const getExtractor = async (id) => {
+  const getExtractor = async (id: any) => {
     setStart(true);
     const url = "https://api.clippy.kr/extractor";
     const res = await axios.post(
@@ -32,7 +32,7 @@ const Create = () => {
 
   useEffect(() => {
     if (id === undefined) return;
-    getExtractor();
+    getExtractor(id);
   }, []);
 
   useEffect(() => {
