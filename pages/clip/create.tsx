@@ -17,7 +17,7 @@ const ClipCreatePage = () => {
       <Flex maw="760px" w="100%" px="20px" mt="80px" direction="column">
         <video
           style={{ width: "100%" }}
-          src="https://clips-media-assets2.twitch.tv/raw_media/6xNItE1icUIyRgORZ8faOA/39873829639-offset-4510.mp4"
+          src="https://clips-media-assets2.twitch.tv/raw_media/xkp2L5taBf5XskN9iuQbRg/39904147207-offset-18106.mp4"
           controls
         />
 
