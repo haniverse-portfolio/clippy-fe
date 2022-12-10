@@ -1,4 +1,15 @@
-import { Badge, Flex, Title, Text, Button, Card, Image } from "@mantine/core";
+import {
+  Badge,
+  Flex,
+  Title,
+  Text,
+  Button,
+  Card,
+  Image,
+  Grid,
+  Group,
+  TextInput,
+} from "@mantine/core";
 import Head from "next/head";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -6,6 +17,8 @@ import { IndexHero } from "../components/Hero/IndexHero";
 import { atom, useRecoilState } from "recoil";
 import { isLogined } from "../components/states";
 import { apiAddress } from "../components/constValues";
+import { IconAt } from "@tabler/icons";
+import { Navbar } from "../components/Navbar/Navbar";
 
 export default function Home() {
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
@@ -80,6 +93,7 @@ export default function Home() {
       </Head>
 
       <main>
+        <Navbar />
         <Flex my={30} align="center" justify="center">
           <IndexHero />
         </Flex>
