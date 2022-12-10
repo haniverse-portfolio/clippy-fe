@@ -9,6 +9,9 @@ import {
 import type { AppProps } from "next/app";
 import { MantineProvider, createEmotionCache } from "@mantine/core";
 import * as Sentry from "@sentry/nextjs";
+// import * as dotenv from "dotenv";
+// dotenv.config();
+
 // http://localhost:4800
 // https://clippy.kr
 

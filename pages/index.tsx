@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { IndexHero } from "../components/Hero/IndexHero";
 import { atom, useRecoilState } from "recoil";
 import { isLogined } from "../components/states";
+import { apiAddress } from "../components/constValues";
 
 export default function Home() {
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
@@ -18,21 +19,21 @@ export default function Home() {
     // use authorization code grant flow
     const clientId = "9n3ebjaenen1jipslsk11ufrcfo51t";
     // api.clippy.kr
-    const redirectUri = `${process.env.API_ADDRESS}/user/login`;
+    const redirectUri = `${apiAddress}/user/login`;
     const url = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=clips:edit+user:read:follows`;
 
     window.location.href = url;
   };
 
   const goLogout = () => {
-    const url = `${process.env.API_ADDRESS}/user/logout`;
+    const url = `${apiAddress}/user/logout`;
     window.location.href = url;
   };
   /* ***** ***** ***** ***** ***** function ***** ***** ***** ***** ***** */
 
   /* ***** ***** ***** ***** ***** axios call ***** ***** ***** ***** ***** */
   const checkLogin = () => {
-    const url = `${process.env.API_ADDRESS}/user/check`;
+    const url = `${apiAddress}/user/check`;
     axios
       .get(url, {
         withCredentials: true,
@@ -49,7 +50,7 @@ export default function Home() {
   };
 
   const getFollowed = () => {
-    const url = `${process.env.API_ADDRESS}/twitch/followed_streams`;
+    const url = `${apiAddress}/twitch/followed_streams`;
     axios
       .get(url, {
         withCredentials: true,
