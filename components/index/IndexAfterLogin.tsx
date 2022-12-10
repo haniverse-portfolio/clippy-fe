@@ -14,12 +14,19 @@ import {
   ThemeIcon,
 } from "@mantine/core";
 import { GithubIcon } from "@mantine/ds";
-import { BrandTwitch, Heart, Menu2, Scale } from "tabler-icons-react";
+import {
+  BrandTwitch,
+  Heart,
+  Menu2,
+  Scale,
+  Paperclip,
+} from "tabler-icons-react";
 import { atom, useRecoilState } from "recoil";
 import { drawerOpened, followed, isLogined } from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 import axios from "axios";
+import { IndexDrawer } from "./IndexDrawer";
 
 const BREAKPOINT = "@media (max-width: 755px)";
 
@@ -27,74 +34,7 @@ export const scale = keyframes({
   "from, to": { transform: "scale(0.7)" },
 });
 
-const useStyles = createStyles((theme) => ({
-  wrapper: {
-    position: "relative",
-    boxSizing: "border-box",
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
-  },
-
-  inner: {
-    position: "relative",
-    paddingTop: 200,
-    paddingBottom: 120,
-
-    [BREAKPOINT]: {
-      paddingBottom: 80,
-      paddingTop: 80,
-    },
-  },
-
-  title: {
-    fontSize: 62,
-    fontWeight: 900,
-    lineHeight: 1.1,
-    margin: 0,
-    padding: 0,
-    color: theme.colorScheme === "dark" ? theme.white : theme.black,
-
-    [BREAKPOINT]: {
-      fontSize: 42,
-      lineHeight: 1.2,
-    },
-  },
-
-  description: {
-    marginTop: theme.spacing.xl,
-    fontSize: 24,
-
-    [BREAKPOINT]: {
-      fontSize: 18,
-    },
-  },
-
-  controls: {
-    // animation: `${scale} 3s ease-in-out`,
-    marginTop: theme.spacing.xl * 2,
-
-    [BREAKPOINT]: {
-      marginTop: theme.spacing.xl,
-    },
-  },
-
-  control: {
-    height: 54,
-    paddingLeft: 38,
-    paddingRight: 38,
-
-    [BREAKPOINT]: {
-      height: 54,
-      paddingLeft: 18,
-      paddingRight: 18,
-      flex: 1,
-    },
-  },
-}));
-
 export function IndexAfterLogin() {
-  const { classes } = useStyles();
-
   const [indexIsLogined, setIndexIsLogined] = useRecoilState(isLogined);
   const [indexFollowed, setIndexFollowed] = useRecoilState(followed);
   const [indexDrawerOpened, setIndexDrawerOpened] =
@@ -132,48 +72,26 @@ export function IndexAfterLogin() {
 
   return (
     <div>
-      <Drawer
-        className="!p-0 !m-0"
-        position="right"
-        opened={indexDrawerOpened}
-        onClose={() => setIndexDrawerOpened(false)}
-        padding="xl"
-        size="xl"
-        withCloseButton={false}
-      >
-        <div className="flex justify-between h-[120px] bg-white sticky top-0 z-50 shadow-sm">
-          <Group position="apart">
-            <Group>
-              <Image alt="logo" src="/images/clip.svg" width={30} height={48} />
-              <span
-                className="text-5xl font-extrabold bg-gradient-to-r text-transparent bg-clip-text from-indigo-500 via-purple-500 to-indigo-500 animate-text "
-                // variant="gradient"
-                // gradient={{ from: "violet", to: "grape" }}
-              >
-                CLIPPY
-              </span>
-              <Badge variant="filled" color="green" size="lg" radius="sm">
-                Beta
-              </Badge>
-            </Group>
-            <ThemeIcon size={48} variant="outline" color="dark">
-              <Menu2
-                size={48}
-                onClick={() => {
-                  setIndexDrawerOpened(false);
-                }}
-              />
-            </ThemeIcon>
-          </Group>
-        </div>
-      </Drawer>
+      <IndexDrawer />
       <p className="text-4xl">Hot clip</p>
-      <Button size="lg" color="violet" radius="xl">
-        인기
-      </Button>
-      <Button size="lg" variant="outline" color="dark" radius="xl">
-        최근 업로드
-      </Button>
+      <Group position="apart">
+        <Group>
+          <Button size="lg" color="violet" radius="xl">
+            인기
+          </Button>
+          <Button size="lg" variant="outline" color="dark" radius="xl">
+            최근 업로드
+          </Button>
+        </Group>
+        <Button
+          leftIcon={<Paperclip></Paperclip>}
+          size="lg"
+          color="violet"
+          radius="xl"
+        >
+          클립 생성
+        </Button>
+      </Group>
       <Flex align="center" justify="center" mt={30} dir="row" wrap="wrap">
         {indexFollowed.map((stream: any) => {
           return (

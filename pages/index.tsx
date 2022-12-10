@@ -88,6 +88,7 @@ export default function Home() {
   return (
     <div>
       <Head>
+        {/* <script src="https://kit.fontawesome.com/beb5b729ea.js" crossOrigin="anonymous"/> */}
         <title>CLIPPY</title>
         <meta name="description" content="CLIPPY" />
         <link rel="icon" href="/favicon.ico" />
