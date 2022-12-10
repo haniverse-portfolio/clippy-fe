@@ -18,7 +18,7 @@ export default function Home() {
     // use authorization code grant flow
     const clientId = "9n3ebjaenen1jipslsk11ufrcfo51t";
     // api.clippy.kr
-    const redirectUri = "http://localhost:4800/user/login";
+    const redirectUri = "http://api.clippy.kr/user/login";
     const url = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=clips:edit+user:read:follows`;
 
     window.location.href = url;
@@ -81,12 +81,6 @@ export default function Home() {
       <main>
         <Flex my={30} align="center" justify="center">
           <IndexHero />
-          {/* <Title align="center" mr={5}>
-            CLIPPY
-          </Title>
-          <Badge size="xl" color="grape">
-            BETA
-          </Badge> */}
         </Flex>
         {indexIsLogined === true ? (
           <>
