@@ -13,18 +13,19 @@ import {
 import Head from "next/head";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { IndexHero } from "../components/Hero/IndexHero";
+import { IndexBeforeLogin } from "../components/index/IndexBeforeLogin";
 import { atom, useRecoilState } from "recoil";
-import { isLogined } from "../components/states";
+import { followed, isLogined } from "../components/states";
 import { apiAddress } from "../components/constValues";
 import { IconAt } from "@tabler/icons";
-import { Navbar } from "../components/Navbar/Navbar";
+import { Navbar } from "../components/common/Navbar";
+import { IndexAfterLogin } from "../components/index/IndexAfterLogin";
 
 export default function Home() {
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
   const [indexIsLogined, setIndexIsLogined] =
     useRecoilState<boolean>(isLogined);
-  const [followed, setFollowed] = useState<any>([]);
+  const [indexFollowed, setIndexFollowed] = useRecoilState(followed);
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
 
   /* ***** ***** ***** ***** ***** function ***** ***** ***** ***** ***** */
@@ -69,7 +70,7 @@ export default function Home() {
         withCredentials: true,
       })
       .then((res) => {
-        setFollowed(res.data.data);
+        setIndexFollowed(res.data.data);
         console.log(res);
       })
       .catch((err) => {
@@ -94,49 +95,14 @@ export default function Home() {
 
       <main>
         <Navbar />
-        <Flex my={30} align="center" justify="center">
-          <IndexHero />
-        </Flex>
-        {indexIsLogined === true ? (
-          <>
-            <Title size={20} align="center" mt={50}>
-              팔로우 중인 실시간 방송 (누르면 클립 생성)
-            </Title>
-            <Flex align="center" justify="center" mt={30} dir="row" wrap="wrap">
-              {followed.map((stream: any) => {
-                return (
-                  <Card
-                    shadow="sm"
-                    p="md"
-                    m="md"
-                    radius="md"
-                    withBorder
-                    key={stream.id}
-                    onClick={() => {
-                      window.location.href = `/create/${stream.user_login}`;
-                    }}
-                  >
-                    <Flex align="center" justify="center" direction="column">
-                      <Image
-                        src={stream.thumbnail_url
-                          .replace("{width}", "1920")
-                          .replace("{height}", "1080")}
-                        alt="clip"
-                        width={240}
-                        height={160}
-                      />
-                      <Text mt={10} align="center">
-                        {stream.user_name}
-                      </Text>
-                    </Flex>
-                  </Card>
-                );
-              })}
-            </Flex>
-          </>
-        ) : (
-          <></>
-        )}
+        <div style={{ height: "calc(100vh - 120px)" }}>
+          {indexIsLogined === false ? (
+            <IndexBeforeLogin />
+          ) : (
+            <IndexAfterLogin />
+          )}
+        </div>
+        {indexIsLogined === true ? <></> : <></>}
       </main>
     </div>
   );

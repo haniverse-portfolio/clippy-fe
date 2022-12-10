@@ -6,6 +6,7 @@ import {
   Group,
   keyframes,
   Badge,
+  Flex,
 } from "@mantine/core";
 import { GithubIcon } from "@mantine/ds";
 import { BrandTwitch, Scale } from "tabler-icons-react";
@@ -100,14 +101,14 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function IndexHero() {
+export function IndexBeforeLogin() {
   const { classes } = useStyles();
 
   const [indexIsLogined, setIndexIsLogined] = useRecoilState(isLogined);
 
   return (
-    <div className={classes.wrapper}>
-      <Container size={700} className={classes.inner}>
+    <Flex align="center" justify="center">
+      <Container mb={400} size={700} className={classes.inner}>
         <h1 className={classes.title}>
           {" "}
           <Group>
@@ -130,36 +131,19 @@ export function IndexHero() {
           끊김 없이 클립을 생성하고, 소중한 순간을 간직하세요
         </Text>
 
-        <Group className={classes.controls}>
-          {indexIsLogined ? (
-            <Button color="red" onClick={goLogout}>
-              로그아웃
-            </Button>
-          ) : (
-            <Button
-              onClick={goLogin}
-              size="xl"
-              className={classes.control}
-              variant="gradient"
-              gradient={{ from: "violet", to: "grape" }}
-              leftIcon={<BrandTwitch size={20} />}
-            >
-              트위치로 로그인하기
-            </Button>
-          )}
-
+        <Group position="center" className={classes.controls}>
           <Button
-            component="a"
-            href="https://github.com/mantinedev/mantine"
+            onClick={goLogin}
             size="xl"
-            variant="default"
             className={classes.control}
-            leftIcon={<GithubIcon size={20} />}
+            variant="gradient"
+            gradient={{ from: "violet", to: "grape" }}
+            leftIcon={<BrandTwitch size={20} />}
           >
-            현우 집으로 들어가기
+            트위치로 로그인하기
           </Button>
         </Group>
       </Container>
-    </div>
+    </Flex>
   );
 }

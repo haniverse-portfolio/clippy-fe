@@ -5,4 +5,8 @@ const nextConfig = {
   swcMinify: true,
 };
 
-module.exports = nextConfig;
+module.exports = {
+  images: {
+    domains: ["static-cdn.jtvnw.net"],
+  },
+};

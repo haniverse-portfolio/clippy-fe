@@ -12,11 +12,11 @@ import {
   Flex,
 } from "@mantine/core";
 import { useRecoilState } from "recoil";
-import { isLogined } from "../states";
+import { drawerOpened, isLogined } from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 import { IconAt } from "@tabler/icons";
-import { Search } from "tabler-icons-react";
+import { CircleX, Search } from "tabler-icons-react";
 
 const goLogin = () => {
   // use authorization code grant flow
@@ -35,6 +35,8 @@ const goLogout = () => {
 
 export function Navbar() {
   const [indexIsLogined, setIndexIsLogined] = useRecoilState(isLogined);
+  const [indexDrawerOpened, setIndexDrawerOpened] =
+    useRecoilState(drawerOpened);
 
   return (
     <div className="flex justify-between h-[120px] bg-white sticky top-0 z-50 shadow-sm">
@@ -58,8 +60,16 @@ export function Navbar() {
             radius="xl"
             placeholder="닉네임, 제목 키워드"
             icon={<Search size={28} />}
+            rightSection={<CircleX color="gray" size="xs" />}
           />
-          <Avatar radius="xl" size="lg" src={null} />
+          <Avatar
+            onClick={() => {
+              setIndexDrawerOpened(true);
+            }}
+            radius="xl"
+            size="lg"
+            src={null}
+          />
         </Group>
       </Group>
     </div>
