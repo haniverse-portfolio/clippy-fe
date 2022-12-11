@@ -12,6 +12,7 @@ export const recoil_followed = atom({
   default: [],
 }); // 팔로우 목록
 
+/* *** 사이드 바 *** */
 export const recoil_sidebarOpened = atom({
   key: "recoil_sidebarOpened",
   default: false,
@@ -20,6 +21,11 @@ export const recoil_sidebarOpened = atom({
 export const recoil_sidebarIndex = atom({
   key: "recoil_sidebarIndex",
   default: 0,
+}); // 사이드바 항목 인덱스
+
+export const recoil_createModalOpened = atom({
+  key: "recoil_createModalOpened",
+  default: false,
 }); // 사이드바 항목 인덱스
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
@@ -30,7 +36,7 @@ export const mypageManage_sectionIndex = atom({
 });
 
 export const mypageManage_selectedClip = atom({
-  key: "mypageManage_sectionIndex",
+  key: "mypageManage_selectedClip",
   default: selectedClipDefault,
 });
 

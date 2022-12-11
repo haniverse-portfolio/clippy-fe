@@ -92,7 +92,6 @@ export default function Home() {
       <main>
         <Navbar />
         <div style={{ height: "calc(100vh - 120px)" }}>
-          <MypageManageCommon />
           {sectionIndex === 0 ? <MypageMadeClip /> : <MypageChannelClip />}
         </div>
         {isLogined === true ? <></> : <></>}

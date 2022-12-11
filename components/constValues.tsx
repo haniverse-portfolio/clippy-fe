@@ -2,7 +2,22 @@
 // https://api.clippy.kr
 export const apiAddress = "https://api.clippy.kr";
 
-export const selectedClipDefault = [false, false, false, false, false, false];
+export const selectedClipDefault = [
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+] as Array<boolean>;
+export const selectedAllClip = [
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
+] as Array<boolean>;
 
 export const mypageMadeClipDummy = [
   {

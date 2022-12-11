@@ -37,6 +37,7 @@ import UserAside from "../aside/UserAside";
 import LiveAside from "../aside/LiveAside";
 import { Sidebar } from "../common/Sidebar";
 import { useState } from "react";
+import { MypageManageCommon } from "./MypageManageCommon";
 
 const BREAKPOINT = "@media (max-width: 755px)";
 
@@ -74,6 +75,7 @@ export function MypageChannelClip() {
         content={() => {
           return (
             <>
+              <MypageManageCommon />
               <Stack
                 justify="center"
                 mt={16}
