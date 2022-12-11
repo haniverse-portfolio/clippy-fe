@@ -3,7 +3,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import Clip from "../common/Clip";
-import { recoil_followed } from "../states";
+import {
+  recoil_createModalOpened,
+  recoil_createModalStreamerName,
+  recoil_followed,
+} from "../states";
 
 interface LiveProps {
   profileImage: string;
@@ -17,15 +21,27 @@ interface LiveItemProps {
 }
 
 const LiveItem = ({ item }: LiveItemProps) => {
+  const [createModalOpened, setCreateModalOpened] = useRecoilState(
+    recoil_createModalOpened
+  );
+  const [createModalStreamerName, setCreateModalStreamerName] = useRecoilState(
+    recoil_createModalStreamerName
+  );
   return (
     <Flex direction="row" justify="space-between" align="center" mb={32}>
       <Flex direction="row" align="center">
         <Avatar src={item.profileImage} size={32} mr={8} radius="xl"></Avatar>
         <Text>{item.displayName}</Text>
       </Flex>
-      <Link href={`/create/${item.name}`}>
+      <div
+        className="cursor-pointer"
+        onClick={() => {
+          setCreateModalOpened(true);
+          setCreateModalStreamerName(item.displayName);
+        }}
+      >
         <Clip w={14} h={18} />
-      </Link>
+      </div>
     </Flex>
   );
 };

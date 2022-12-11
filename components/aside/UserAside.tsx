@@ -12,7 +12,7 @@ const UserAside = () => {
       style={{ height: "calc(100vh - 120px)" }}
     >
       <Flex mt={88} direction="column" align="center" w="100%">
-        <Text size={36} weight={300}>
+        <Text size={36} fw={300}>
           내 채널
         </Text>
         <Avatar src="/images/mock-user.svg" size={98} mt={18} mb={10}></Avatar>

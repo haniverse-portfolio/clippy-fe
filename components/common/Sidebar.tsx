@@ -34,6 +34,8 @@ import {
 import { atom, useRecoilState } from "recoil";
 import { recoil_sidebarIndex, recoil_sidebarOpened } from "../states";
 import { apiAddress } from "../constValues";
+import Logo from "./Logo";
+import { Footer } from "../aside/LiveAside";
 
 export const SidebarInner = () => {
   const [sidebarOpened, setSidebarOpened] =
@@ -50,83 +52,84 @@ export const SidebarInner = () => {
       <Stack>
         <div className="p-[36px] h-[120px] bg-white sticky top-0 z-50 shadow-sm">
           <Group position="apart">
-            <Group>
-              <Image alt="logo" src="/images/clip.svg" width={30} height={48} />
-              <span
-                className="text-5xl font-extrabold bg-gradient-to-r text-transparent bg-clip-text from-indigo-500 via-purple-500 to-indigo-500 animate-text "
-                // variant="gradient"
-                // gradient={{ from: "violet", to: "grape" }}
-              >
-                CLIPPY
-              </span>
-              <Badge variant="filled" color="green" size="lg" radius="sm">
-                Beta
-              </Badge>
-            </Group>
-            <ThemeIcon size={48} variant="outline" color="dark">
-              <Menu2
-                size={48}
-                onClick={() => {
-                  setSidebarOpened(false);
-                }}
-              />
-            </ThemeIcon>
+            <Logo />
+            <Menu2
+              className="cursor-pointer"
+              size={48}
+              onClick={() => {
+                setSidebarOpened(false);
+              }}
+            />
           </Group>
         </div>
-        <span className="text-5xl text-center mt-24">내 채널</span>
+        <span className="font-light text-[36px] text-center mt-[88px]">
+          내 채널
+        </span>
         <Center>
-          <Avatar radius="xl" size={240} src={null} />
+          <Avatar radius="xl" size={98} src={null} />
         </Center>
-        <span className="text-2xl text-center">임준현</span>
-        <Stack className="m-0 p-0" mt={30}>
-          <Stack className="py-4 hover:bg-gray-200 hover:font-bold cursor-pointer">
+        <span className="text-[16px] text-center mt-[16px]">임준현</span>
+        <Stack className="m-0 p-0" mt={38}>
+          <Stack
+            justify="center"
+            className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
+          >
             <Group ml={48}>
-              <ActionIcon size={36}>
-                <Settings size={36} />
-              </ActionIcon>
-              <span className="text-2xl text-center">클립 관리</span>
-            </Group>
-          </Stack>
-          <Stack className="py-4 hover:bg-gray-200 hover:font-bold cursor-pointer">
-            <Group ml={48}>
-              <ActionIcon size={36}>
-                <Paperclip size={36} />
-              </ActionIcon>
-              <span className="text-2xl text-center">클립 생성</span>
-            </Group>
-          </Stack>
-          <Stack className="py-4 hover:bg-gray-200 hover:font-bold cursor-pointer">
-            <Group ml={48}>
-              <ActionIcon size={36}>
-                <Broadcast size={36} />
-              </ActionIcon>
-              <span className="text-2xl text-center">팔로우 중인 채널</span>
-            </Group>
-          </Stack>
-          <Stack className="py-4 hover:bg-gray-200 hover:font-bold cursor-pointer">
-            <Group ml={48}>
-              <ActionIcon size={36}>
-                <MessageCircle2 size={36} />
-              </ActionIcon>
-              <span className="text-2xl text-center">의견 보내기</span>
+              <Settings size={18} />
+              <span className="ml-[17px] text-[16px] text-center">
+                클립 관리
+              </span>
             </Group>
           </Stack>
           <Stack
+            justify="center"
+            className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
+          >
+            <Group ml={48}>
+              <Paperclip size={18} />
+              <span className="ml-[17px] text-[16px] text-center">
+                클립 생성
+              </span>
+            </Group>
+          </Stack>
+          <Stack
+            justify="center"
+            className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
+          >
+            <Group ml={48}>
+              <Broadcast size={18} />
+              <span className="ml-[17px] text-[16px] text-center">
+                팔로우 중인 채널
+              </span>
+            </Group>
+          </Stack>
+          <Stack
+            justify="center"
+            className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
+          >
+            <Group ml={48}>
+              <MessageCircle2 size={18} />
+              <span className="ml-[17px] text-[16px] text-center">
+                의견 보내기
+              </span>
+            </Group>
+          </Stack>
+          <Stack
+            justify="center"
             onClick={() => {
               goLogout();
             }}
-            className="py-4 hover:bg-gray-200 hover:font-bold cursor-pointer"
+            className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
           >
             <Group ml={48}>
-              <ActionIcon size={36}>
-                <Logout size={36} />
-              </ActionIcon>
-              <span className="text-2xl text-center cursor-pointer">
+              <Logout size={18} />
+              <span className="ml-[17px] text-[16px] text-center cursor-pointer">
                 로그아웃
               </span>
             </Group>
           </Stack>
         </Stack>
+        <Footer />
       </Stack>
     </>
   );
@@ -143,7 +146,7 @@ export function Sidebar() {
       opened={sidebarOpened}
       onClose={() => setSidebarOpened(false)}
       padding="xl"
-      size="xl"
+      size={360}
       withCloseButton={false}
     >
       <SidebarInner />

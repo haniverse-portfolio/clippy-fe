@@ -27,6 +27,11 @@ export const recoil_createModalOpened = atom({
   key: "recoil_createModalOpened",
   default: false,
 }); // 사이드바 항목 인덱스
+
+export const recoil_createModalStreamerName = atom({
+  key: "recoil_createModalStreamerName",
+  default: "",
+}); // 생성 modal
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
@@ -50,3 +55,6 @@ export const mypageManage_channelClip = atom({
   default: mypageMadeClipDummy,
 });
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
+
+/* ***** ***** ***** ***** ***** create ***** ***** ***** ***** ***** */
+/* ***** ***** ***** ***** ***** create ***** ***** ***** ***** ***** */
