@@ -71,6 +71,11 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
+"@cloudflare/stream-react@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@cloudflare/stream-react/-/stream-react-1.8.0.tgz#b858b5aeb473a3c217043f9609ea11389053b24d"
+  integrity sha512-Kxt4s1xA/Nf4oSAeLvWrkeUftXNhykY+Up6dFH881vrAKCJUeSKSqSGgn5gi0BV0UvjwriOxHRa1Fu0cyuOS3w==
+
 "@emotion/babel-plugin@^11.10.5":
   version "11.10.5"
   resolved "https://registry.npmjs.org/@emotion/babel-plugin/-/babel-plugin-11.10.5.tgz"
