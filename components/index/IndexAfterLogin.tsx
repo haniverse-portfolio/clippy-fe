@@ -12,6 +12,7 @@ import {
   ActionIcon,
   Drawer,
   ThemeIcon,
+  SimpleGrid,
 } from "@mantine/core";
 import { GithubIcon } from "@mantine/ds";
 import {
@@ -34,6 +35,9 @@ import MainLayout from "../common/MainLayout";
 import UserAside from "../aside/UserAside";
 import LiveAside from "../aside/LiveAside";
 import { Sidebar } from "../common/Sidebar";
+import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 
 const BREAKPOINT = "@media (max-width: 755px)";
 
@@ -45,6 +49,8 @@ export function IndexAfterLogin() {
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
   const [followed, setFollowed] = useRecoilState(recoil_followed);
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
+
+  const [hotclip, setHotclip] = useState([]);
 
   const goLogin = () => {
     // use authorization code grant flow
@@ -76,6 +82,25 @@ export function IndexAfterLogin() {
       });
   };
 
+  const getHotclip = () => {
+    const url = "/api/hotclip";
+    axios
+      .get(url, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setHotclip(res.data.data);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getHotclip();
+  }, []);
+
   return (
     <div>
       <Sidebar />
@@ -83,70 +108,145 @@ export function IndexAfterLogin() {
         aside={LiveAside}
         content={() => {
           return (
-            <>
-              <Stack className="px-36 mt-12">
-                <p className="text-4xl">Hot clip</p>
+            <Container
+              size="xl"
+              sizes={{
+                xs: 540,
+                sm: 720,
+                md: 960,
+                lg: 1140,
+                xl: 1500,
+              }}
+              mb={100}
+            >
+              <Stack mt={80}>
+                <Text size={36} weight={300}>
+                  Hot Clip
+                </Text>
                 <Group position="apart">
                   <Group>
-                    <Button size="lg" color="violet" radius="xl">
+                    <Button
+                      h={58}
+                      color="dark"
+                      radius={99}
+                      px={20}
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 700,
+                      }}
+                    >
                       인기
                     </Button>
                     <Button
-                      size="lg"
-                      variant="outline"
+                      h={58}
                       color="dark"
-                      radius="xl"
+                      variant="outline"
+                      radius={99}
+                      px={20}
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 700,
+                      }}
                     >
                       최근 업로드
                     </Button>
                   </Group>
-                  {/* <Button
-            leftIcon={<Paperclip></Paperclip>}
-            size="lg"
-            color="violet"
-            radius="xl"
-          >
-            클립 생성
-          </Button> */}
                 </Group>
               </Stack>
-              <Flex
-                align="center"
-                justify="center"
-                mt={30}
-                dir="row"
-                wrap="wrap"
+              <SimpleGrid
+                cols={4}
+                spacing={24}
+                mt={40}
+                breakpoints={[
+                  { maxWidth: 1400, cols: 3, spacing: "md" },
+                  { maxWidth: 980, cols: 2, spacing: "sm" },
+                  { maxWidth: 600, cols: 1, spacing: "sm" },
+                ]}
               >
-                {followed.map((stream: any) => {
+                {hotclip.map((clip: any) => {
                   return (
                     <Card
-                      p="md"
-                      m="md"
-                      key={stream.id}
+                      p={0}
+                      m={0}
+                      key={clip.id}
                       // onClick={() => {
                       //   window.location.href = `/create/${stream.user_login}`;
                       // }}
                     >
                       <Flex justify="center" direction="column">
+                        <div style={{ position: "relative" }}>
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: 12,
+                              right: 12,
+                              height: 34,
+                              backgroundColor: "rgba(0, 0, 0, 0.5)",
+                              zIndex: 1,
+                              borderRadius: 99,
+                            }}
+                          >
+                            <Flex h={34} align="center" px={16}>
+                              <FontAwesomeIcon
+                                icon={solid("eye")}
+                                style={{
+                                  width: 14,
+                                  height: 12,
+                                  color: "white",
+                                  marginRight: 4,
+                                }}
+                              />
+                              <Text
+                                size={12}
+                                weight={700}
+                                color="white"
+                                style={
+                                  {
+                                    // lineHeight: "34px",
+                                    // padding: "0 15px",
+                                  }
+                                }
+                              >
+                                {Intl.NumberFormat("ko-KR").format(
+                                  clip.viewCount
+                                )}
+                              </Text>
+                            </Flex>
+                          </div>
+                        </div>
                         <Image
                           className="cursor-pointer rounded-md"
-                          src={stream.thumbnail_url
-                            .replace("{width}", "1920")
-                            .replace("{height}", "1080")}
+                          src={clip.imageURL}
                           alt="clip"
                           width={480}
                           height={320}
                         />
                         <Group position="apart">
                           <Stack spacing={0}>
-                            <Text fz="xl" fw={700} mt={5} align="left">
-                              {stream.user_name}
+                            <Text
+                              size={16}
+                              weight={700}
+                              mt={5}
+                              align="left"
+                              style={{
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                                overflow: "hidden",
+                                width:
+                                  "calc((100vw - 360px) / 4 - 24px - 60px)",
+                                maxWidth: 280,
+                              }}
+                            >
+                              {clip.title}
+                            </Text>
+                            <Text mt={5} align="left" size={14} weight={400}>
+                              {clip.streamer.displayName}
                             </Text>
                             <Text mt={5} align="left">
-                              hello
-                            </Text>
-                            <Text mt={5} align="left">
-                              <strong>반응 321 • </strong>14시간 전
+                              <strong>
+                                반응 {clip.commentCount + clip.likeCount} •{" "}
+                              </strong>
+                              14시간 전
                             </Text>
                           </Stack>
                           <ActionIcon variant="transparent" size={36}>
@@ -157,8 +257,8 @@ export function IndexAfterLogin() {
                     </Card>
                   );
                 })}
-              </Flex>
-            </>
+              </SimpleGrid>
+            </Container>
           );
         }}
       />
