@@ -1,7 +1,46 @@
 import { atom } from "recoil";
+import { mypageMadeClipDummy, selectedClipDefault } from "./constValues";
 
-/* *** common *** */
-export const isLogined = atom({
-  key: "isLogined",
+/* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
+export const recoil_isLogined = atom({
+  key: "recoil_isLogined",
   default: false,
+}); // 로그인 여부
+
+export const recoil_followed = atom({
+  key: "recoil_followed",
+  default: [],
+}); // 팔로우 목록
+
+export const recoil_sidebarOpened = atom({
+  key: "recoil_sidebarOpened",
+  default: false,
+}); // 사이드바 여닫힘 여부
+
+export const recoil_sidebarIndex = atom({
+  key: "recoil_sidebarIndex",
+  default: 0,
+}); // 사이드바 항목 인덱스
+/* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
+
+/* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
+export const mypageManage_sectionIndex = atom({
+  key: "mypageManage_sectionIndex",
+  default: 0,
 });
+
+export const mypageManage_selectedClip = atom({
+  key: "mypageManage_sectionIndex",
+  default: selectedClipDefault,
+});
+
+export const mypageManage_madeClip = atom({
+  key: "mypageManage_madeClip",
+  default: mypageMadeClipDummy,
+});
+
+export const mypageManage_channelClip = atom({
+  key: "mypageManage_channelClip",
+  default: mypageMadeClipDummy,
+});
+/* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */

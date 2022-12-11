@@ -1,6 +1,6 @@
 import { Flex } from "@mantine/core";
 import React from "react";
-import { Header } from "../../components/Header/Header";
+import { Header } from "../../components/create/Header";
 
 import { Range, getTrackBackground } from "react-range";
 

@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import "../styles/navbar.scss";
 import {
   RecoilRoot,
   atom,
@@ -9,6 +10,9 @@ import {
 import type { AppProps } from "next/app";
 import { MantineProvider, createEmotionCache } from "@mantine/core";
 import * as Sentry from "@sentry/nextjs";
+// import * as dotenv from "dotenv";
+// dotenv.config();
+
 // http://localhost:4800
 // https://clippy.kr
 
@@ -29,7 +33,12 @@ const myCache = createEmotionCache({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
-      <MantineProvider withGlobalStyles withNormalizeCSS emotionCache={myCache}>
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        emotionCache={myCache}
+        theme={{ fontFamily: "Noto Sans KR" }}
+      >
         <Component {...pageProps} />
       </MantineProvider>
     </RecoilRoot>
