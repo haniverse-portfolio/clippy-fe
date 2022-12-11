@@ -32,10 +32,15 @@ import {
   Settings,
 } from "tabler-icons-react";
 import { atom, useRecoilState } from "recoil";
-import { recoil_sidebarIndex, recoil_sidebarOpened } from "../states";
+import {
+  recoil_followed,
+  recoil_sidebarIndex,
+  recoil_sidebarOpened,
+} from "../states";
 import { apiAddress } from "../constValues";
 import Logo from "./Logo";
 import { Footer } from "../aside/LiveAside";
+import Link from "next/link";
 
 export const SidebarInner = () => {
   const [sidebarOpened, setSidebarOpened] =
@@ -70,17 +75,24 @@ export const SidebarInner = () => {
         </Center>
         <span className="text-[16px] text-center mt-[16px]">임준현</span>
         <Stack className="m-0 p-0" mt={38}>
-          <Stack
-            justify="center"
-            className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
+          <Link
+            onClick={() => {
+              setSidebarOpened(false);
+            }}
+            href="/mypage_manage"
           >
-            <Group ml={48}>
-              <Settings size={18} />
-              <span className="ml-[17px] text-[16px] text-center">
-                클립 관리
-              </span>
-            </Group>
-          </Stack>
+            <Stack
+              justify="center"
+              className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
+            >
+              <Group ml={48}>
+                <Settings size={18} />
+                <span className="ml-[17px] text-[16px] text-center">
+                  클립 관리
+                </span>
+              </Group>
+            </Stack>
+          </Link>
           <Stack
             justify="center"
             className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"

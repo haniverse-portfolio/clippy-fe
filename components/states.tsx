@@ -28,9 +28,27 @@ export const recoil_createModalOpened = atom({
   default: false,
 }); // 사이드바 항목 인덱스
 
-export const recoil_createModalStreamerName = atom({
-  key: "recoil_createModalStreamerName",
-  default: "",
+export const recoil_createModalIsLoading = atom({
+  key: "recoil_createModalIsLoading",
+  default: false,
+});
+
+export const recoil_createModalStreamerInfo = atom({
+  key: "recoil_createModalStreamerInfo",
+  default: { id: "", login: "", name: "" },
+}); // 생성 modal
+interface videoType {
+  thumbnailUrl: string;
+  rawMediaUrl: string;
+  clip: {
+    clipId: string;
+    editUrl: string;
+  };
+}
+
+export const recoil_videoInfo = atom({
+  key: "recoil_videoInfo",
+  default: {} as videoType,
 }); // 생성 modal
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
