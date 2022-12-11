@@ -37,7 +37,13 @@ const LiveItem = ({ item }: LiveItemProps) => {
   const [followed, setFollowed] = useRecoilState(recoil_followed);
   const [videoInfo, setVideoInfo] = useRecoilState(recoil_videoInfo);
 
+  const [extractorErrorStatus, setExtractorErrorStatus] = useState(false);
+  const [extractorErrorMessage, setExtractorErrorMessage] = useState("");
+
   const postExtractor = async (streamerId: number) => {
+    setExtractorErrorStatus(false);
+    setExtractorErrorMessage("");
+
     // https://api.clippy.kr/extractor
     const url = apiAddress + "/extractor";
 
@@ -59,7 +65,9 @@ const LiveItem = ({ item }: LiveItemProps) => {
       })
       .catch((res) => {
         const errMessage = res.response.data.message;
-        alert(errMessage);
+        // alert(errMessage);
+        setExtractorErrorStatus(true);
+        setExtractorErrorMessage(errMessage);
 
         // error 표시해주기
       });
@@ -98,7 +106,7 @@ const Live = ({ data }: LivePropsWrapper) => {
   return (
     <Flex className="flex-1" direction="column" justify="space-around">
       <div>
-        <Text align="center" weight={700} mb={40}>
+        <Text align="center" weight={700} mb={40} mt={20}>
           어떤 스트리머의 클립을 만들까요?
         </Text>
         <Flex direction="column">
@@ -151,7 +159,7 @@ const calc = (items: any): LiveProps[] => {
   let count = 0;
   const returnData: LiveProps[] = [];
   items.forEach((item: any) => {
-    if (count > 10) return;
+    if (count > 8) return;
     count++;
     returnData.push({
       id: item.user_id,

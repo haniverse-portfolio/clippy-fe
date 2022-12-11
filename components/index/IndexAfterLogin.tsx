@@ -83,13 +83,13 @@ export function IndexAfterLogin() {
   };
 
   const getHotclip = () => {
-    const url = "/api/hotclip";
+    const url = `${apiAddress}/hotclip/temp`;
     axios
       .get(url, {
         withCredentials: true,
       })
       .then((res) => {
-        setHotclip(res.data.data);
+        setHotclip(res.data.data.data);
         console.log(res);
       })
       .catch((err) => {
