@@ -32,12 +32,13 @@ import {
   Settings,
 } from "tabler-icons-react";
 import { atom, useRecoilState } from "recoil";
-import { recoil_drawerIndex, recoil_drawerOpened } from "../states";
+import { recoil_sidebarIndex, recoil_sidebarOpened } from "../states";
 import { apiAddress } from "../constValues";
 
-export function IndexDrawer() {
-  const [drawerOpened, setdrawerOpened] = useRecoilState(recoil_drawerOpened);
-  const [drawerIndex, setDrawerIndex] = useRecoilState(recoil_drawerIndex);
+export function Sidebar() {
+  const [sidebarOpened, setSidebarOpened] =
+    useRecoilState(recoil_sidebarOpened);
+  const [sidebarIndex, setSidebarIndex] = useRecoilState(recoil_sidebarIndex);
 
   const goLogout = () => {
     const url = `${apiAddress}/user/logout`;
@@ -48,8 +49,8 @@ export function IndexDrawer() {
     <Drawer
       className="!p-0 !m-0"
       position="right"
-      opened={drawerOpened}
-      onClose={() => setdrawerOpened(false)}
+      opened={sidebarOpened}
+      onClose={() => setSidebarOpened(false)}
       padding="xl"
       size="xl"
       withCloseButton={false}
@@ -74,7 +75,7 @@ export function IndexDrawer() {
               <Menu2
                 size={48}
                 onClick={() => {
-                  setdrawerOpened(false);
+                  setSidebarOpened(false);
                 }}
               />
             </ThemeIcon>

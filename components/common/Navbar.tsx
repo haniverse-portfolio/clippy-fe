@@ -14,7 +14,7 @@ import {
   ThemeIcon,
 } from "@mantine/core";
 import { useRecoilState } from "recoil";
-import { recoil_drawerOpened, recoil_isLogined } from "../states";
+import { recoil_sidebarOpened, recoil_isLogined } from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 import { IconAt } from "@tabler/icons";
@@ -48,7 +48,7 @@ const goLogout = () => {
 export function Navbar() {
   const [searchText, setSearchText] = useState<string>("");
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
-  const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_drawerOpened);
+  const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
 
   return (
     <div className="h-[120px] bg-white sticky top-0 z-50 shadow-sm">
