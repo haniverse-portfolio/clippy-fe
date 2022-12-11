@@ -7,7 +7,14 @@ const MainLayout = ({ content, aside }: any): JSX.Element => {
       <div style={{ height: "calc(100vh - 120px)", flex: 1, overflow: "auto" }}>
         {content()}
       </div>
-      <div className="w-[360px]" style={{ height: "calc(100vh - 120px)" }}>
+      <div
+        className="w-[360px]"
+        style={{
+          height: "calc(100vh - 120px)",
+          borderLeft: "1px solid rgba(0, 0, 0, 0.1)",
+          overflow: "auto",
+        }}
+      >
         {aside()}
       </div>
     </Flex>

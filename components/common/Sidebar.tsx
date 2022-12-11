@@ -35,7 +35,7 @@ import { atom, useRecoilState } from "recoil";
 import { recoil_sidebarIndex, recoil_sidebarOpened } from "../states";
 import { apiAddress } from "../constValues";
 
-export function Sidebar() {
+export const SidebarInner = () => {
   const [sidebarOpened, setSidebarOpened] =
     useRecoilState(recoil_sidebarOpened);
   const [sidebarIndex, setSidebarIndex] = useRecoilState(recoil_sidebarIndex);
@@ -46,15 +46,7 @@ export function Sidebar() {
   };
 
   return (
-    <Drawer
-      className="!p-0 !m-0"
-      position="right"
-      opened={sidebarOpened}
-      onClose={() => setSidebarOpened(false)}
-      padding="xl"
-      size="xl"
-      withCloseButton={false}
-    >
+    <>
       <Stack>
         <div className="p-[36px] h-[120px] bg-white sticky top-0 z-50 shadow-sm">
           <Group position="apart">
@@ -136,6 +128,25 @@ export function Sidebar() {
           </Stack>
         </Stack>
       </Stack>
+    </>
+  );
+};
+
+export function Sidebar() {
+  const [sidebarOpened, setSidebarOpened] =
+    useRecoilState(recoil_sidebarOpened);
+
+  return (
+    <Drawer
+      className="!p-0 !m-0"
+      position="right"
+      opened={sidebarOpened}
+      onClose={() => setSidebarOpened(false)}
+      padding="xl"
+      size="xl"
+      withCloseButton={false}
+    >
+      <SidebarInner />
     </Drawer>
   );
 }

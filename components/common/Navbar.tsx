@@ -51,9 +51,12 @@ export function Navbar() {
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
 
   return (
-    <div className="h-[120px] bg-white sticky top-0 z-50 shadow-sm">
+    <div
+      className="h-[120px] bg-white sticky top-0 z-50"
+      style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.1)" }}
+    >
       <Group position="apart">
-        <Flex my={40} ml={48} align="center">
+        <Flex my={36} ml={48} align="center">
           <Link href="/" className="mr-[125px]">
             <Logo />
           </Link>
