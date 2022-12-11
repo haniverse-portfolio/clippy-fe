@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { mypageMadeClipDummy, selectedClipDefault } from "./constValues";
 
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 export const recoil_isLogined = atom({
@@ -21,3 +22,25 @@ export const recoil_sidebarIndex = atom({
   default: 0,
 }); // 사이드바 항목 인덱스
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
+
+/* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
+export const mypageManage_sectionIndex = atom({
+  key: "mypageManage_sectionIndex",
+  default: 0,
+});
+
+export const mypageManage_selectedClip = atom({
+  key: "mypageManage_sectionIndex",
+  default: selectedClipDefault,
+});
+
+export const mypageManage_madeClip = atom({
+  key: "mypageManage_madeClip",
+  default: mypageMadeClipDummy,
+});
+
+export const mypageManage_channelClip = atom({
+  key: "mypageManage_channelClip",
+  default: mypageMadeClipDummy,
+});
+/* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
