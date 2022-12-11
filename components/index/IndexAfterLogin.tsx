@@ -30,6 +30,9 @@ import {
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 import axios from "axios";
+import MainLayout from "../common/MainLayout";
+import UserAside from "../aside/UserAside";
+import LiveAside from "../aside/LiveAside";
 import { Sidebar } from "../common/Sidebar";
 
 const BREAKPOINT = "@media (max-width: 755px)";
@@ -76,18 +79,28 @@ export function IndexAfterLogin() {
   return (
     <div>
       <Sidebar />
-      <Stack className="px-36 mt-12">
-        <p className="text-4xl">Hot clip</p>
-        <Group position="apart">
-          <Group>
-            <Button size="lg" color="violet" radius="xl">
-              인기
-            </Button>
-            <Button size="lg" variant="outline" color="dark" radius="xl">
-              최근 업로드
-            </Button>
-          </Group>
-          {/* <Button
+      <MainLayout
+        aside={LiveAside}
+        content={() => {
+          return (
+            <>
+              <Stack className="px-36 mt-12">
+                <p className="text-4xl">Hot clip</p>
+                <Group position="apart">
+                  <Group>
+                    <Button size="lg" color="violet" radius="xl">
+                      인기
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      color="dark"
+                      radius="xl"
+                    >
+                      최근 업로드
+                    </Button>
+                  </Group>
+                  {/* <Button
             leftIcon={<Paperclip></Paperclip>}
             size="lg"
             color="violet"
@@ -95,50 +108,60 @@ export function IndexAfterLogin() {
           >
             클립 생성
           </Button> */}
-        </Group>
-      </Stack>
-      <Flex align="center" justify="center" mt={30} dir="row" wrap="wrap">
-        {followed.map((stream: any) => {
-          return (
-            <Card
-              p="md"
-              m="md"
-              key={stream.id}
-              // onClick={() => {
-              //   window.location.href = `/create/${stream.user_login}`;
-              // }}
-            >
-              <Flex justify="center" direction="column">
-                <Image
-                  className="cursor-pointer rounded-md"
-                  src={stream.thumbnail_url
-                    .replace("{width}", "1920")
-                    .replace("{height}", "1080")}
-                  alt="clip"
-                  width={480}
-                  height={320}
-                />
-                <Group position="apart">
-                  <Stack spacing={0}>
-                    <Text fz="xl" fw={700} mt={5} align="left">
-                      {stream.user_name}
-                    </Text>
-                    <Text mt={5} align="left">
-                      hello
-                    </Text>
-                    <Text mt={5} align="left">
-                      <strong>반응 321 • </strong>14시간 전
-                    </Text>
-                  </Stack>
-                  <ActionIcon variant="transparent" size={36}>
-                    <Heart size={36} />
-                  </ActionIcon>
                 </Group>
+              </Stack>
+              <Flex
+                align="center"
+                justify="center"
+                mt={30}
+                dir="row"
+                wrap="wrap"
+              >
+                {followed.map((stream: any) => {
+                  return (
+                    <Card
+                      p="md"
+                      m="md"
+                      key={stream.id}
+                      // onClick={() => {
+                      //   window.location.href = `/create/${stream.user_login}`;
+                      // }}
+                    >
+                      <Flex justify="center" direction="column">
+                        <Image
+                          className="cursor-pointer rounded-md"
+                          src={stream.thumbnail_url
+                            .replace("{width}", "1920")
+                            .replace("{height}", "1080")}
+                          alt="clip"
+                          width={480}
+                          height={320}
+                        />
+                        <Group position="apart">
+                          <Stack spacing={0}>
+                            <Text fz="xl" fw={700} mt={5} align="left">
+                              {stream.user_name}
+                            </Text>
+                            <Text mt={5} align="left">
+                              hello
+                            </Text>
+                            <Text mt={5} align="left">
+                              <strong>반응 321 • </strong>14시간 전
+                            </Text>
+                          </Stack>
+                          <ActionIcon variant="transparent" size={36}>
+                            <Heart size={36} />
+                          </ActionIcon>
+                        </Group>
+                      </Flex>
+                    </Card>
+                  );
+                })}
               </Flex>
-            </Card>
+            </>
           );
-        })}
-      </Flex>
+        }}
+      />
     </div>
   );
 }
