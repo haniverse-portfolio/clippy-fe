@@ -26,6 +26,7 @@ import { Navbar } from "../components/common/Navbar";
 import { MypageMadeClip } from "../components/mypage_manage/MypageMadeClip";
 import { MypageManageCommon } from "../components/mypage_manage/MypageManageCommon";
 import { MypageChannelClip } from "../components/mypage_manage/MypageChannelClip";
+import { DeleteModal } from "../components/mypage_manage/DeleteModal";
 
 export default function Home() {
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
@@ -90,12 +91,11 @@ export default function Home() {
       </Head>
 
       <main>
+        <DeleteModal />
         <Navbar />
         <div style={{ height: "calc(100vh - 120px)" }}>
-          <MypageManageCommon />
           {sectionIndex === 0 ? <MypageMadeClip /> : <MypageChannelClip />}
         </div>
-        {isLogined === true ? <></> : <></>}
       </main>
     </div>
   );
