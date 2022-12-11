@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import Clip from "../common/Clip";
+import { apiAddress } from "../constValues";
 import {
   recoil_createModalIsLoading,
   recoil_createModalOpened,
@@ -38,7 +39,7 @@ const LiveItem = ({ item }: LiveItemProps) => {
 
   const postExtractor = async (streamerId: number) => {
     // https://api.clippy.kr/extractor
-    const url = `http://localhost:4800/extractor`;
+    const url = apiAddress + "/extractor";
 
     const res = await axios
       .post(
