@@ -1,104 +1,104 @@
 import { solid, regular } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Flex, Text } from "@mantine/core";
+import { Avatar, Center, Flex, Group, Stack, Text } from "@mantine/core";
+import Link from "next/link";
+import { useRecoilState } from "recoil";
+import {
+  Broadcast,
+  Logout,
+  MessageCircle2,
+  Paperclip,
+  Settings,
+} from "tabler-icons-react";
+import { apiAddress } from "../constValues";
+import { recoil_sidebarOpened } from "../states";
 import { Footer } from "./LiveAside";
 
 const UserAside = () => {
+  const goLogout = () => {
+    const url = `${apiAddress}/user/logout`;
+    window.location.href = url;
+  };
+
+  const [sidebarOpened, setSidebarOpened] =
+    useRecoilState(recoil_sidebarOpened);
+
   return (
-    <Flex
-      align="center"
-      direction="column"
-      justify="space-between"
-      style={{ height: "calc(100vh - 120px)" }}
-    >
-      <Flex mt={88} direction="column" align="center" w="100%">
-        <Text size={36} fw={300}>
-          내 채널
-        </Text>
-        <Avatar src="/images/mock-user.svg" size={98} mt={18} mb={10}></Avatar>
-        <Text weight={300} size={16}>
-          닉네임
-        </Text>
-        <Flex direction="column" mt={50} w="100%">
-          <div
-            className="w-100% h-[48px] px-[8px] pt-[11px] pb-[15px] mb-[15px]"
-            style={{ backgroundColor: "#f2f2f2" }}
+    <Stack style={{ height: "calc(100vh - 120px)" }}>
+      <span className="font-light text-[36px] text-center mt-[88px]">
+        내 채널
+      </span>
+      <Center>
+        <Avatar radius="xl" size={98} src={null} />
+      </Center>
+      <span className="text-[16px] text-center mt-[16px]">임준현</span>
+      <Stack className="m-0 p-0" mt={38}>
+        <Link
+          onClick={() => {
+            setSidebarOpened(false);
+          }}
+          href="/mypage_manage"
+        >
+          <Stack
+            justify="center"
+            className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
           >
-            <Flex pl={53} align="center">
-              <FontAwesomeIcon
-                icon={solid("gear")}
-                width={18}
-                color="#111111"
-              />
-              <Text ml={17} size={16} weight={700}>
+            <Group ml={48}>
+              <Settings size={18} />
+              <span className="ml-[17px] text-[16px] text-center">
                 클립 관리
-              </Text>
-            </Flex>
-          </div>
-          <div
-            className="w-100% h-[48px] px-[8px] pt-[11px] pb-[15px] mb-[15px]"
-            // style={{ backgroundColor: "#f2f2f2" }}
-          >
-            <Flex pl={53} align="center">
-              <FontAwesomeIcon
-                icon={solid("paperclip")}
-                width={18}
-                color="#111111"
-              />
-              <Text ml={17} size={16} weight={700}>
-                클립 생성
-              </Text>
-            </Flex>
-          </div>
-          <div
-            className="w-100% h-[48px] px-[8px] pt-[11px] pb-[15px] mb-[15px]"
-            // style={{ backgroundColor: "#f2f2f2" }}
-          >
-            <Flex pl={53} align="center">
-              <FontAwesomeIcon
-                icon={solid("tower-broadcast")}
-                width={18}
-                color="#111111"
-              />
-              <Text ml={17} size={16} weight={700}>
-                팔로우 중인 채널
-              </Text>
-            </Flex>
-          </div>
-          <div
-            className="w-100% h-[48px] px-[8px] pt-[11px] pb-[15px] mb-[15px]"
-            // style={{ backgroundColor: "#f2f2f2" }}
-          >
-            <Flex pl={53} align="center">
-              <FontAwesomeIcon
-                icon={solid("envelope")}
-                width={18}
-                color="#111111"
-              />
-              <Text ml={17} size={16} weight={700}>
-                의견 보내기
-              </Text>
-            </Flex>
-          </div>
-          <div
-            className="w-100% h-[48px] px-[8px] pt-[11px] pb-[15px] mb-[15px]"
-            // style={{ backgroundColor: "#f2f2f2" }}
-          >
-            <Flex pl={53} align="center">
-              <FontAwesomeIcon
-                icon={solid("arrow-right-from-bracket")}
-                width={18}
-                color="#111111"
-              />
-              <Text ml={17} size={16} weight={700}>
-                로그아웃
-              </Text>
-            </Flex>
-          </div>
-        </Flex>
-      </Flex>
+              </span>
+            </Group>
+          </Stack>
+        </Link>
+        <Stack
+          justify="center"
+          className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
+        >
+          <Group ml={48}>
+            <Paperclip size={18} />
+            <span className="ml-[17px] text-[16px] text-center">클립 생성</span>
+          </Group>
+        </Stack>
+        <Stack
+          justify="center"
+          className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
+        >
+          <Group ml={48}>
+            <Broadcast size={18} />
+            <span className="ml-[17px] text-[16px] text-center">
+              팔로우 중인 채널
+            </span>
+          </Group>
+        </Stack>
+        <Stack
+          justify="center"
+          className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
+        >
+          <Group ml={48}>
+            <MessageCircle2 size={18} />
+            <span className="ml-[17px] text-[16px] text-center">
+              의견 보내기
+            </span>
+          </Group>
+        </Stack>
+        <Stack
+          justify="center"
+          onClick={() => {
+            goLogout();
+          }}
+          className="h-[48px] hover:bg-gray-200 hover:font-bold cursor-pointer"
+        >
+          <Group ml={48}>
+            <Logout size={18} />
+            <span className="ml-[17px] text-[16px] text-center cursor-pointer">
+              로그아웃
+            </span>
+          </Group>
+        </Stack>
+      </Stack>
       <Footer />
-    </Flex>
+    </Stack>
   );
 };
 

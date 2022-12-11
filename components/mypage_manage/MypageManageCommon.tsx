@@ -2,6 +2,7 @@ import { Button, Checkbox, Group, Stack, Text } from "@mantine/core";
 import { Trash } from "tabler-icons-react";
 import {
   mypageManage_channelClip,
+  mypageManage_deleteModalOpened,
   mypageManage_madeClip,
   mypageManage_sectionIndex,
   mypageManage_selectedClip,
@@ -25,6 +26,9 @@ export function MypageManageCommon() {
     mypageManage_channelClip
   );
 
+  const [deleteModalOpened, setDeleteModalOpened] = useRecoilState(
+    mypageManage_deleteModalOpened
+  );
   const isSelected = () => {
     let cnt = 0 as number;
     for (let i = 0; i < selectedClip.length; i++) {
@@ -81,6 +85,9 @@ export function MypageManageCommon() {
           </Button>
         </Group>
         <Button
+          onClick={() => {
+            if (isSelected()) setDeleteModalOpened(true);
+          }}
           className={!isSelected() ? "hover:cursor-not-allowed" : ""}
           disabled={!isSelected()}
           leftIcon={<Trash />}

@@ -35,7 +35,7 @@ export const recoil_createModalIsLoading = atom({
 
 export const recoil_createModalStreamerInfo = atom({
   key: "recoil_createModalStreamerInfo",
-  default: { id: "", login: "", name: "" },
+  default: { id: "", login: "", name: "", image: "" },
 }); // 생성 modal
 interface videoType {
   thumbnailUrl: string;
@@ -53,6 +53,16 @@ export const recoil_videoInfo = atom({
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
+export const recoil_deleteModalStep = atom({
+  key: "recoil_deleteModalStep",
+  default: 0,
+}); // 삭제 modal 화면 인덱스
+
+export const mypageManage_deleteModalOpened = atom({
+  key: "mypageManage_deleteModalOpened",
+  default: false,
+});
+
 export const mypageManage_sectionIndex = atom({
   key: "mypageManage_sectionIndex",
   default: 0,

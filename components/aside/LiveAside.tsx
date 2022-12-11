@@ -37,7 +37,6 @@ const LiveItem = ({ item }: LiveItemProps) => {
   const [videoInfo, setVideoInfo] = useRecoilState(recoil_videoInfo);
 
   const postExtractor = async (streamerId: number) => {
-    alert(streamerId);
     // https://api.clippy.kr/extractor
     const url = `http://localhost:4800/extractor`;
 
@@ -55,7 +54,6 @@ const LiveItem = ({ item }: LiveItemProps) => {
       .then((res) => {
         setIsLoading(false);
         setVideoInfo(res.data.data);
-        console.log(res);
         return res.data;
       })
       .catch((res) => {
@@ -81,6 +79,7 @@ const LiveItem = ({ item }: LiveItemProps) => {
             JSON.stringify(createModalStreamerInfo)
           );
           copyStreamerInfo.name = item.displayName;
+          copyStreamerInfo.image = item.profileImage;
           setCreateModalStreamerInfo(copyStreamerInfo);
         }}
       >

@@ -56,16 +56,13 @@ export const CreateModal = () => {
       size="xl"
       title={
         <Group>
-          <Avatar src={null} size={32} radius="xl"></Avatar>
+          <Avatar
+            src={createModalStreamerInfo.image}
+            size={32}
+            radius="xl"
+          ></Avatar>
           <Text className="text-[20px]">
-            <strong
-              onClick={() => {
-                setIsLoading(!isLoading);
-              }}
-            >
-              {createModalStreamerInfo.name}
-            </strong>
-            의 클립 생성
+            <strong>{createModalStreamerInfo.name}</strong>의 클립 생성
           </Text>
         </Group>
       }

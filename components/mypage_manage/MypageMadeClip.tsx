@@ -79,7 +79,7 @@ export function MypageMadeClip() {
     <div>
       <Sidebar />
       <MainLayout
-        aside={LiveAside}
+        aside={UserAside}
         content={() => {
           return (
             <>
