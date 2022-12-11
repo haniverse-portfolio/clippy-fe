@@ -22,7 +22,11 @@ import {
   Paperclip,
 } from "tabler-icons-react";
 import { atom, useRecoilState } from "recoil";
-import { drawerOpened, followed, isLogined } from "../states";
+import {
+  recoil_drawerOpened,
+  recoil_followed,
+  recoil_isLogined,
+} from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 import axios from "axios";
@@ -35,10 +39,9 @@ export const scale = keyframes({
 });
 
 export function IndexAfterLogin() {
-  const [indexIsLogined, setIndexIsLogined] = useRecoilState(isLogined);
-  const [indexFollowed, setIndexFollowed] = useRecoilState(followed);
-  const [indexDrawerOpened, setIndexDrawerOpened] =
-    useRecoilState(drawerOpened);
+  const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
+  const [followed, setFollowed] = useRecoilState(recoil_followed);
+  const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_drawerOpened);
 
   const goLogin = () => {
     // use authorization code grant flow
@@ -62,7 +65,7 @@ export function IndexAfterLogin() {
         withCredentials: true,
       })
       .then((res) => {
-        setIndexFollowed(res.data.data);
+        setFollowed(res.data.data);
         console.log(res);
       })
       .catch((err) => {
@@ -73,27 +76,29 @@ export function IndexAfterLogin() {
   return (
     <div>
       <IndexDrawer />
-      <p className="text-4xl">Hot clip</p>
-      <Group position="apart">
-        <Group>
-          <Button size="lg" color="violet" radius="xl">
-            인기
-          </Button>
-          <Button size="lg" variant="outline" color="dark" radius="xl">
-            최근 업로드
-          </Button>
+      <Stack className="px-36 mt-12">
+        <p className="text-4xl">Hot clip</p>
+        <Group position="apart">
+          <Group>
+            <Button size="lg" color="violet" radius="xl">
+              인기
+            </Button>
+            <Button size="lg" variant="outline" color="dark" radius="xl">
+              최근 업로드
+            </Button>
+          </Group>
+          {/* <Button
+            leftIcon={<Paperclip></Paperclip>}
+            size="lg"
+            color="violet"
+            radius="xl"
+          >
+            클립 생성
+          </Button> */}
         </Group>
-        <Button
-          leftIcon={<Paperclip></Paperclip>}
-          size="lg"
-          color="violet"
-          radius="xl"
-        >
-          클립 생성
-        </Button>
-      </Group>
+      </Stack>
       <Flex align="center" justify="center" mt={30} dir="row" wrap="wrap">
-        {indexFollowed.map((stream: any) => {
+        {followed.map((stream: any) => {
           return (
             <Card
               p="md"

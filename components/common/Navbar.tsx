@@ -10,13 +10,14 @@ import {
   Grid,
   Avatar,
   Flex,
+  ThemeIcon,
 } from "@mantine/core";
 import { useRecoilState } from "recoil";
-import { drawerOpened, isLogined } from "../states";
+import { recoil_drawerOpened, recoil_isLogined } from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 import { IconAt } from "@tabler/icons";
-import { CircleX, Search } from "tabler-icons-react";
+import { CircleX, Paperclip, Search } from "tabler-icons-react";
 
 const goLogin = () => {
   // use authorization code grant flow
@@ -34,15 +35,16 @@ const goLogout = () => {
 };
 
 export function Navbar() {
-  const [indexIsLogined, setIndexIsLogined] = useRecoilState(isLogined);
-  const [indexDrawerOpened, setIndexDrawerOpened] =
-    useRecoilState(drawerOpened);
+  const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
+  const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_drawerOpened);
 
   return (
-    <div className="flex justify-between h-[120px] bg-white sticky top-0 z-50 shadow-sm">
-      <Group position="apart">
+    <div className="h-[120px] bg-white sticky top-0 z-50 shadow-sm">
+      <Group className="p-[36px]" position="apart">
         <Group>
-          <Image alt="logo" src="/images/clip.svg" width={30} height={48} />
+          <ThemeIcon size={48} variant="default" color="dark">
+            <Paperclip size={48}></Paperclip>
+          </ThemeIcon>
           <span
             className="text-5xl font-extrabold bg-gradient-to-r text-transparent bg-clip-text from-indigo-500 via-purple-500 to-indigo-500 animate-text "
             // variant="gradient"
@@ -64,7 +66,7 @@ export function Navbar() {
           />
           <Avatar
             onClick={() => {
-              setIndexDrawerOpened(true);
+              setDrawerOpened(true);
             }}
             radius="xl"
             size="lg"

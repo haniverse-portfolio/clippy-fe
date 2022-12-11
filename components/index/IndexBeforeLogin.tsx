@@ -11,7 +11,7 @@ import {
 import { GithubIcon } from "@mantine/ds";
 import { BrandTwitch, Scale } from "tabler-icons-react";
 import { atom, useRecoilState } from "recoil";
-import { isLogined } from "../states";
+import { recoil_isLogined } from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 
@@ -104,7 +104,7 @@ const useStyles = createStyles((theme) => ({
 export function IndexBeforeLogin() {
   const { classes } = useStyles();
 
-  const [indexIsLogined, setIndexIsLogined] = useRecoilState(isLogined);
+  const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
 
   return (
     <Flex align="center" justify="center">
