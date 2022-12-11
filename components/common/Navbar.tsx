@@ -10,6 +10,7 @@ import {
   Grid,
   Avatar,
   Flex,
+  Box,
   ThemeIcon,
 } from "@mantine/core";
 import { useRecoilState } from "recoil";
@@ -18,6 +19,16 @@ import Image from "next/image";
 import { apiAddress } from "../constValues";
 import { IconAt } from "@tabler/icons";
 import { CircleX, Paperclip, Search } from "tabler-icons-react";
+import Logo from "./Logo";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  solid,
+  regular,
+  brands,
+  icon,
+} from "@fortawesome/fontawesome-svg-core/import.macro"; // <-- import styles to be used
+import { useState } from "react";
 
 const goLogin = () => {
   // use authorization code grant flow
@@ -35,44 +46,71 @@ const goLogout = () => {
 };
 
 export function Navbar() {
+  const [searchText, setSearchText] = useState<string>("");
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_drawerOpened);
 
   return (
     <div className="h-[120px] bg-white sticky top-0 z-50 shadow-sm">
-      <Group className="p-[36px]" position="apart">
-        <Group>
-          <ThemeIcon size={48} variant="default" color="dark">
-            <Paperclip size={48}></Paperclip>
-          </ThemeIcon>
-          <span
-            className="text-5xl font-extrabold bg-gradient-to-r text-transparent bg-clip-text from-indigo-500 via-purple-500 to-indigo-500 animate-text "
-            // variant="gradient"
-            // gradient={{ from: "violet", to: "grape" }}
-          >
-            CLIPPY
-          </span>
-          <Badge variant="filled" color="green" size="lg" radius="sm">
-            Beta
-          </Badge>
-        </Group>
-        <Group>
-          <TextInput
-            size="lg"
-            radius="xl"
-            placeholder="닉네임, 제목 키워드"
-            icon={<Search size={28} />}
-            rightSection={<CircleX color="gray" size="xs" />}
-          />
+      <Group position="apart">
+        <Flex my={40} ml={48} align="center">
+          <Link href="/" className="mr-[125px]">
+            <Logo />
+          </Link>
+          {indexIsLogined && (
+            <TextInput
+              w={588}
+              h={48}
+              size="lg"
+              radius="xl"
+              id="navbar-title"
+              placeholder="닉네임, 제목 키워드"
+              value={searchText}
+              onChange={(e) => {
+                setSearchText(e.currentTarget.value);
+              }}
+              icon={
+                <FontAwesomeIcon
+                  id="navbar-search-icon"
+                  icon={solid("magnifying-glass")}
+                  className="w-5 ml-[30px]"
+                  fontWeight={900}
+                  color="#DEDEDE"
+                />
+              }
+              style={{
+                boxShadow: "0px 4px 15px rgba(119, 119, 119, 0.25)",
+                borderRadius: "99px",
+                border: 0,
+              }}
+              rightSection={
+                searchText.length > 0 && (
+                  <FontAwesomeIcon
+                    className="w-5 mr-[30px] cursor-pointer"
+                    icon={regular("circle-xmark")}
+                    onClick={() => {
+                      setSearchText("");
+                    }}
+                  />
+                )
+              }
+            />
+          )}
+        </Flex>
+        {indexIsLogined && (
           <Avatar
             onClick={() => {
               setDrawerOpened(true);
             }}
             radius="xl"
             size="lg"
+            w={48}
+            h={48}
+            mr={48}
+            id="navbar-avatar"
             src={null}
           />
-        </Group>
+        )}
       </Group>
     </div>
   );
