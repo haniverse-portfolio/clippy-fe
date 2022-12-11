@@ -15,7 +15,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { IndexBeforeLogin } from "../components/index/IndexBeforeLogin";
 import { atom, useRecoilState } from "recoil";
-import { followed, isLogined } from "../components/states";
+import { recoil_followed, recoil_isLogined } from "../components/states";
 import { apiAddress } from "../components/constValues";
 import { IconAt } from "@tabler/icons";
 import { Navbar } from "../components/common/Navbar";
@@ -23,9 +23,8 @@ import { IndexAfterLogin } from "../components/index/IndexAfterLogin";
 
 export default function Home() {
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
-  const [indexIsLogined, setIndexIsLogined] =
-    useRecoilState<boolean>(isLogined);
-  const [indexFollowed, setIndexFollowed] = useRecoilState(followed);
+  const [isLogined, setIsLogined] = useRecoilState<boolean>(recoil_isLogined);
+  const [followed, setFollowed] = useRecoilState(recoil_followed);
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
 
   /* ***** ***** ***** ***** ***** function ***** ***** ***** ***** ***** */
@@ -53,12 +52,12 @@ export default function Home() {
         withCredentials: true,
       })
       .then((res) => {
-        setIndexIsLogined(true);
+        setIsLogined(true);
         console.log(res);
         getFollowed();
       })
       .catch((err) => {
-        setIndexIsLogined(false);
+        setIsLogined(false);
         console.log(err);
       });
   };
@@ -70,7 +69,7 @@ export default function Home() {
         withCredentials: true,
       })
       .then((res) => {
-        setIndexFollowed(res.data.data);
+        setFollowed(res.data.data);
         console.log(res);
       })
       .catch((err) => {
@@ -97,13 +96,9 @@ export default function Home() {
       <main>
         <Navbar />
         <div style={{ height: "calc(100vh - 120px)" }}>
-          {indexIsLogined === false ? (
-            <IndexBeforeLogin />
-          ) : (
-            <IndexAfterLogin />
-          )}
+          {isLogined === false ? <IndexBeforeLogin /> : <IndexAfterLogin />}
         </div>
-        {indexIsLogined === true ? <></> : <></>}
+        {isLogined === true ? <></> : <></>}
       </main>
     </div>
   );

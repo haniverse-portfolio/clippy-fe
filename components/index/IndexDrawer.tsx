@@ -10,6 +10,8 @@ import {
   Text,
   Stack,
   Avatar,
+  Center,
+  ActionIcon,
 } from "@mantine/core";
 import {
   IconNotes,
@@ -30,24 +32,30 @@ import {
   Settings,
 } from "tabler-icons-react";
 import { atom, useRecoilState } from "recoil";
-import { drawerOpened } from "../states";
+import { recoil_drawerIndex, recoil_drawerOpened } from "../states";
+import { apiAddress } from "../constValues";
 
 export function IndexDrawer() {
-  const [indexDrawerOpened, setIndexDrawerOpened] =
-    useRecoilState(drawerOpened);
+  const [drawerOpened, setdrawerOpened] = useRecoilState(recoil_drawerOpened);
+  const [drawerIndex, setDrawerIndex] = useRecoilState(recoil_drawerIndex);
+
+  const goLogout = () => {
+    const url = `${apiAddress}/user/logout`;
+    window.location.href = url;
+  };
 
   return (
     <Drawer
       className="!p-0 !m-0"
       position="right"
-      opened={indexDrawerOpened}
-      onClose={() => setIndexDrawerOpened(false)}
+      opened={drawerOpened}
+      onClose={() => setdrawerOpened(false)}
       padding="xl"
       size="xl"
       withCloseButton={false}
     >
       <Stack>
-        <div className="flex justify-between h-[120px] bg-white sticky top-0 z-50 shadow-sm">
+        <div className="p-[36px] h-[120px] bg-white sticky top-0 z-50 shadow-sm">
           <Group position="apart">
             <Group>
               <Image alt="logo" src="/images/clip.svg" width={30} height={48} />
@@ -66,46 +74,65 @@ export function IndexDrawer() {
               <Menu2
                 size={48}
                 onClick={() => {
-                  setIndexDrawerOpened(false);
+                  setdrawerOpened(false);
                 }}
               />
             </ThemeIcon>
           </Group>
         </div>
         <span className="text-5xl text-center mt-24">내 채널</span>
-        <Avatar radius="xl" size={240} src={null} />
-        <span className="text-2xl text-center">닉네임</span>
-        <Stack spacing={50}>
-          <Group className="ml-16">
-            <ThemeIcon variant="outline" color="dark">
-              <Settings></Settings>
-            </ThemeIcon>
-            <span className="text-2xl text-center">클립 관리</span>
-          </Group>
-          <Group className="ml-16">
-            <ThemeIcon variant="outline" color="dark">
-              <Paperclip></Paperclip>
-            </ThemeIcon>
-            <span className="text-2xl text-center">클립 생성</span>
-          </Group>
-          <Group className="ml-16">
-            <ThemeIcon variant="outline" color="dark">
-              <Broadcast></Broadcast>
-            </ThemeIcon>
-            <span className="text-2xl text-center">팔로우 중인 채널</span>
-          </Group>
-          <Group className="ml-16">
-            <ThemeIcon variant="outline" color="dark">
-              <MessageCircle2></MessageCircle2>
-            </ThemeIcon>
-            <span className="text-2xl text-center">의견 보내기</span>
-          </Group>
-          <Group className="ml-16">
-            <ThemeIcon variant="outline" color="dark">
-              <Logout></Logout>
-            </ThemeIcon>
-            <span className="text-2xl text-center">로그아웃</span>
-          </Group>
+        <Center>
+          <Avatar radius="xl" size={240} src={null} />
+        </Center>
+        <span className="text-2xl text-center">임준현</span>
+        <Stack className="m-0 p-0" mt={30}>
+          <Stack className="py-4 hover:bg-gray-200 hover:font-bold cursor-pointer">
+            <Group ml={48}>
+              <ActionIcon size={36}>
+                <Settings size={36} />
+              </ActionIcon>
+              <span className="text-2xl text-center">클립 관리</span>
+            </Group>
+          </Stack>
+          <Stack className="py-4 hover:bg-gray-200 hover:font-bold cursor-pointer">
+            <Group ml={48}>
+              <ActionIcon size={36}>
+                <Paperclip size={36} />
+              </ActionIcon>
+              <span className="text-2xl text-center">클립 생성</span>
+            </Group>
+          </Stack>
+          <Stack className="py-4 hover:bg-gray-200 hover:font-bold cursor-pointer">
+            <Group ml={48}>
+              <ActionIcon size={36}>
+                <Broadcast size={36} />
+              </ActionIcon>
+              <span className="text-2xl text-center">팔로우 중인 채널</span>
+            </Group>
+          </Stack>
+          <Stack className="py-4 hover:bg-gray-200 hover:font-bold cursor-pointer">
+            <Group ml={48}>
+              <ActionIcon size={36}>
+                <MessageCircle2 size={36} />
+              </ActionIcon>
+              <span className="text-2xl text-center">의견 보내기</span>
+            </Group>
+          </Stack>
+          <Stack
+            onClick={() => {
+              goLogout();
+            }}
+            className="py-4 hover:bg-gray-200 hover:font-bold cursor-pointer"
+          >
+            <Group ml={48}>
+              <ActionIcon size={36}>
+                <Logout size={36} />
+              </ActionIcon>
+              <span className="text-2xl text-center cursor-pointer">
+                로그아웃
+              </span>
+            </Group>
+          </Stack>
         </Stack>
       </Stack>
     </Drawer>

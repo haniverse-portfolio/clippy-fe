@@ -11,13 +11,14 @@ import {
   Avatar,
   Flex,
   Box,
+  ThemeIcon,
 } from "@mantine/core";
 import { useRecoilState } from "recoil";
-import { drawerOpened, isLogined } from "../states";
+import { recoil_drawerOpened, recoil_isLogined } from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 import { IconAt } from "@tabler/icons";
-import { CircleX, Search } from "tabler-icons-react";
+import { CircleX, Paperclip, Search } from "tabler-icons-react";
 import Logo from "./Logo";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -46,9 +47,8 @@ const goLogout = () => {
 
 export function Navbar() {
   const [searchText, setSearchText] = useState<string>("");
-  const [indexIsLogined, setIndexIsLogined] = useRecoilState(isLogined);
-  const [indexDrawerOpened, setIndexDrawerOpened] =
-    useRecoilState(drawerOpened);
+  const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
+  const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_drawerOpened);
 
   return (
     <div className="h-[120px] bg-white sticky top-0 z-50 shadow-sm">
@@ -100,7 +100,7 @@ export function Navbar() {
         {indexIsLogined && (
           <Avatar
             onClick={() => {
-              setIndexDrawerOpened(true);
+              setDrawerOpened(true);
             }}
             radius="xl"
             size="lg"
