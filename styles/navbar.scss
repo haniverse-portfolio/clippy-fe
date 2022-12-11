@@ -1,0 +1,30 @@
+#navbar-title {
+	border-color: white;
+	padding-left: 80px;
+	
+	&:focus {
+		border-color: black;
+		color: black;
+		#navbar-search-icon {
+			color: black !important;
+		}
+	}
+
+}
+
+.mantine-TextInput-rightSection {
+	width: 50px !important;
+}
+
+#navbar-avatar {
+	cursor: pointer;
+
+	div {
+		width: 48px;
+		height: 48px;
+	}
+}
+
+/* .mantine-TextInput-icon svg {
+	color: black !important;
+} */

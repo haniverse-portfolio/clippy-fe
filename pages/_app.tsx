@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import "../styles/navbar.scss";
 import {
   RecoilRoot,
   atom,
@@ -32,7 +33,12 @@ const myCache = createEmotionCache({
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>
-      <MantineProvider withGlobalStyles withNormalizeCSS emotionCache={myCache}>
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        emotionCache={myCache}
+        theme={{ fontFamily: "Noto Sans KR" }}
+      >
         <Component {...pageProps} />
       </MantineProvider>
     </RecoilRoot>
