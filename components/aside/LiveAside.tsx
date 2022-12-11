@@ -56,7 +56,7 @@ const Live = ({ data }: LivePropsWrapper) => {
   );
 };
 
-const Footer = () => {
+export const Footer = () => {
   return (
     <div className="py-[50px]">
       <Text size={14} align="center">
