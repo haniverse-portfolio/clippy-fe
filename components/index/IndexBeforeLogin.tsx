@@ -101,49 +101,51 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+const FooterMain = () => {
+  return (
+    <div className="p-[50px] w-[100vw]">
+      <Text align="right">© CLIPPY 2022. MADE IN SEOUL</Text>
+    </div>
+  );
+};
+
 export function IndexBeforeLogin() {
   const { classes } = useStyles();
 
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
 
   return (
-    <Flex align="center" justify="center">
-      <Container mb={400} size={700} className={classes.inner}>
-        <h1 className={classes.title}>
-          {" "}
-          <Group>
-            <Image alt="logo" src="/images/clip.svg" width={35} height={56} />
-            <span
-              className="bg-gradient-to-r text-transparent bg-clip-text from-indigo-500 via-purple-500 to-indigo-500 animate-text "
-              // variant="gradient"
-              // gradient={{ from: "violet", to: "grape" }}
-            >
-              CLIPPY
-            </span>
-            <Badge variant="filled" color="green" size="lg" radius="sm">
-              Beta
-            </Badge>
-          </Group>
-          <Text>클립생성 할 땐? 클리피!</Text>
-        </h1>
-
-        <Text className={classes.description} color="dimmed">
-          끊김 없이 클립을 생성하고, 소중한 순간을 간직하세요
-        </Text>
-
-        <Group position="center" className={classes.controls}>
+    <Flex
+      align="center"
+      justify="space-between"
+      direction="column"
+      style={{ height: "calc(100vh - 120px)" }}
+    >
+      <Flex justify="center" style={{ flex: 1 }}>
+        <Flex direction="column" align="center" justify="center">
+          <Text size={64} weight={300}>
+            클립생성 할 땐? 클리피!
+          </Text>
           <Button
+            mt={40}
+            style={{
+              backgroundColor: "black",
+              color: "white",
+              fontWeight: 700,
+              fontSize: 24,
+              padding: "24px 40px",
+              width: 218,
+              height: 84,
+              borderRadius: 99,
+              boxShadow: "0px 4px 15px rgba(119, 119, 119, 0.25)",
+            }}
             onClick={goLogin}
-            size="xl"
-            className={classes.control}
-            variant="gradient"
-            gradient={{ from: "violet", to: "grape" }}
-            leftIcon={<BrandTwitch size={20} />}
           >
-            트위치로 로그인하기
+            트위치 로그인
           </Button>
-        </Group>
-      </Container>
+        </Flex>
+      </Flex>
+      <FooterMain />
     </Flex>
   );
 }
