@@ -23,14 +23,14 @@ import {
 } from "tabler-icons-react";
 import { atom, useRecoilState } from "recoil";
 import {
-  recoil_drawerOpened,
+  recoil_sidebarOpened,
   recoil_followed,
   recoil_isLogined,
 } from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 import axios from "axios";
-import { IndexDrawer } from "./IndexDrawer";
+import { Sidebar } from "../common/Sidebar";
 
 const BREAKPOINT = "@media (max-width: 755px)";
 
@@ -41,7 +41,7 @@ export const scale = keyframes({
 export function IndexAfterLogin() {
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
   const [followed, setFollowed] = useRecoilState(recoil_followed);
-  const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_drawerOpened);
+  const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
 
   const goLogin = () => {
     // use authorization code grant flow
@@ -75,7 +75,7 @@ export function IndexAfterLogin() {
 
   return (
     <div>
-      <IndexDrawer />
+      <Sidebar />
       <Stack className="px-36 mt-12">
         <p className="text-4xl">Hot clip</p>
         <Group position="apart">
