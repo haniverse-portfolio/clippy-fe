@@ -57,7 +57,7 @@ export function Navbar() {
           <Link href="/" className="mr-[125px]">
             <Logo />
           </Link>
-          {indexIsLogined && (
+          {isLogined && (
             <TextInput
               w={588}
               h={48}
@@ -97,7 +97,7 @@ export function Navbar() {
             />
           )}
         </Flex>
-        {indexIsLogined && (
+        {isLogined && (
           <Avatar
             onClick={() => {
               setDrawerOpened(true);
