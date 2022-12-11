@@ -32,7 +32,11 @@ import {
   mypageManage_madeClip,
 } from "../states";
 import Image from "next/image";
-import { apiAddress } from "../constValues";
+import {
+  apiAddress,
+  selectedAllClip,
+  selectedClipDefault,
+} from "../constValues";
 import axios from "axios";
 import MainLayout from "../common/MainLayout";
 import UserAside from "../aside/UserAside";
@@ -40,6 +44,7 @@ import LiveAside from "../aside/LiveAside";
 import { Sidebar } from "../common/Sidebar";
 import { useState } from "react";
 import { faGlobeOceania } from "@fortawesome/free-solid-svg-icons";
+import { MypageManageCommon } from "./MypageManageCommon";
 
 const BREAKPOINT = "@media (max-width: 755px)";
 
@@ -74,73 +79,61 @@ export function MypageMadeClip() {
     <div>
       <Sidebar />
       <MainLayout
-        aside={LiveAside}
+        aside={UserAside}
         content={() => {
           return (
             <>
-              <Stack
-                justify="center"
-                mt={16}
-                className="mx-[48px] h-[48px] border-0 border-black border-y-2 border-solid"
-              >
-                <Group>
-                  <Checkbox className="m-[12px]" color="dark" />
-                  <Text fw={700} className="text-[16px] w-[516px] ml-[32px]">
-                    정보
+              <MypageManageCommon />
+              {mypageMadeClip.length === 0 ? (
+                <Stack>
+                  <Text mt={142} c="gray" className="text-[36px] text-center">
+                    생성된 클립이 없습니다.
                   </Text>
-                  <Group fw={700} className="text-[16px] w-[216px]">
-                    채널
-                  </Group>
-                  <Text fw={700} className="text-[16px] w-[216px]">
-                    생성일
-                  </Text>
-                  <Text fw={700} className="text-[16px]">
-                    시청수
-                  </Text>
-                </Group>
-              </Stack>
-              {mypageMadeClip.map((cur, i) => {
-                return (
-                  <Stack
-                    key={i}
-                    justify="center"
-                    className="mx-[48px] h-[120px] border-0 border-gray-200 border-b-2 border-solid"
-                  >
-                    <Group>
-                      <Checkbox
-                        // onClick={() => {
-                        //   let copySelectedClip = JSON.parse(
-                        //     JSON.stringify(selectedClip)
-                        //   ) as Array<boolean>;
-                        //   copySelectedClip[i] = !copySelectedClip[i];
-                        //   setSelectedClip(copySelectedClip);
-                        // }}
-                        checked={selectedClip[i]}
-                        className="m-[12px]"
-                        color="dark"
-                      />
-                      <Group className="w-[516px] ml-[32px]">
-                        <Group
-                          fw={700}
-                          className="h-[83px] w-[130px] bg-gray-200"
+                </Stack>
+              ) : (
+                mypageMadeClip.map((cur, i) => {
+                  return (
+                    <Stack
+                      key={i}
+                      justify="center"
+                      className="mx-[48px] h-[120px] border-0 border-gray-200 border-b-2 border-solid"
+                    >
+                      <Group>
+                        <Checkbox
+                          onClick={() => {
+                            let copySelectedClip = JSON.parse(
+                              JSON.stringify(selectedClip)
+                            ) as Array<boolean>;
+                            copySelectedClip[i] = !copySelectedClip[i];
+                            setSelectedClip(copySelectedClip);
+                          }}
+                          checked={selectedClip[i]}
+                          className="m-[12px]"
+                          color="dark"
                         />
+                        <Group className="w-[516px] ml-[32px]">
+                          <Group
+                            fw={700}
+                            className="h-[83px] w-[130px] bg-gray-200"
+                          />
+                          <Text fw={700} className="text-[16px] w-[216px]">
+                            {cur.info}
+                          </Text>
+                        </Group>
                         <Text fw={700} className="text-[16px] w-[216px]">
-                          {cur.info}
+                          {cur.channel}
+                        </Text>
+                        <Text fw={700} className="text-[16px] w-[216px]">
+                          {cur.date}
+                        </Text>
+                        <Text fw={700} className="text-[16px]">
+                          {cur.views}
                         </Text>
                       </Group>
-                      <Text fw={700} className="text-[16px] w-[216px]">
-                        {cur.channel}
-                      </Text>
-                      <Text fw={700} className="text-[16px] w-[216px]">
-                        {cur.date}
-                      </Text>
-                      <Text fw={700} className="text-[16px]">
-                        {cur.views}
-                      </Text>
-                    </Group>
-                  </Stack>
-                );
-              })}
+                    </Stack>
+                  );
+                })
+              )}
             </>
           );
         }}

@@ -29,6 +29,7 @@ import {
   icon,
 } from "@fortawesome/fontawesome-svg-core/import.macro"; // <-- import styles to be used
 import { useState } from "react";
+import { CreateModal } from "./CreateModal";
 
 const goLogin = () => {
   // use authorization code grant flow
@@ -55,6 +56,7 @@ export function Navbar() {
       className="h-[120px] bg-white sticky top-0 z-50"
       style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.1)" }}
     >
+      <CreateModal />
       <Group position="apart">
         <Flex my={36} ml={48} align="center">
           <Link href="/" className="mr-[125px]">

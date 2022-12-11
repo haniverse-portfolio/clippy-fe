@@ -1,9 +1,16 @@
 import { Avatar, Flex, Text } from "@mantine/core";
+import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import Clip from "../common/Clip";
-import { recoil_followed } from "../states";
+import {
+  recoil_createModalIsLoading,
+  recoil_createModalOpened,
+  recoil_createModalStreamerInfo,
+  recoil_followed,
+  recoil_videoInfo,
+} from "../states";
 
 interface LiveProps {
   profileImage: string;
@@ -17,15 +24,67 @@ interface LiveItemProps {
 }
 
 const LiveItem = ({ item }: LiveItemProps) => {
+  const [createModalOpened, setCreateModalOpened] = useRecoilState(
+    recoil_createModalOpened
+  );
+  const [createModalStreamerInfo, setCreateModalStreamerInfo] = useRecoilState(
+    recoil_createModalStreamerInfo
+  );
+  const [isLoading, setIsLoading] = useRecoilState<boolean>(
+    recoil_createModalIsLoading
+  );
+  const [followed, setFollowed] = useRecoilState(recoil_followed);
+  const [videoInfo, setVideoInfo] = useRecoilState(recoil_videoInfo);
+
+  const postExtractor = async (streamerId: number) => {
+    // https://api.clippy.kr/extractor
+    const url = `http://localhost:4800/extractor`;
+
+    const res = await axios
+      .post(
+        url,
+        { streamerId: streamerId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        setIsLoading(false);
+        setVideoInfo(res.data.data);
+        return res.data;
+      })
+      .catch((res) => {
+        const errMessage = res.response.data.message;
+        alert(errMessage);
+
+        // error 표시해주기
+      });
+  };
+
   return (
     <Flex direction="row" justify="space-between" align="center" mb={32}>
       <Flex direction="row" align="center">
         <Avatar src={item.profileImage} size={32} mr={8} radius="xl"></Avatar>
         <Text>{item.displayName}</Text>
       </Flex>
-      <Link href={`/create/${item.name}`}>
+      <div
+        className="cursor-pointer"
+        onClick={() => {
+          postExtractor(item.id);
+          setCreateModalOpened(true);
+          let copyStreamerInfo = JSON.parse(
+            JSON.stringify(createModalStreamerInfo)
+          );
+          copyStreamerInfo.name = item.displayName;
+          copyStreamerInfo.image = item.profileImage;
+          setCreateModalStreamerInfo(copyStreamerInfo);
+        }}
+      >
         <Clip w={14} h={18} />
-      </Link>
+      </div>
     </Flex>
   );
 };
