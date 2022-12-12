@@ -67,10 +67,16 @@ export const recoil_createClip = atom({
   key: "recoil_createClip",
   default: {} as clipType,
 }); // 생성 - 클립 정보
+
 export const recoil_createClipTrigger = atom({
   key: "recoil_createClipTrigger",
   default: false,
 }); // 생성 - 클립 생성 트리거
+
+export const recoil_loginUserInfo = atom({
+  key: "recoil_loginUserInfo",
+  default: {} as any,
+}); // 로그인 유저 정보
 
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
