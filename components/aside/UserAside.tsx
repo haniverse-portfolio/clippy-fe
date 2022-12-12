@@ -107,7 +107,7 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
           onClick={() => {
             setSidebarOpened(false);
           }}
-          href="/mypage_manage"
+          href="/mypage/manage"
         >
           <UserAsideMenu
             forceLarge={forceLarge}
@@ -115,21 +115,35 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
             text={"클립 관리"}
           />
         </Link>
-        <UserAsideMenu
-          forceLarge={forceLarge}
-          icon={<Paperclip size={18} />}
-          text={"클립 생성"}
-        />
-        <UserAsideMenu
-          forceLarge={forceLarge}
-          icon={<Broadcast size={18} />}
-          text={"팔로우 중인 채널"}
-        />
-        <UserAsideMenu
+        <Link
+          onClick={() => {
+            setSidebarOpened(false);
+          }}
+          href="/mypage/create"
+        >
+          <UserAsideMenu
+            forceLarge={forceLarge}
+            icon={<Paperclip size={18} />}
+            text={"클립 생성"}
+          />
+        </Link>
+        {/* <Link
+          onClick={() => {
+            setSidebarOpened(false);
+          }}
+          href="/mypage/following"
+        >
+          <UserAsideMenu
+            forceLarge={forceLarge}
+            icon={<Broadcast size={18} />}
+            text={"팔로우 중인 채널"}
+          />
+        </Link> */}
+        {/* <UserAsideMenu
           forceLarge={forceLarge}
           icon={<MessageCircle2 size={18} />}
           text={"의견 보내기"}
-        />
+        /> */}
         <UserAsideMenu
           onClick={() => {
             goLogout();

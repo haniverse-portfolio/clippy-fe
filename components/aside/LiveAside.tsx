@@ -200,7 +200,7 @@ const Live = ({ data }: LivePropsWrapper) => {
             <LiveItem key={item.id} item={item} />
           ))}
         </Flex>
-        <Link href="/">
+        <Link href="/mypage/create">
           <Text
             align="center"
             className="w-[80%] lg:w-full mx-auto break-keep"

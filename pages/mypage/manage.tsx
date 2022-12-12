@@ -14,19 +14,19 @@ import {
 import Head from "next/head";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { IndexBeforeLogin } from "../components/index/IndexBeforeLogin";
+import { IndexBeforeLogin } from "../../components/index/IndexBeforeLogin";
 import { atom, useRecoilState } from "recoil";
 import {
   mypageManage_sectionIndex,
   recoil_followed,
   recoil_isLogined,
-} from "../components/states";
-import { apiAddress } from "../components/constValues";
-import { Navbar } from "../components/common/Navbar";
-import { MypageMadeClip } from "../components/mypage_manage/MypageMadeClip";
-import { MypageManageCommon } from "../components/mypage_manage/MypageManageCommon";
-import { MypageChannelClip } from "../components/mypage_manage/MypageChannelClip";
-import { DeleteModal } from "../components/mypage_manage/DeleteModal";
+} from "../../components/states";
+import { apiAddress } from "../../components/constValues";
+import { Navbar } from "../../components/common/Navbar";
+import { MypageMadeClip } from "../../components/mypage_manage/MypageMadeClip";
+import { MypageManageCommon } from "../../components/mypage_manage/MypageManageCommon";
+import { MypageChannelClip } from "../../components/mypage_manage/MypageChannelClip";
+import { DeleteModal } from "../../components/mypage_manage/DeleteModal";
 
 export default function Home() {
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
