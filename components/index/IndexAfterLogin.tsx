@@ -13,6 +13,7 @@ import {
   Drawer,
   ThemeIcon,
   SimpleGrid,
+  Image,
 } from "@mantine/core";
 import { GithubIcon } from "@mantine/ds";
 import {
@@ -29,7 +30,7 @@ import {
   recoil_isLogined,
   recoil_loginUserInfo,
 } from "../states";
-import Image from "next/image";
+// import Image from "next/image";
 import { apiAddress } from "../constValues";
 import axios from "axios";
 import MainLayout from "../common/MainLayout";
@@ -39,6 +40,9 @@ import { Sidebar } from "../common/Sidebar";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { useRouter } from "next/router";
+import dayjs from "dayjs";
+import * as util from "../../util/util";
 
 const BREAKPOINT = "@media (max-width: 755px)";
 
@@ -47,6 +51,8 @@ export const scale = keyframes({
 });
 
 export function IndexAfterLogin() {
+  const router = useRouter();
+
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
   const [followed, setFollowed] = useRecoilState(recoil_followed);
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
@@ -86,13 +92,13 @@ export function IndexAfterLogin() {
   };
 
   const getHotclip = () => {
-    const url = `${apiAddress}/hotclip/temp`;
+    const url = `${apiAddress}/hotclip/popular`;
     axios
       .get(url, {
         withCredentials: true,
       })
       .then((res) => {
-        setHotclip(res.data.data.data);
+        setHotclip(res.data.data);
         console.log(res);
       })
       .catch((err) => {
@@ -188,9 +194,9 @@ export function IndexAfterLogin() {
                       p={0}
                       m={0}
                       key={clip.id}
-                      // onClick={() => {
-                      //   window.location.href = `/create/${stream.user_login}`;
-                      // }}
+                      onClick={() => {
+                        router.push(`/clip/${clip.key}`);
+                      }}
                     >
                       <Flex justify="center" direction="column">
                         <div style={{ position: "relative" }}>
@@ -235,10 +241,20 @@ export function IndexAfterLogin() {
                         </div>
                         <Image
                           className="cursor-pointer rounded-md"
-                          src={clip.imageURL}
+                          src={clip.cfVideoThumbnail}
                           alt="clip"
-                          width={480}
-                          height={320}
+                          onMouseOver={(e) => {
+                            // change thumbnail src to thumbnail gif
+                            const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
+                              clip.cfVideoId
+                            }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
+                            e.target.src = animatedThumbnail;
+                          }}
+                          radius={8}
+                          onMouseLeave={(e) => {
+                            // change thumbnail src to thumbnail jpg
+                            e.target.src = clip.cfVideoThumbnail;
+                          }}
                         />
                         <Group position="apart">
                           <Stack spacing={0}>
@@ -259,13 +275,13 @@ export function IndexAfterLogin() {
                               {clip.title}
                             </Text>
                             <Text mt={5} align="left" size={14} weight={400}>
-                              {clip.streamer.displayName}
+                              {clip.userInfo.display_name}
                             </Text>
-                            <Text mt={5} align="left">
+                            <Text mt={5} align="left" size={14}>
                               <strong>
                                 반응 {clip.commentCount + clip.likeCount} •{" "}
                               </strong>
-                              14시간 전
+                              {util.showTime(clip.createdAt)}
                             </Text>
                           </Stack>
                           <ActionIcon variant="transparent" size={36}>
