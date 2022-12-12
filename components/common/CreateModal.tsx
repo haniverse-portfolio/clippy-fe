@@ -10,7 +10,7 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRecoilState } from "recoil";
 import { Paperclip } from "tabler-icons-react";
 import {
@@ -19,6 +19,7 @@ import {
   recoil_createModalStreamerInfo,
   recoil_videoInfo,
 } from "../states";
+import ReactPlayer from "react-player";
 import axios from "axios";
 
 export const CreateModal = () => {
@@ -40,13 +41,54 @@ export const CreateModal = () => {
   const [videoInfo, setVideoInfo] = useRecoilState(recoil_videoInfo);
   const [createModalClipName, setCreateModalClipName] = useState<string>("");
   const [rangeValue, setRangeValue] = useState<[number, number]>([0, 10]);
+  const [startRangeValue, setStartRangeValue] = useState<number>(0);
+  const [endRangeValue, setEndRangeValue] = useState<number>(10);
   const [isLoading, setIsLoading] = useRecoilState<boolean>(
     recoil_createModalIsLoading
   );
 
+  const [videoDuration, setVideoDuration] = useState<number>(0);
+  const [currentVideoTime, setCurrentVideoTime] = useState<number>(0);
+
+  // useRef
+  const playerRef = useRef<ReactPlayer>(null);
+
+  // const []
+
   useEffect(() => {
     if (createModalOpened === false) setIsLoading(true);
   }, [createModalOpened]);
+
+  useEffect(() => {
+    // 시작시간이 바뀌면 video를 시작초부터 재생
+  }, [rangeValue]);
+
+  useEffect(() => {
+    // 시작시간이 바뀌면 video를 시작초부터 재생
+    if (playerRef.current !== null) {
+      playerRef.current.seekTo(startRangeValue);
+    }
+  }, [startRangeValue]);
+
+  useEffect(() => {
+    // 0.5초마다 현재 비디오 시간을 가져옴
+    const interval = setInterval(() => {
+      if (playerRef.current !== null) {
+        setCurrentVideoTime(playerRef.current.getCurrentTime());
+      }
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    // 현재 비디오 시간이 rangeValue 범위를 벗어나면 범위로 돌아옴
+    if (currentVideoTime < startRangeValue) {
+      playerRef.current?.seekTo(startRangeValue);
+    } else if (currentVideoTime > endRangeValue) {
+      playerRef.current?.seekTo(startRangeValue);
+    }
+  }, [currentVideoTime]);
 
   return (
     <Modal
@@ -84,19 +126,39 @@ export const CreateModal = () => {
         </Stack>
       ) : (
         <Stack className="h-[600px] w-full">
-          <video
+          <ReactPlayer
+            ref={playerRef}
+            url={videoInfo.rawMediaUrl}
+            controls
+            width="100%"
+            height="100%"
+            playing={true}
+            onDuration={(duration) => {
+              setVideoDuration(duration);
+              setRangeValue([60, duration]);
+            }}
+          />
+
+          {/* <video
             poster={videoInfo.thumbnailUrl}
             controls
             autoPlay
             src={videoInfo.rawMediaUrl}
             preload="none"
             data-video="0"
-          />
+          /> */}
           {/* <Stack className="my-[30px] w-[828px] h-[440px] bg-gray-300"></Stack> */}
           <RangeSlider
             mt={42}
             value={rangeValue}
-            onChange={setRangeValue}
+            max={videoDuration}
+            min={0}
+            maxRange={60}
+            onChange={(value) => {
+              setRangeValue(value);
+              setStartRangeValue(value[0]);
+              setEndRangeValue(value[1]);
+            }}
             labelAlwaysOn
             color="violet"
           />
