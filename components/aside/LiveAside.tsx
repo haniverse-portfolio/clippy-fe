@@ -47,7 +47,7 @@ const LiveItem = ({ item }: LiveItemProps) => {
   const [extractorErrorMessage, setExtractorErrorMessage] = useState("");
 
   const { isSm, isMd } = useTailwindResponsive();
-        
+
   const [createBtnLoading, setCreateBtnLoading] = useRecoilState<boolean>(
     recoil_createBtnLoading
   );
@@ -179,7 +179,7 @@ const Live = ({ data }: LivePropsWrapper) => {
       <div>
         <Text
           align="center"
-          className="w-[75%] lg:w-full mx-auto break-keep"
+          className="w-[80%] lg:w-full mx-auto break-keep"
           weight={700}
           mb={40}
           mt={20}
@@ -194,7 +194,7 @@ const Live = ({ data }: LivePropsWrapper) => {
         <Link href="/">
           <Text
             align="center"
-            className="w-[75%] lg:w-full mx-auto break-keep"
+            className="w-[80%] lg:w-full mx-auto break-keep"
             size={14}
             weight={300}
             mt={15}
