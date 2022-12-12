@@ -8,6 +8,10 @@ import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 import Clip from "../common/Clip";
 import { apiAddress } from "../constValues";
 import {
+  clipType,
+  recoil_createBtnLoading,
+  recoil_createClip,
+  recoil_createClipTrigger,
   recoil_createModalIsLoading,
   recoil_createModalOpened,
   recoil_createModalStreamerInfo,
@@ -43,6 +47,46 @@ const LiveItem = ({ item }: LiveItemProps) => {
   const [extractorErrorMessage, setExtractorErrorMessage] = useState("");
 
   const { isSm, isMd } = useTailwindResponsive();
+        
+  const [createBtnLoading, setCreateBtnLoading] = useRecoilState<boolean>(
+    recoil_createBtnLoading
+  );
+  const [createClip, triggerCreateClip] =
+    useRecoilState<clipType>(recoil_createClip);
+  const [createClipTrigger, setCreateClipTrigger] = useRecoilState<boolean>(
+    recoil_createClipTrigger
+  );
+
+  const postCreateClip = async (clip: clipType) => {
+    setCreateBtnLoading(true);
+    // https://api.clippy.kr/clip
+    const url = apiAddress + "/clip";
+    const res = await axios
+      .post(url, clip, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((res) => {
+        setCreateBtnLoading(false);
+        triggerCreateClip(clip);
+        return res.data;
+      })
+      .catch((res) => {
+        const errMessage = res.response.data.message;
+        alert(errMessage);
+        setCreateBtnLoading(false);
+        // error 표시해주기
+      });
+  };
+
+  // useEffect(() => {
+  //   if (createClipTrigger) {
+  //     setCreateClipTrigger(false);
+  //     postCreateClip(createClip);
+  //   }
+  // }, [createClipTrigger]);
 
   const postExtractor = async (streamerId: number) => {
     setExtractorErrorStatus(false);
@@ -226,7 +270,7 @@ const LiveAside = () => {
 
   return (
     <Flex direction="column" align="center" h="100%" justify="space-between">
-      <Live data={/*calcFollowed*/ itemMock} />
+      <Live data={calcFollowed} />
       <Footer />
     </Flex>
   );

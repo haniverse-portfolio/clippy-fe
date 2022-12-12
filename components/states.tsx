@@ -40,6 +40,7 @@ export const recoil_createModalStreamerInfo = atom({
 interface videoType {
   thumbnailUrl: string;
   rawMediaUrl: string;
+  requestId: string;
   clip: {
     clipId: string;
     editUrl: string;
@@ -49,7 +50,28 @@ interface videoType {
 export const recoil_videoInfo = atom({
   key: "recoil_videoInfo",
   default: {} as videoType,
-}); // 생성 modal
+}); // 생성 - 비디오 정보
+
+export const recoil_createBtnLoading = atom({
+  key: "recoil_createBtnLoading",
+  default: false,
+}); // 생성 - 버튼 로딩 여부
+
+export interface clipType {
+  requestId: string;
+  starts: number;
+  ends: number;
+  title: string;
+}
+export const recoil_createClip = atom({
+  key: "recoil_createClip",
+  default: {} as clipType,
+}); // 생성 - 클립 정보
+
+export const recoil_createClipTrigger = atom({
+  key: "recoil_createClipTrigger",
+  default: false,
+}); // 생성 - 클립 생성 트리거
 
 export const recoil_loginUserInfo = atom({
   key: "recoil_loginUserInfo",
