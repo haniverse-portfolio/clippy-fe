@@ -69,9 +69,8 @@ const Logo = () => {
       <span className="mr-3">
         <ClipIcon />
       </span>
-      <span className="mr-2 mt-[-7px] font-black text-4xl">
-        {/* <ClippyText /> */}
-        CLIPPY
+      <span className="mr-2 mt-[2px] font-black text-4xl">
+        <ClippyText />
       </span>
       <Beta />
     </Flex>
