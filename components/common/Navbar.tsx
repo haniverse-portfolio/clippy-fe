@@ -14,7 +14,11 @@ import {
   ThemeIcon,
 } from "@mantine/core";
 import { useRecoilState } from "recoil";
-import { recoil_sidebarOpened, recoil_isLogined } from "../states";
+import {
+  recoil_sidebarOpened,
+  recoil_isLogined,
+  recoil_loginUserInfo,
+} from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 import { IconAt } from "@tabler/icons";
@@ -50,6 +54,8 @@ export function Navbar() {
   const [searchText, setSearchText] = useState<string>("");
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
+  const [loginUserInfo, setLoginUserInfo] =
+    useRecoilState(recoil_loginUserInfo);
 
   return (
     <div
@@ -113,7 +119,7 @@ export function Navbar() {
             h={48}
             mr={48}
             id="navbar-avatar"
-            src={null}
+            src={loginUserInfo.profileImageUrl}
           />
         )}
       </Group>
