@@ -100,7 +100,7 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
         className="text-[16px] text-center mt-[-10px] lg:mt-[-5px]"
         style={{ marginTop: forceLarge ? "-5px" : "" }}
       >
-        {"테스트이름" /* {loginUserInfo.twitchDisplayName} */}
+        {loginUserInfo.twitchDisplayName}
       </span>
       <Stack className="m-0 p-0" mt={38}>
         <Link

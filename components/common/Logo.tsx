@@ -66,11 +66,12 @@ const Beta = () => (
 const Logo = () => {
   return (
     <Flex align="center">
-      <span className="mr-2">
+      <span className="mr-3">
         <ClipIcon />
       </span>
-      <span className="mr-2">
-        <ClippyText />
+      <span className="mr-2 mt-[-7px] font-black text-4xl">
+        {/* <ClippyText /> */}
+        CLIPPY
       </span>
       <Beta />
     </Flex>
