@@ -1,27 +1,78 @@
 import { Stream } from "@cloudflare/stream-react";
-import { Skeleton } from "@mantine/core";
-import { useState } from "react";
+import { Flex, Loader, Skeleton, Text } from "@mantine/core";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { apiAddress } from "../constValues";
 
-export const CloudflareVideo = ({ videoId }: any) => {
+export const CloudflareVideo = ({ videoId, clipId, creating }: any) => {
   console.log(videoId);
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
+  const [videoCreating, setVideoCreating] = useState<boolean>(creating);
+
+  const checkStatus = async () => {
+    const res = await axios
+      .get(`${apiAddress}/clip/${clipId}/status`)
+      .then((res) => {
+        console.log(res.data.data.result.status);
+        const status = res.data.data.result.status;
+
+        if (status.state === "ready") {
+          setVideoCreating(false);
+          setIsLoaded(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    if (!videoCreating) return;
+
+    const interval: any = setInterval(() => checkStatus(), 1000);
+
+    return () => clearInterval(interval);
+  }, [videoCreating]);
+
   return (
     <div style={{ width: "100%", height: "100%" }}>
       {videoId !== "" ? (
-        <div style={{ height: 460 }}>
-          {isLoaded || <Skeleton width="100%" height={460}></Skeleton>}
+        videoCreating ? (
+          <div style={{ height: 460 }}>
+            <Flex
+              align="center"
+              direction="column"
+              justify="space-evenly"
+              h="100%"
+            >
+              <Loader size="lg" />
+              <Flex align="center" direction="column">
+                <Text mb={10}>
+                  현재 영상 처리 중입니다. 조금만 더 기다려주세요
+                </Text>
+                <Text>처리 상황 : </Text>
+              </Flex>
+            </Flex>
+          </div>
+        ) : (
+          <div style={{ height: 460 }}>
+            {isLoaded || <Skeleton width="100%" height={460}></Skeleton>}
 
-          <Stream
-            src={videoId}
-            controls={true}
-            responsive={true}
-            onLoadStart={() => {
-              setIsLoaded(true);
-            }}
-          ></Stream>
-        </div>
+            <Stream
+              src={videoId}
+              controls={true}
+              responsive={true}
+              onLoadStart={() => {
+                setIsLoaded(true);
+              }}
+              onError={() => {
+                setVideoCreating(true);
+              }}
+            ></Stream>
+          </div>
+        )
       ) : (
         <Skeleton width="100%" height={460}></Skeleton>
       )}

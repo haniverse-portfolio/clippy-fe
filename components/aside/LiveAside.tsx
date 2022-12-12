@@ -13,6 +13,8 @@ import {
   recoil_createClip,
   recoil_createClipTrigger,
   recoil_createModalIsLoading,
+  recoil_createModalIsLoadingError,
+  recoil_createModalIsLoadingErrorMessage,
   recoil_createModalOpened,
   recoil_createModalStreamerInfo,
   recoil_followed,
@@ -56,6 +58,11 @@ const LiveItem = ({ item }: LiveItemProps) => {
   const [createClipTrigger, setCreateClipTrigger] = useRecoilState<boolean>(
     recoil_createClipTrigger
   );
+  const [isLoadingError, setIsLoadingError] = useRecoilState<boolean>(
+    recoil_createModalIsLoadingError
+  );
+  const [isLoadingErrorMessage, setIsLoadingErrorMessage] =
+    useRecoilState<string>(recoil_createModalIsLoadingErrorMessage);
 
   const postCreateClip = async (clip: clipType) => {
     setCreateBtnLoading(true);
@@ -114,8 +121,10 @@ const LiveItem = ({ item }: LiveItemProps) => {
       .catch((res) => {
         const errMessage = res.response.data.message;
         // alert(errMessage);
-        setExtractorErrorStatus(true);
-        setExtractorErrorMessage(errMessage);
+        setIsLoadingError(true);
+        setIsLoadingErrorMessage(errMessage);
+        // setExtractorErrorStatus(true);
+        // setExtractorErrorMessage(errMessage);
 
         // error 표시해주기
       });

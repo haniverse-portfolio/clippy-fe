@@ -78,6 +78,16 @@ export const recoil_loginUserInfo = atom({
   default: {} as any,
 }); // 로그인 유저 정보
 
+export const recoil_createModalIsLoadingError = atom({
+  key: "recoil_createModalIsLoadingError",
+  default: false,
+}); // 생성 모달 로딩 에러 여부
+
+export const recoil_createModalIsLoadingErrorMessage = atom({
+  key: "recoil_createModalIsLoadingErrorMessage",
+  default: "",
+}); // 생성 모달 로딩 에러 메시지
+
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */

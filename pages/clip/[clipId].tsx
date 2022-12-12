@@ -11,8 +11,11 @@ import VideoTitle from "../../components/view/videoTitle";
 const ViewClip = () => {
   // get parameter
   const router = useRouter();
-  const { clipId } = router.query;
+  const { clipId, creating }: any = router.query;
 
+  const [videoCreating, setVideoCreating] = useState<boolean>(
+    creating === "true" || creating === true
+  );
   const [videoId, setVideoId] = useState<string>("");
   const [videoTitle, setVideoTitle] = useState<string>("d");
   const [isError, setIsError] = useState<boolean>(false);
@@ -59,7 +62,11 @@ const ViewClip = () => {
         ) : (
           <Flex mt={32}>
             <Flex style={{ flex: 1 }} direction="column">
-              <CloudflareVideo videoId={videoId} />
+              <CloudflareVideo
+                videoId={videoId}
+                clipId={clipId}
+                creating={videoCreating}
+              />
               <div className="mt-[25px]">
                 <VideoTitle data={videoData} />
               </div>
