@@ -93,9 +93,15 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
+      <main className="relative">
         <Navbar />
-        <div style={{ height: "calc(100vh - 120px)" }}>
+        <div
+          style={{
+            height: "calc(100vh - 120px)",
+            overflowX: "hidden",
+            overflowY: "auto",
+          }}
+        >
           {isLogined === false ? <IndexBeforeLogin /> : <IndexAfterLogin />}
         </div>
         {isLogined === true ? <></> : <></>}
