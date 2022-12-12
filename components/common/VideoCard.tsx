@@ -82,7 +82,7 @@ const VideoCard = ({ clip }: any) => {
           }}
         />
         <Group position="apart">
-          <Stack spacing={0}>
+          <Stack spacing={0} style={{ width: "calc(100% - 100px)" }}>
             <Text
               size={16}
               weight={700}
@@ -92,7 +92,7 @@ const VideoCard = ({ clip }: any) => {
                 whiteSpace: "nowrap",
                 textOverflow: "ellipsis",
                 overflow: "hidden",
-                width: "calc((100vw - 360px) / 4 - 24px - 60px)",
+                // width: "calc((100vw - 360px) / 4 - 24px - 60px)",
                 maxWidth: 280,
               }}
             >
@@ -106,9 +106,11 @@ const VideoCard = ({ clip }: any) => {
               {util.showTime(clip.createdAt)}
             </Text>
           </Stack>
-          <ActionIcon variant="transparent" size={36}>
-            <Heart size={36} />
-          </ActionIcon>
+          <div style={{ marginLeft: 24, marginRight: 24 }}>
+            <ActionIcon variant="transparent" size={36}>
+              <Heart size={36} />
+            </ActionIcon>
+          </div>
         </Group>
       </Flex>
     </Card>
