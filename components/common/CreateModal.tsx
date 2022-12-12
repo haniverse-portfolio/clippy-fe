@@ -78,7 +78,9 @@ export const CreateModal = () => {
       }
     }, 500);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -93,7 +95,7 @@ export const CreateModal = () => {
   return (
     <Modal
       closeOnClickOutside={false}
-      overflow="inside"
+      // overflow="inside"
       className="h-full"
       size="xl"
       title={
@@ -133,9 +135,11 @@ export const CreateModal = () => {
             width="100%"
             height="100%"
             playing={true}
-            onDuration={(duration) => {
-              setVideoDuration(duration);
-              setRangeValue([60, duration]);
+            onDuration={(duration: any) => {
+              setVideoDuration(parseInt(duration));
+              setRangeValue([60, parseInt(duration)]);
+              setStartRangeValue(60);
+              setEndRangeValue(parseInt(duration));
             }}
           />
 
