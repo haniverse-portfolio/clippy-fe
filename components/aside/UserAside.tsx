@@ -127,7 +127,7 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
             text={"클립 생성"}
           />
         </Link>
-        <Link
+        {/* <Link
           onClick={() => {
             setSidebarOpened(false);
           }}
@@ -138,7 +138,7 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
             icon={<Broadcast size={18} />}
             text={"팔로우 중인 채널"}
           />
-        </Link>
+        </Link> */}
         {/* <UserAsideMenu
           forceLarge={forceLarge}
           icon={<MessageCircle2 size={18} />}
