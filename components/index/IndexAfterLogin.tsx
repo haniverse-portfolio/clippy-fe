@@ -59,6 +59,7 @@ export function IndexAfterLogin() {
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
   const [loginUserInfo, setLoginUserInfo] =
     useRecoilState(recoil_loginUserInfo);
+  const [selectedMenu, setSelectedMenu] = useState("popular");
 
   const [hotclip, setHotclip] = useState([]);
 
@@ -92,8 +93,8 @@ export function IndexAfterLogin() {
       });
   };
 
-  const getHotclip = () => {
-    const url = `${apiAddress}/hotclip/popular`;
+  const getHotclip = (type = "popular") => {
+    const url = `${apiAddress}/hotclip/${type}`;
     axios
       .get(url, {
         withCredentials: true,
@@ -154,11 +155,18 @@ export function IndexAfterLogin() {
                     <Button
                       h={58}
                       color="dark"
+                      variant={
+                        selectedMenu === "popular" ? "filled" : "outline"
+                      }
                       radius={99}
                       px={20}
                       style={{
                         fontSize: 16,
                         fontWeight: 700,
+                      }}
+                      onClick={() => {
+                        setSelectedMenu("popular");
+                        getHotclip("popular");
                       }}
                     >
                       인기
@@ -166,12 +174,16 @@ export function IndexAfterLogin() {
                     <Button
                       h={58}
                       color="dark"
-                      variant="outline"
+                      variant={selectedMenu === "new" ? "filled" : "outline"}
                       radius={99}
                       px={20}
                       style={{
                         fontSize: 16,
                         fontWeight: 700,
+                      }}
+                      onClick={() => {
+                        setSelectedMenu("new");
+                        getHotclip("new");
                       }}
                     >
                       최근 업로드
