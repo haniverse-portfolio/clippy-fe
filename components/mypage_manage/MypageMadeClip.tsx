@@ -45,6 +45,7 @@ import { Sidebar } from "../common/Sidebar";
 import { useState } from "react";
 import { faGlobeOceania } from "@fortawesome/free-solid-svg-icons";
 import { MypageManageCommon } from "./MypageManageCommon";
+import { MypageTableRow } from "./MypageTableRow";
 
 const BREAKPOINT = "@media (max-width: 755px)";
 
@@ -93,12 +94,9 @@ export function MypageMadeClip() {
               ) : (
                 mypageMadeClip.map((cur, i) => {
                   return (
-                    <Stack
+                    <MypageTableRow
                       key={i}
-                      justify="center"
-                      className="mx-[48px] h-[120px] border-0 border-gray-200 border-b-2 border-solid"
-                    >
-                      <Group>
+                      checkbox={
                         <Checkbox
                           onClick={() => {
                             let copySelectedClip = JSON.parse(
@@ -108,29 +106,15 @@ export function MypageMadeClip() {
                             setSelectedClip(copySelectedClip);
                           }}
                           checked={selectedClip[i]}
-                          className="m-[12px]"
                           color="dark"
+                          className="mb-[-4px]"
                         />
-                        <Group className="w-[516px] ml-[32px]">
-                          <Group
-                            fw={700}
-                            className="h-[83px] w-[130px] bg-gray-200"
-                          />
-                          <Text fw={700} className="text-[16px] w-[216px]">
-                            {cur.info}
-                          </Text>
-                        </Group>
-                        <Text fw={700} className="text-[16px] w-[216px]">
-                          {cur.channel}
-                        </Text>
-                        <Text fw={700} className="text-[16px] w-[216px]">
-                          {cur.date}
-                        </Text>
-                        <Text fw={700} className="text-[16px]">
-                          {cur.views}
-                        </Text>
-                      </Group>
-                    </Stack>
+                      }
+                      title={cur.info}
+                      channel={cur.channel}
+                      date={cur.date}
+                      views={cur.views}
+                    />
                   );
                 })
               )}

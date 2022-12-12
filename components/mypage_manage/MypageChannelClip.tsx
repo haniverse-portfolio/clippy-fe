@@ -29,6 +29,7 @@ import {
   recoil_followed,
   recoil_isLogined,
   mypageManage_channelClip,
+  mypageManage_selectedClip,
 } from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
@@ -39,6 +40,8 @@ import LiveAside from "../aside/LiveAside";
 import { Sidebar } from "../common/Sidebar";
 import { useState } from "react";
 import { MypageManageCommon } from "./MypageManageCommon";
+import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import { MypageTableRow } from "./MypageTableRow";
 
 const BREAKPOINT = "@media (max-width: 755px)";
 
@@ -47,11 +50,14 @@ export const scale = keyframes({
 });
 
 export function MypageChannelClip() {
+  const { isSm, isMd } = useTailwindResponsive();
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
   const [followed, setFollowed] = useRecoilState(recoil_followed);
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
 
-  const [selectedClip, setSelectedClip] = useState<boolean[]>([]);
+  const [selectedClip, setSelectedClip] = useRecoilState(
+    mypageManage_selectedClip
+  );
   const [mypageChannelClip, setMypageChannelClip] = useRecoilState(
     mypageManage_channelClip
   );
@@ -89,12 +95,9 @@ export function MypageChannelClip() {
               ) : (
                 mypageChannelClip.map((cur, i) => {
                   return (
-                    <Stack
+                    <MypageTableRow
                       key={i}
-                      justify="center"
-                      className="mx-[48px] h-[120px] border-0 border-gray-200 border-b-2 border-solid"
-                    >
-                      <Group>
+                      checkbox={
                         <Checkbox
                           onClick={() => {
                             let copySelectedClip = JSON.parse(
@@ -104,29 +107,15 @@ export function MypageChannelClip() {
                             setSelectedClip(copySelectedClip);
                           }}
                           checked={selectedClip[i]}
-                          className="m-[12px]"
                           color="dark"
+                          className="mb-[-4px]"
                         />
-                        <Group className="w-[516px] ml-[32px]">
-                          <Group
-                            fw={700}
-                            className="h-[83px] w-[130px] bg-gray-200"
-                          />
-                          <Text fw={700} className="text-[16px] w-[216px]">
-                            {cur.info}
-                          </Text>
-                        </Group>
-                        <Text fw={700} className="text-[16px] w-[216px]">
-                          {cur.channel}
-                        </Text>
-                        <Text fw={700} className="text-[16px] w-[216px]">
-                          {cur.date}
-                        </Text>
-                        <Text fw={700} className="text-[16px]">
-                          {cur.views}
-                        </Text>
-                      </Group>
-                    </Stack>
+                      }
+                      title={cur.info}
+                      channel={cur.channel}
+                      date={cur.date}
+                      views={cur.views}
+                    />
                   );
                 })
               )}

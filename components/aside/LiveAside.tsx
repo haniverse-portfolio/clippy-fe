@@ -3,10 +3,18 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
+import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 import Clip from "../common/Clip";
 import { apiAddress } from "../constValues";
 import {
+  clipType,
+  recoil_createBtnLoading,
+  recoil_createClip,
+  recoil_createClipTrigger,
   recoil_createModalIsLoading,
+  recoil_createModalIsLoadingError,
+  recoil_createModalIsLoadingErrorMessage,
   recoil_createModalOpened,
   recoil_createModalStreamerInfo,
   recoil_followed,
@@ -37,7 +45,60 @@ const LiveItem = ({ item }: LiveItemProps) => {
   const [followed, setFollowed] = useRecoilState(recoil_followed);
   const [videoInfo, setVideoInfo] = useRecoilState(recoil_videoInfo);
 
+  const [extractorErrorStatus, setExtractorErrorStatus] = useState(false);
+  const [extractorErrorMessage, setExtractorErrorMessage] = useState("");
+
+  const { isSm, isMd } = useTailwindResponsive();
+
+  const [createBtnLoading, setCreateBtnLoading] = useRecoilState<boolean>(
+    recoil_createBtnLoading
+  );
+  const [createClip, triggerCreateClip] =
+    useRecoilState<clipType>(recoil_createClip);
+  const [createClipTrigger, setCreateClipTrigger] = useRecoilState<boolean>(
+    recoil_createClipTrigger
+  );
+  const [isLoadingError, setIsLoadingError] = useRecoilState<boolean>(
+    recoil_createModalIsLoadingError
+  );
+  const [isLoadingErrorMessage, setIsLoadingErrorMessage] =
+    useRecoilState<string>(recoil_createModalIsLoadingErrorMessage);
+
+  const postCreateClip = async (clip: clipType) => {
+    setCreateBtnLoading(true);
+    // https://api.clippy.kr/clip
+    const url = apiAddress + "/clip";
+    const res = await axios
+      .post(url, clip, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((res) => {
+        setCreateBtnLoading(false);
+        triggerCreateClip(clip);
+        return res.data;
+      })
+      .catch((res) => {
+        const errMessage = res.response.data.message;
+        alert(errMessage);
+        setCreateBtnLoading(false);
+        // error 표시해주기
+      });
+  };
+
+  // useEffect(() => {
+  //   if (createClipTrigger) {
+  //     setCreateClipTrigger(false);
+  //     postCreateClip(createClip);
+  //   }
+  // }, [createClipTrigger]);
+
   const postExtractor = async (streamerId: number) => {
+    setExtractorErrorStatus(false);
+    setExtractorErrorMessage("");
+
     // https://api.clippy.kr/extractor
     const url = apiAddress + "/extractor";
 
@@ -59,20 +120,43 @@ const LiveItem = ({ item }: LiveItemProps) => {
       })
       .catch((res) => {
         const errMessage = res.response.data.message;
-        alert(errMessage);
+        // alert(errMessage);
+        setIsLoadingError(true);
+        setIsLoadingErrorMessage(errMessage);
+        // setExtractorErrorStatus(true);
+        // setExtractorErrorMessage(errMessage);
 
         // error 표시해주기
       });
   };
 
   return (
-    <Flex direction="row" justify="space-between" align="center" mb={32}>
-      <Flex direction="row" align="center">
-        <Avatar src={item.profileImage} size={32} mr={8} radius="xl"></Avatar>
-        <Text>{item.displayName}</Text>
+    <Flex
+      pos={"relative"}
+      direction="row"
+      justify="space-between"
+      align="center"
+      mb={32}
+      className="mx-auto w-max lg:w-[100%]"
+    >
+      <Flex className="flex-col lg:flex-row" align="center">
+        <Avatar
+          src={item.profileImage}
+          mr={8}
+          size={isSm || isMd ? 48 : 32}
+          radius="xl"
+        ></Avatar>
+        <Text className="mt-[5px] lg:mt-0">{item.displayName}</Text>
       </Flex>
       <div
-        className="cursor-pointer"
+        className="cursor-pointer
+                  flex justify-center items-center
+                  w-[20px] h-[20px]
+                  rounded-full
+                  absolute lg:relative 
+                  top-0 lg:top-auto 
+                  bg-black lg:bg-transparent
+                  right-[10px] lg:right-auto"
         onClick={() => {
           postExtractor(item.id);
           setCreateModalOpened(true);
@@ -84,7 +168,11 @@ const LiveItem = ({ item }: LiveItemProps) => {
           setCreateModalStreamerInfo(copyStreamerInfo);
         }}
       >
-        <Clip w={14} h={18} />
+        <Clip
+          w={isSm || isMd ? 9 : 14}
+          h={isSm || isMd ? 12 : 18}
+          fill={isSm || isMd ? "#ffffff" : "#111111"}
+        />
       </div>
     </Flex>
   );
@@ -98,7 +186,13 @@ const Live = ({ data }: LivePropsWrapper) => {
   return (
     <Flex className="flex-1" direction="column" justify="space-around">
       <div>
-        <Text align="center" weight={700} mb={40}>
+        <Text
+          align="center"
+          className="w-[80%] lg:w-full mx-auto break-keep"
+          weight={700}
+          mb={40}
+          mt={20}
+        >
           어떤 스트리머의 클립을 만들까요?
         </Text>
         <Flex direction="column">
@@ -106,8 +200,15 @@ const Live = ({ data }: LivePropsWrapper) => {
             <LiveItem key={item.id} item={item} />
           ))}
         </Flex>
-        <Link href="/">
-          <Text align="center" size={14} weight={300} mt={15} underline>
+        <Link href="/mypage/create">
+          <Text
+            align="center"
+            className="w-[80%] lg:w-full mx-auto break-keep"
+            size={14}
+            weight={300}
+            mt={15}
+            underline
+          >
             팔로우 중인 스트리머 모두 보기
           </Text>
         </Link>
@@ -119,7 +220,11 @@ const Live = ({ data }: LivePropsWrapper) => {
 export const Footer = () => {
   return (
     <div className="py-[50px]">
-      <Text size={14} align="center">
+      <Text
+        className="w-[75%] lg:w-full mx-auto break-keep"
+        size={14}
+        align="center"
+      >
         © CLIPPY 2022. MADE IN SEOUL
       </Text>
     </div>
@@ -151,7 +256,7 @@ const calc = (items: any): LiveProps[] => {
   let count = 0;
   const returnData: LiveProps[] = [];
   items.forEach((item: any) => {
-    if (count > 10) return;
+    if (count > 8) return;
     count++;
     returnData.push({
       id: item.user_id,

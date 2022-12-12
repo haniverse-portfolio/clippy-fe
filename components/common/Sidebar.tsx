@@ -68,7 +68,7 @@ export const SidebarInner = () => {
             />
           </Group>
         </div>
-        <UserAside />
+        <UserAside forceLarge={true} />
       </Stack>
     </>
   );
