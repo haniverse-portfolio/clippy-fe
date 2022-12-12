@@ -11,6 +11,7 @@ module.exports = {
       "static-cdn.jtvnw.net",
       "clips-media-assets2.twitch.tv",
       "i.ytimg.com",
+      "cloudflarestream.com",
     ],
   },
 };

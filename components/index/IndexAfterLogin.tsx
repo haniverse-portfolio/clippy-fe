@@ -13,6 +13,7 @@ import {
   Drawer,
   ThemeIcon,
   SimpleGrid,
+  Image,
 } from "@mantine/core";
 import { GithubIcon } from "@mantine/ds";
 import {
@@ -29,7 +30,7 @@ import {
   recoil_isLogined,
   recoil_loginUserInfo,
 } from "../states";
-import Image from "next/image";
+// import Image from "next/image";
 import { apiAddress } from "../constValues";
 import axios from "axios";
 import MainLayout from "../common/MainLayout";
@@ -39,6 +40,10 @@ import { Sidebar } from "../common/Sidebar";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { useRouter } from "next/router";
+import dayjs from "dayjs";
+import * as util from "../../util/util";
+import VideoCard from "../common/VideoCard";
 
 const BREAKPOINT = "@media (max-width: 755px)";
 
@@ -47,11 +52,14 @@ export const scale = keyframes({
 });
 
 export function IndexAfterLogin() {
+  const router = useRouter();
+
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
   const [followed, setFollowed] = useRecoilState(recoil_followed);
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
   const [loginUserInfo, setLoginUserInfo] =
     useRecoilState(recoil_loginUserInfo);
+  const [selectedMenu, setSelectedMenu] = useState("popular");
 
   const [hotclip, setHotclip] = useState([]);
 
@@ -85,14 +93,14 @@ export function IndexAfterLogin() {
       });
   };
 
-  const getHotclip = () => {
-    const url = `${apiAddress}/hotclip/temp`;
+  const getHotclip = (type = "popular") => {
+    const url = `${apiAddress}/hotclip/${type}`;
     axios
       .get(url, {
         withCredentials: true,
       })
       .then((res) => {
-        setHotclip(res.data.data.data);
+        setHotclip(res.data.data);
         console.log(res);
       })
       .catch((err) => {
@@ -147,11 +155,18 @@ export function IndexAfterLogin() {
                     <Button
                       h={58}
                       color="dark"
+                      variant={
+                        selectedMenu === "popular" ? "filled" : "outline"
+                      }
                       radius={99}
                       px={20}
                       style={{
                         fontSize: 16,
                         fontWeight: 700,
+                      }}
+                      onClick={() => {
+                        setSelectedMenu("popular");
+                        getHotclip("popular");
                       }}
                     >
                       인기
@@ -159,12 +174,16 @@ export function IndexAfterLogin() {
                     <Button
                       h={58}
                       color="dark"
-                      variant="outline"
+                      variant={selectedMenu === "new" ? "filled" : "outline"}
                       radius={99}
                       px={20}
                       style={{
                         fontSize: 16,
                         fontWeight: 700,
+                      }}
+                      onClick={() => {
+                        setSelectedMenu("new");
+                        getHotclip("new");
                       }}
                     >
                       최근 업로드
@@ -183,98 +202,7 @@ export function IndexAfterLogin() {
                 ]}
               >
                 {hotclip.map((clip: any) => {
-                  return (
-                    <Card
-                      p={0}
-                      m={0}
-                      key={clip.id}
-                      // onClick={() => {
-                      //   window.location.href = `/create/${stream.user_login}`;
-                      // }}
-                    >
-                      <Flex justify="center" direction="column">
-                        <div style={{ position: "relative" }}>
-                          <div
-                            style={{
-                              position: "absolute",
-                              top: 12,
-                              right: 12,
-                              height: 34,
-                              backgroundColor: "rgba(0, 0, 0, 0.5)",
-                              zIndex: 1,
-                              borderRadius: 99,
-                            }}
-                          >
-                            <Flex h={34} align="center" px={16}>
-                              <FontAwesomeIcon
-                                icon={solid("eye")}
-                                style={{
-                                  width: 14,
-                                  height: 12,
-                                  color: "white",
-                                  marginRight: 4,
-                                }}
-                              />
-                              <Text
-                                size={12}
-                                weight={700}
-                                color="white"
-                                style={
-                                  {
-                                    // lineHeight: "34px",
-                                    // padding: "0 15px",
-                                  }
-                                }
-                              >
-                                {Intl.NumberFormat("ko-KR").format(
-                                  clip.viewCount
-                                )}
-                              </Text>
-                            </Flex>
-                          </div>
-                        </div>
-                        <Image
-                          className="cursor-pointer rounded-md"
-                          src={clip.imageURL}
-                          alt="clip"
-                          width={480}
-                          height={320}
-                        />
-                        <Group position="apart">
-                          <Stack spacing={0}>
-                            <Text
-                              size={16}
-                              weight={700}
-                              mt={5}
-                              align="left"
-                              style={{
-                                whiteSpace: "nowrap",
-                                textOverflow: "ellipsis",
-                                overflow: "hidden",
-                                width:
-                                  "calc((100vw - 360px) / 4 - 24px - 60px)",
-                                maxWidth: 280,
-                              }}
-                            >
-                              {clip.title}
-                            </Text>
-                            <Text mt={5} align="left" size={14} weight={400}>
-                              {clip.streamer.displayName}
-                            </Text>
-                            <Text mt={5} align="left">
-                              <strong>
-                                반응 {clip.commentCount + clip.likeCount} •{" "}
-                              </strong>
-                              14시간 전
-                            </Text>
-                          </Stack>
-                          <ActionIcon variant="transparent" size={36}>
-                            <Heart size={36} />
-                          </ActionIcon>
-                        </Group>
-                      </Flex>
-                    </Card>
-                  );
+                  return <VideoCard key={clip.id} clip={clip} />;
                 })}
               </SimpleGrid>
             </Container>
