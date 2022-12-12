@@ -87,15 +87,15 @@ export const CreateModal = () => {
       })
       .catch((res) => {
         const errMessage = res.response.data.message;
-        if (errMessage.includes("아직 원본 클립 처리가 완료되지 않았습니다.")) {
-          setCreateBtnLoading(false);
-          setCreateModalOpened(false);
-          router.push(`/clip/${videoInfo.requestId}?creating=true`);
-        } else {
-          // error 표시해주기
-          alert(errMessage);
-          setCreateBtnLoading(false);
-        }
+        // if (errMessage.includes("아직 원본 클립 처리가 완료되지 않았습니다.")) {
+        //   setCreateBtnLoading(false);
+        //   setCreateModalOpened(false);
+        //   router.push(`/clip/${videoInfo.requestId}?creating=true`);
+        // } else {
+        // error 표시해주기
+        alert(errMessage);
+        setCreateBtnLoading(false);
+        // }
       });
   };
   // useRef

@@ -9,6 +9,9 @@ export const CloudflareVideo = ({ videoId, clipId, creating }: any) => {
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [onPlay, setOnPlay] = useState<boolean>(false);
+  const [videoStatus, setVideoStatus] = useState<any>({
+    state: "queued",
+  });
 
   const [videoCreating, setVideoCreating] = useState<boolean>(creating);
 
@@ -18,6 +21,7 @@ export const CloudflareVideo = ({ videoId, clipId, creating }: any) => {
       .then((res) => {
         console.log(res.data.data.result.status);
         const status = res.data.data.result.status;
+        setVideoStatus(status);
 
         if (status.state === "ready") {
           setVideoCreating(false);
@@ -53,7 +57,18 @@ export const CloudflareVideo = ({ videoId, clipId, creating }: any) => {
                 <Text mb={10}>
                   현재 영상 처리 중입니다. 조금만 더 기다려주세요
                 </Text>
-                <Text>처리 상황 : </Text>
+                <Text>
+                  처리 상황 :{" "}
+                  {videoStatus.state === "queued"
+                    ? "대기 중"
+                    : videoStatus.state === "inprogress"
+                    ? `기본화질 인코딩 중 (${parseInt(
+                        videoStatus.pctComplete
+                      )}%)`
+                    : videoStatus.state === "ready"
+                    ? `고화질 인코딩 중 (${parseInt(videoStatus.pctComplete)}%)`
+                    : "처리 완료"}
+                </Text>
               </Flex>
             </Flex>
           </div>
