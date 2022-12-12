@@ -8,6 +8,7 @@ export const CloudflareVideo = ({ videoId, clipId, creating }: any) => {
   console.log(videoId);
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [onPlay, setOnPlay] = useState<boolean>(false);
 
   const [videoCreating, setVideoCreating] = useState<boolean>(creating);
 
@@ -66,9 +67,23 @@ export const CloudflareVideo = ({ videoId, clipId, creating }: any) => {
               responsive={true}
               onLoadStart={() => {
                 setIsLoaded(true);
+                setOnPlay(false);
               }}
-              onError={() => {
-                setVideoCreating(true);
+              onPlay={async () => {
+                if (onPlay) return;
+                await axios
+                  .post(
+                    `${apiAddress}/analytics/view`,
+                    {
+                      id: clipId,
+                    },
+                    {
+                      withCredentials: true,
+                    }
+                  )
+                  .then(() => {
+                    setOnPlay(true);
+                  });
               }}
             ></Stream>
           </div>
