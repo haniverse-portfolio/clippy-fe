@@ -12,13 +12,15 @@ import {
 } from "@mantine/core";
 import { useEffect, useState, useRef } from "react";
 import { useRecoilState } from "recoil";
-import { Paperclip } from "tabler-icons-react";
+import { CircleX, Paperclip } from "tabler-icons-react";
 import {
   clipType,
   recoil_createBtnLoading,
   recoil_createClip,
   recoil_createClipTrigger,
   recoil_createModalIsLoading,
+  recoil_createModalIsLoadingError,
+  recoil_createModalIsLoadingErrorMessage,
   recoil_createModalOpened,
   recoil_createModalStreamerInfo,
   recoil_videoInfo,
@@ -52,6 +54,11 @@ export const CreateModal = () => {
   const [isLoading, setIsLoading] = useRecoilState<boolean>(
     recoil_createModalIsLoading
   );
+  const [isLoadingError, setIsLoadingError] = useRecoilState<boolean>(
+    recoil_createModalIsLoadingError
+  );
+  const [isLoadingErrorMessage, setIsLoadingErrorMessage] =
+    useRecoilState<string>(recoil_createModalIsLoadingErrorMessage);
 
   const [videoDuration, setVideoDuration] = useState<number>(0);
   const [currentVideoTime, setCurrentVideoTime] = useState<number>(0);
@@ -74,14 +81,21 @@ export const CreateModal = () => {
       })
       .then((res) => {
         setCreateBtnLoading(false);
-        router.push(`/clip/${res.data.data.key}`);
+        setCreateModalOpened(false);
+        router.push(`/clip/${res.data.data.key}?creating=true`);
         return res.data;
       })
       .catch((res) => {
         const errMessage = res.response.data.message;
+        // if (errMessage.includes("아직 원본 클립 처리가 완료되지 않았습니다.")) {
+        //   setCreateBtnLoading(false);
+        //   setCreateModalOpened(false);
+        //   router.push(`/clip/${videoInfo.requestId}?creating=true`);
+        // } else {
+        // error 표시해주기
         alert(errMessage);
         setCreateBtnLoading(false);
-        // error 표시해주기
+        // }
       });
   };
   // useRef
@@ -90,7 +104,11 @@ export const CreateModal = () => {
   // const []
 
   useEffect(() => {
-    if (createModalOpened === false) setIsLoading(true);
+    if (createModalOpened === false) {
+      setIsLoading(true);
+      setIsLoadingError(false);
+      setIsLoadingErrorMessage("errMessage");
+    }
   }, [createModalOpened]);
 
   useEffect(() => {
@@ -150,16 +168,29 @@ export const CreateModal = () => {
       onClose={() => setCreateModalOpened(false)}
     >
       {isLoading === true ? (
-        <Stack className="flex items-center justify-center h-[600px]">
-          <Stack>
-            <Center>
-              <Loader color="violet" size="xl" />
-            </Center>
-            <p className="text-center text-xl text-gray-500 font-semibold">
-              영상을 불러오는 중...
-            </p>
+        isLoadingError ? (
+          <Stack className="flex items-center justify-center h-[600px]">
+            <Stack>
+              <Center>
+                <CircleX size={48} color="red" />
+              </Center>
+              <p className="text-center text-xl text-gray-500 font-semibold">
+                {isLoadingErrorMessage}
+              </p>
+            </Stack>
           </Stack>
-        </Stack>
+        ) : (
+          <Stack className="flex items-center justify-center h-[600px]">
+            <Stack>
+              <Center>
+                <Loader color="violet" size="xl" />
+              </Center>
+              <p className="text-center text-xl text-gray-500 font-semibold">
+                영상을 불러오는 중...
+              </p>
+            </Stack>
+          </Stack>
+        )
       ) : (
         <Stack className="h-[600px] w-full">
           <ReactPlayer
