@@ -32,8 +32,9 @@ import {
   brands,
   icon,
 } from "@fortawesome/fontawesome-svg-core/import.macro"; // <-- import styles to be used
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateModal } from "./CreateModal";
+import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 
 const goLogin = () => {
   // use authorization code grant flow
@@ -52,10 +53,25 @@ const goLogout = () => {
 
 export function Navbar() {
   const [searchText, setSearchText] = useState<string>("");
+  const [searchBarHidden, setSearchBarHidden] = useState(false);
+  const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
   const [loginUserInfo, setLoginUserInfo] =
     useRecoilState(recoil_loginUserInfo);
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    console.log(width, searchBarHidden);
+    if (width && width <= 640 && !searchBarHidden) {
+      console.log("hello");
+      setSearchBarOpen(false);
+      setSearchBarHidden(true);
+    } else if (width && width > 640 && searchBarHidden) {
+      console.log("world");
+      setSearchBarHidden(false);
+    }
+  }, [width]);
 
   return (
     <div
@@ -64,13 +80,18 @@ export function Navbar() {
     >
       <CreateModal />
       <Group position="apart">
-        <Flex my={36} ml={48} align="center">
-          <Link href="/" className="mr-[125px]">
+        <Flex
+          w={`calc(100% - ${searchBarHidden ? "300px" : "200px"})`}
+          my={36}
+          ml={30}
+          align="center"
+        >
+          <Link href="/" className="lg:mr-[125px] md:mr-[50px] sm:mr-[50px]">
             <Logo />
           </Link>
-          {isLogined && (
+          {isLogined && (!searchBarHidden || searchBarOpen) && (
             <TextInput
-              w={588}
+              className="max-w-[588px] animate-fadeIn"
               h={48}
               size="lg"
               radius="xl"
@@ -90,6 +111,10 @@ export function Navbar() {
                 />
               }
               style={{
+                width: searchBarHidden ? "calc(100% - 200px)" : "100%",
+                left: searchBarHidden ? "30px" : "auto",
+                animation: "fadeIn .4s ease-in-out",
+                position: searchBarHidden ? "absolute" : "relative",
                 boxShadow: "0px 4px 15px rgba(119, 119, 119, 0.25)",
                 borderRadius: "99px",
                 border: 0,
@@ -108,19 +133,36 @@ export function Navbar() {
             />
           )}
         </Flex>
+
         {isLogined && (
-          <Avatar
-            onClick={() => {
-              setDrawerOpened(true);
-            }}
-            radius="xl"
-            size="lg"
-            w={48}
-            h={48}
-            mr={48}
-            id="navbar-avatar"
-            src={loginUserInfo.profileImageUrl}
-          />
+          <Flex justify="flex-end" align="center">
+            {searchBarHidden && (
+              <div
+                onClick={() => setSearchBarOpen(!searchBarOpen)}
+                className="w-[44px] h-[44px] mr-[10px] rounded-full bg-gray-100 flex justify-center align-middle hover:cursor-pointer"
+              >
+                <FontAwesomeIcon
+                  icon={
+                    searchBarOpen ? solid("check") : solid("magnifying-glass")
+                  }
+                  width="50%"
+                  className="text-gray-400"
+                />
+              </div>
+            )}
+            <Avatar
+              onClick={() => {
+                setDrawerOpened(true);
+              }}
+              radius="xl"
+              size="lg"
+              w={48}
+              h={48}
+              mr={30}
+              id="navbar-avatar"
+              src={loginUserInfo.profileImageUrl}
+            />
+          </Flex>
         )}
       </Group>
     </div>
