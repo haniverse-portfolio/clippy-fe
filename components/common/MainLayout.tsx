@@ -8,14 +8,14 @@ const MainLayout = ({ content, aside }: any): JSX.Element => {
         {content()}
       </div>
       <div
-        className="w-[360px]"
+        className="w-[160px] lg:w-[360px]"
         style={{
           height: "calc(100vh - 120px)",
           borderLeft: "1px solid rgba(0, 0, 0, 0.1)",
           overflow: "auto",
         }}
       >
-        {aside()}
+        {aside({ forceLarge: false })}
       </div>
     </Flex>
   );

@@ -3,6 +3,8 @@ import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
+import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 import Clip from "../common/Clip";
 import { apiAddress } from "../constValues";
 import {
@@ -44,6 +46,8 @@ const LiveItem = ({ item }: LiveItemProps) => {
   const [extractorErrorStatus, setExtractorErrorStatus] = useState(false);
   const [extractorErrorMessage, setExtractorErrorMessage] = useState("");
 
+  const { isSm, isMd } = useTailwindResponsive();
+        
   const [createBtnLoading, setCreateBtnLoading] = useRecoilState<boolean>(
     recoil_createBtnLoading
   );
@@ -118,13 +122,32 @@ const LiveItem = ({ item }: LiveItemProps) => {
   };
 
   return (
-    <Flex direction="row" justify="space-between" align="center" mb={32}>
-      <Flex direction="row" align="center">
-        <Avatar src={item.profileImage} size={32} mr={8} radius="xl"></Avatar>
-        <Text>{item.displayName}</Text>
+    <Flex
+      pos={"relative"}
+      direction="row"
+      justify="space-between"
+      align="center"
+      mb={32}
+      className="mx-auto w-max lg:w-[100%]"
+    >
+      <Flex className="flex-col lg:flex-row" align="center">
+        <Avatar
+          src={item.profileImage}
+          mr={8}
+          size={isSm || isMd ? 48 : 32}
+          radius="xl"
+        ></Avatar>
+        <Text className="mt-[5px] lg:mt-0">{item.displayName}</Text>
       </Flex>
       <div
-        className="cursor-pointer"
+        className="cursor-pointer
+                  flex justify-center items-center
+                  w-[20px] h-[20px]
+                  rounded-full
+                  absolute lg:relative 
+                  top-0 lg:top-auto 
+                  bg-black lg:bg-transparent
+                  right-[10px] lg:right-auto"
         onClick={() => {
           postExtractor(item.id);
           setCreateModalOpened(true);
@@ -136,7 +159,11 @@ const LiveItem = ({ item }: LiveItemProps) => {
           setCreateModalStreamerInfo(copyStreamerInfo);
         }}
       >
-        <Clip w={14} h={18} />
+        <Clip
+          w={isSm || isMd ? 9 : 14}
+          h={isSm || isMd ? 12 : 18}
+          fill={isSm || isMd ? "#ffffff" : "#111111"}
+        />
       </div>
     </Flex>
   );
@@ -150,7 +177,13 @@ const Live = ({ data }: LivePropsWrapper) => {
   return (
     <Flex className="flex-1" direction="column" justify="space-around">
       <div>
-        <Text align="center" weight={700} mb={40} mt={20}>
+        <Text
+          align="center"
+          className="w-[75%] lg:w-full mx-auto break-keep"
+          weight={700}
+          mb={40}
+          mt={20}
+        >
           어떤 스트리머의 클립을 만들까요?
         </Text>
         <Flex direction="column">
@@ -159,7 +192,14 @@ const Live = ({ data }: LivePropsWrapper) => {
           ))}
         </Flex>
         <Link href="/">
-          <Text align="center" size={14} weight={300} mt={15} underline>
+          <Text
+            align="center"
+            className="w-[75%] lg:w-full mx-auto break-keep"
+            size={14}
+            weight={300}
+            mt={15}
+            underline
+          >
             팔로우 중인 스트리머 모두 보기
           </Text>
         </Link>
@@ -171,7 +211,11 @@ const Live = ({ data }: LivePropsWrapper) => {
 export const Footer = () => {
   return (
     <div className="py-[50px]">
-      <Text size={14} align="center">
+      <Text
+        className="w-[75%] lg:w-full mx-auto break-keep"
+        size={14}
+        align="center"
+      >
         © CLIPPY 2022. MADE IN SEOUL
       </Text>
     </div>
