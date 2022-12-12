@@ -14,6 +14,10 @@ import { useEffect, useState, useRef } from "react";
 import { useRecoilState } from "recoil";
 import { Paperclip } from "tabler-icons-react";
 import {
+  clipType,
+  recoil_createBtnLoading,
+  recoil_createClip,
+  recoil_createClipTrigger,
   recoil_createModalIsLoading,
   recoil_createModalOpened,
   recoil_createModalStreamerInfo,
@@ -21,6 +25,8 @@ import {
 } from "../states";
 import ReactPlayer from "react-player";
 import axios from "axios";
+import { apiAddress } from "../constValues";
+import { useRouter } from "next/router";
 
 export const CreateModal = () => {
   interface videoType {
@@ -49,7 +55,35 @@ export const CreateModal = () => {
 
   const [videoDuration, setVideoDuration] = useState<number>(0);
   const [currentVideoTime, setCurrentVideoTime] = useState<number>(0);
+  const [createBtnLoading, setCreateBtnLoading] = useRecoilState<boolean>(
+    recoil_createBtnLoading
+  );
 
+  const router = useRouter();
+
+  const triggerCreateClip = async (clip: clipType) => {
+    setCreateBtnLoading(true);
+    // https://api.clippy.kr/clip
+    const url = apiAddress + "/clip";
+    const res = await axios
+      .post(url, clip, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((res) => {
+        setCreateBtnLoading(false);
+        router.push(`/clip/${res.data.data.key}`);
+        return res.data;
+      })
+      .catch((res) => {
+        const errMessage = res.response.data.message;
+        alert(errMessage);
+        setCreateBtnLoading(false);
+        // error 표시해주기
+      });
+  };
   // useRef
   const playerRef = useRef<ReactPlayer>(null);
 
@@ -143,14 +177,6 @@ export const CreateModal = () => {
             }}
           />
 
-          {/* <video
-            poster={videoInfo.thumbnailUrl}
-            controls
-            autoPlay
-            src={videoInfo.rawMediaUrl}
-            preload="none"
-            data-video="0"
-          /> */}
           {/* <Stack className="my-[30px] w-[828px] h-[440px] bg-gray-300"></Stack> */}
           <RangeSlider
             mt={42}
@@ -185,6 +211,16 @@ export const CreateModal = () => {
               size="lg"
               color="dark"
               radius="xl"
+              loading={createBtnLoading}
+              onClick={() => {
+                setCreateBtnLoading(true);
+                triggerCreateClip({
+                  requestId: videoInfo.requestId,
+                  starts: startRangeValue,
+                  ends: endRangeValue,
+                  title: createModalClipName,
+                });
+              }}
             >
               클립 생성
             </Button>

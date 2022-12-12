@@ -7,6 +7,10 @@ const nextConfig = {
 
 module.exports = {
   images: {
-    domains: ["static-cdn.jtvnw.net", "clips-media-assets2.twitch.tv"],
+    domains: [
+      "static-cdn.jtvnw.net",
+      "clips-media-assets2.twitch.tv",
+      "i.ytimg.com",
+    ],
   },
 };
