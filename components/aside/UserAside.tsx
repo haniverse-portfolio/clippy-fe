@@ -11,10 +11,12 @@ import {
   Settings,
 } from "tabler-icons-react";
 import { apiAddress } from "../constValues";
-import { recoil_sidebarOpened } from "../states";
+import { recoil_loginUserInfo, recoil_sidebarOpened } from "../states";
 import { Footer } from "./LiveAside";
 
 const UserAside = () => {
+  const [loginUserInfo, setLoginUserInfo] =
+    useRecoilState(recoil_loginUserInfo);
   const goLogout = () => {
     const url = `${apiAddress}/user/logout`;
     window.location.href = url;
@@ -29,9 +31,16 @@ const UserAside = () => {
         내 채널
       </span>
       <Center>
-        <Avatar radius="xl" size={98} src={null} />
+        <Avatar
+          radius="xl"
+          size={98}
+          src={loginUserInfo.profileImageUrl}
+          style={{ borderRadius: 99 }}
+        />
       </Center>
-      <span className="text-[16px] text-center mt-[16px]">임준현</span>
+      <span className="text-[16px] text-center mt-[16px]">
+        {loginUserInfo.twitchDisplayName}
+      </span>
       <Stack className="m-0 p-0" mt={38}>
         <Link
           onClick={() => {

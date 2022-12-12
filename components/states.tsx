@@ -50,6 +50,12 @@ export const recoil_videoInfo = atom({
   key: "recoil_videoInfo",
   default: {} as videoType,
 }); // 생성 modal
+
+export const recoil_loginUserInfo = atom({
+  key: "recoil_loginUserInfo",
+  default: {} as any,
+}); // 로그인 유저 정보
+
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */

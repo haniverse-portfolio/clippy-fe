@@ -27,6 +27,7 @@ import {
   recoil_sidebarOpened,
   recoil_followed,
   recoil_isLogined,
+  recoil_loginUserInfo,
 } from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
@@ -49,6 +50,8 @@ export function IndexAfterLogin() {
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
   const [followed, setFollowed] = useRecoilState(recoil_followed);
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
+  const [loginUserInfo, setLoginUserInfo] =
+    useRecoilState(recoil_loginUserInfo);
 
   const [hotclip, setHotclip] = useState([]);
 
@@ -97,8 +100,24 @@ export function IndexAfterLogin() {
       });
   };
 
+  const getUserInfo = () => {
+    const url = `${apiAddress}/user/me`;
+    axios
+      .get(url, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setLoginUserInfo(res.data.data);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     getHotclip();
+    getUserInfo();
   }, []);
 
   return (
