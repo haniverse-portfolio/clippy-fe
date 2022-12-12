@@ -35,6 +35,7 @@ import {
 import { useEffect, useState } from "react";
 import { CreateModal } from "./CreateModal";
 import { useWindowDimensions } from "../../hooks/useWindowDimensions";
+import axios from "axios";
 
 const goLogin = () => {
   // use authorization code grant flow
@@ -72,6 +73,25 @@ export function Navbar() {
       setSearchBarHidden(false);
     }
   }, [width]);
+
+  const getUserInfo = () => {
+    const url = `${apiAddress}/user/me`;
+    axios
+      .get(url, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setLoginUserInfo(res.data.data);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
 
   return (
     <div
