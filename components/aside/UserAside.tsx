@@ -89,7 +89,12 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
         className="mt-[60px] lg:mt-0"
         style={{ marginTop: forceLarge ? "0" : "" }}
       >
-        <Link href={`/channel/${loginUserInfo.twitchName}`}>
+        <Link
+          onClick={() => {
+            setSidebarOpened(false);
+          }}
+          href={`/channel/${loginUserInfo.twitchName}`}
+        >
           <Avatar
             radius="xl"
             size={(isSm || isMd) && !forceLarge ? 48 : 98}
