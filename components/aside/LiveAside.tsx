@@ -139,15 +139,17 @@ const LiveItem = ({ item }: LiveItemProps) => {
       mb={32}
       className="mx-auto w-max lg:w-[100%]"
     >
-      <Flex className="flex-col lg:flex-row" align="center">
-        <Avatar
-          src={item.profileImage}
-          mr={8}
-          size={isSm || isMd ? 48 : 32}
-          radius="xl"
-        ></Avatar>
-        <Text className="mt-[5px] lg:mt-0">{item.displayName}</Text>
-      </Flex>
+      <Link href={`/channel/${item.name}`}>
+        <Flex className="flex-col lg:flex-row" align="center">
+          <Avatar
+            src={item.profileImage}
+            mr={8}
+            size={isSm || isMd ? 48 : 32}
+            radius="xl"
+          ></Avatar>
+          <Text className="mt-[5px] lg:mt-0">{item.displayName}</Text>
+        </Flex>
+      </Link>
       <div
         className="cursor-pointer
                   flex justify-center items-center

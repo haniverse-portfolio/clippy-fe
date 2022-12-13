@@ -50,13 +50,15 @@ export function MypageManageCommon() {
   };
 
   useEffect(() => {
-    if (!isAllCheckClicked) {
-      let requiredLength = 0;
-      if (sectionIndex === 0) requiredLength = mypageMadeClip.length;
-      if (sectionIndex === 1) requiredLength = mypageChannelClip.length;
-      if (isSelected() !== requiredLength) setSelectAllChecked(false);
-      else setSelectAllChecked(true);
-    } else setIsAllCheckClicked(() => false);
+    setTimeout(() => {
+      if (!isAllCheckClicked) {
+        let requiredLength = 0;
+        if (sectionIndex === 0) requiredLength = mypageMadeClip.length;
+        if (sectionIndex === 1) requiredLength = mypageChannelClip.length;
+        if (isSelected() !== requiredLength) setSelectAllChecked(false);
+        else setSelectAllChecked(true);
+      } else setIsAllCheckClicked(() => false);
+    }, 50);
   }, [selectedClip]);
 
   return (

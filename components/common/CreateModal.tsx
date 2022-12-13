@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState, useRef } from "react";
 import { useRecoilState } from "recoil";
-import { CircleX, Paperclip } from "tabler-icons-react";
+import { CircleX, DotsVertical, Paperclip } from "tabler-icons-react";
 import {
   clipType,
   recoil_createBtnLoading,
@@ -210,6 +210,10 @@ export const CreateModal = () => {
 
           {/* <Stack className="my-[30px] w-[828px] h-[440px] bg-gray-300"></Stack> */}
           <RangeSlider
+            mx={15}
+            thumbChildren={<DotsVertical />}
+            thumbSize={26}
+            styles={{ thumb: { borderWidth: 2, padding: 3 } }}
             mt={42}
             value={rangeValue}
             max={videoDuration}

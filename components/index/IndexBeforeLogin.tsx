@@ -118,7 +118,12 @@ export function IndexBeforeLogin() {
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
 
   return (
-    <Flex direction={"column"} align="center" justify="center">
+    <Flex
+      className="animate-fadeUp"
+      direction={"column"}
+      align="center"
+      justify="center"
+    >
       <Container mb={200} size={700} className={classes.inner}>
         <h1 className={classes.title}>
           {" "}

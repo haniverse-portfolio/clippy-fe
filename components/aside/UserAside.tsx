@@ -89,12 +89,14 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
         className="mt-[60px] lg:mt-0"
         style={{ marginTop: forceLarge ? "0" : "" }}
       >
-        <Avatar
-          radius="xl"
-          size={(isSm || isMd) && !forceLarge ? 48 : 98}
-          src={loginUserInfo.profileImageUrl}
-          style={{ borderRadius: 99 }}
-        />
+        <Link href={`/channel/${loginUserInfo.twitchName}`}>
+          <Avatar
+            radius="xl"
+            size={(isSm || isMd) && !forceLarge ? 48 : 98}
+            src={loginUserInfo.profileImageUrl}
+            style={{ borderRadius: 99 }}
+          />
+        </Link>
       </Center>
       <span
         className="text-[16px] text-center mt-[-10px] lg:mt-[-5px]"

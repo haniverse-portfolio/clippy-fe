@@ -9,22 +9,57 @@ import {
   ActionIcon,
   Group,
 } from "@mantine/core";
+import axios from "axios";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { Heart } from "tabler-icons-react";
 import * as util from "../../util/util";
+import { apiAddress } from "../constValues";
 
 const VideoCard = ({ clip }: any) => {
   const router = useRouter();
+  const [isLike, setIsLike] = useState(false);
+
+  const getLikeStatus = async () => {
+    const url = `${apiAddress}/clip/${clip.key}/like`;
+    const res = await axios.get(url, { withCredentials: true });
+    setIsLike(res.data.data);
+  };
+
+  const toggleLike = () => {
+    const url = `${apiAddress}/clip/${clip.key}/like`;
+
+    if (isLike) {
+      axios
+        .delete(url, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          console.log(res);
+          setIsLike(!isLike);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      axios
+        .post(url, {}, { withCredentials: true })
+        .then((res) => {
+          console.log(res);
+          setIsLike(!isLike);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  useEffect(() => {
+    getLikeStatus();
+  }, []);
 
   return (
-    <Card
-      p={0}
-      m={0}
-      key={clip.id}
-      onClick={() => {
-        router.push(`/clip/${clip.key}`);
-      }}
-    >
+    <Card p={0} m={0} key={clip.id}>
       <Flex justify="center" direction="column">
         <div style={{ position: "relative" }}>
           <div
@@ -68,6 +103,9 @@ const VideoCard = ({ clip }: any) => {
           className="cursor-pointer rounded-md"
           src={clip.cfVideoThumbnail}
           alt="clip"
+          onClick={() => {
+            router.push(`/clip/${clip.key}`);
+          }}
           onMouseOver={(e: any) => {
             // change thumbnail src to thumbnail gif
             const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
@@ -88,17 +126,32 @@ const VideoCard = ({ clip }: any) => {
               weight={700}
               mt={5}
               align="left"
+              onClick={() => {
+                router.push(`/clip/${clip.key}`);
+              }}
               style={{
                 whiteSpace: "nowrap",
                 textOverflow: "ellipsis",
                 overflow: "hidden",
                 // width: "calc((100vw - 360px) / 4 - 24px - 60px)",
                 maxWidth: 280,
+                cursor: "pointer",
               }}
             >
               {clip.title}
             </Text>
-            <Text mt={5} align="left" size={14} weight={400}>
+            <Text
+              mt={5}
+              align="left"
+              size={14}
+              weight={400}
+              onClick={() => {
+                router.push(`/channel/${clip.userInfo.login}`);
+              }}
+              style={{
+                cursor: "pointer",
+              }}
+            >
               {clip.userInfo.display_name}
             </Text>
             <Text mt={5} align="left" size={14}>
@@ -107,8 +160,18 @@ const VideoCard = ({ clip }: any) => {
             </Text>
           </Stack>
           <div style={{ marginLeft: 24, marginRight: 24 }}>
-            <ActionIcon variant="transparent" size={36}>
-              <Heart size={36} />
+            <ActionIcon
+              variant="transparent"
+              size={36}
+              className="duration-100"
+              style={isLike ? { color: "#000000" } : {}}
+              onClick={toggleLike}
+            >
+              <Heart
+                size={36}
+                className="duration-100"
+                style={isLike ? { fill: "#000000" } : { fill: "#ffffff" }}
+              />
             </ActionIcon>
           </div>
         </Group>
