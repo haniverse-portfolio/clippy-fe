@@ -88,9 +88,23 @@ export function Navbar() {
         console.log(err);
       });
   };
-
+  const checkLogin = () => {
+    const url = `${apiAddress}/user/check`;
+    axios
+      .get(url, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setIsLogined(true);
+      })
+      .catch((err) => {
+        setIsLogined(false);
+        console.log(err);
+      });
+  };
   useEffect(() => {
     getUserInfo();
+    checkLogin();
   }, []);
 
   return (
