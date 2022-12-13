@@ -149,8 +149,9 @@ const VideoTitle = ({ data }: any) => {
               onClick={() => {
                 // don't copy query string
                 const url = window.location.href.split("?")[0];
-                clipboard.copy(url);
-                alert("링크가 복사되었습니다.");
+                navigator.clipboard.writeText(url).then(() => {
+                  alert("링크가 복사되었습니다.");
+                });
               }}
             >
               링크 복사

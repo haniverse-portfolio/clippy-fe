@@ -8,9 +8,15 @@ import {
   mypageManage_selectedClip,
 } from "../states";
 import { atom, useRecoilState } from "recoil";
-import { selectedAllClip, selectedClipDefault } from "../constValues";
+import {
+  apiAddress,
+  selectedAllClip,
+  selectedClipDefault,
+} from "../constValues";
 import { useEffect, useState } from "react";
+import * as util from "../../util/util";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import axios from "axios";
 const BREAKPOINT = "@media (max-width: 755px)";
 export function MypageManageCommon() {
   const { isSm, isMd } = useTailwindResponsive();
@@ -41,6 +47,57 @@ export function MypageManageCommon() {
     }
     return cnt;
   };
+
+  // 내가 만든 클립 -> mypageMadeClip
+  const getMypageMadeClip = async () => {
+    await axios
+      .get(`${apiAddress}/user/me/clip`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        const newData = res.data.data.map((clip: any) => {
+          return {
+            info: clip.title,
+            clipId: clip.key,
+            thumbnail: clip.cfVideoThumbnail,
+            channel: clip.userInfo.display_name,
+            channelName: clip.userInfo.login,
+            date: util.showTime(clip.createdAt),
+            views: clip.viewCount,
+          };
+        });
+
+        setMypageMadeClip(newData);
+      });
+  };
+
+  // 내 채널의 클립 -> mypageChannelClip
+  const getMypageChannelClip = async () => {
+    await axios
+      .get(`${apiAddress}/user/me/clipped`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        const newData = res.data.data.map((clip: any) => {
+          return {
+            info: clip.title,
+            clipId: clip.key,
+            thumbnail: clip.cfVideoThumbnail,
+            channel: clip.userInfo.display_name,
+            channelName: clip.userInfo.login,
+            date: util.showTime(clip.createdAt),
+            views: clip.viewCount,
+          };
+        });
+
+        setMypageChannelClip(newData);
+      });
+  };
+
+  useEffect(() => {
+    getMypageMadeClip();
+    getMypageChannelClip();
+  }, []);
 
   const checkAll = () => {
     if (selectAllChecked === false) setSelectedClip(selectedAllClip);
@@ -91,7 +148,7 @@ export function MypageManageCommon() {
             내 채널의 클립
           </Button>
         </Group>
-        <Button
+        {/* <Button
           onClick={() => {
             if (isSelected()) setDeleteModalOpened(true);
           }}
@@ -103,7 +160,7 @@ export function MypageManageCommon() {
           radius="xl"
         >
           선택 클립 삭제
-        </Button>
+        </Button> */}
       </Group>
       <Flex
         justify="space-between"
@@ -117,7 +174,7 @@ export function MypageManageCommon() {
           className="w-[70px] flex justify-center items-center border-r-[1px] lg:border-0 border-black"
           style={{ height: isSm || isMd ? 56 : 44 }}
         >
-          <Checkbox
+          {/* <Checkbox
             onClick={() => {
               setIsAllCheckClicked(() => true);
               checkAll();
@@ -125,7 +182,7 @@ export function MypageManageCommon() {
             checked={selectAllChecked}
             color="dark"
             className="mb-[-4px]"
-          />
+          /> */}
         </div>
         <Flex
           direction={isSm || isMd ? "column" : "row"}

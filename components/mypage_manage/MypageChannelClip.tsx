@@ -112,7 +112,10 @@ export function MypageChannelClip() {
                         />
                       }
                       title={cur.info}
+                      clipId={cur.clipId}
+                      imageURL={cur.thumbnail}
                       channel={cur.channel}
+                      channelName={cur.channelName}
                       date={cur.date}
                       views={cur.views}
                     />

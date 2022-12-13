@@ -89,7 +89,12 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
         className="mt-[60px] lg:mt-0"
         style={{ marginTop: forceLarge ? "0" : "" }}
       >
-        <Link href={`/channel/${loginUserInfo.twitchName}`}>
+        <Link
+          onClick={() => {
+            setSidebarOpened(false);
+          }}
+          href={`/channel/${loginUserInfo.twitchName}`}
+        >
           <Avatar
             radius="xl"
             size={(isSm || isMd) && !forceLarge ? 48 : 98}
@@ -141,11 +146,14 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
             text={"팔로우 중인 채널"}
           />
         </Link> */}
-        {/* <UserAsideMenu
+        <UserAsideMenu
           forceLarge={forceLarge}
           icon={<MessageCircle2 size={18} />}
           text={"의견 보내기"}
-        /> */}
+          onClick={() => {
+            window.open("https://forms.gle/sEVEFUuxFnwpqLav6");
+          }}
+        />
         <UserAsideMenu
           onClick={() => {
             goLogout();

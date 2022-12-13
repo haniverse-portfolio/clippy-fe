@@ -1,4 +1,5 @@
 import { Flex, Group, Text } from "@mantine/core";
+import Link from "next/link";
 import { ReactNode } from "react";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 
@@ -9,12 +10,16 @@ interface MyapgeTableRowProps {
   channel: string;
   date: string;
   views: string;
+  clipId: string;
+  channelName: string;
 }
 export function MypageTableRow({
   checkbox,
   imageURL,
+  clipId,
   title,
   channel,
+  channelName,
   date,
   views,
 }: MyapgeTableRowProps) {
@@ -53,19 +58,21 @@ export function MypageTableRow({
             width: isSm || isMd ? "100%" : "71.43%",
           }}
         >
-          <Group
-            fw={700}
-            className="h-[83px] min-w-[130px] bg-gray-200"
-            style={{
-              marginRight: isSm ? "" : "10px",
-              backgroundImage: imageURL ? `url(${imageURL})` : "",
-            }}
-          />
+          <Link href={`/clip/${clipId}`}>
+            <Group
+              fw={700}
+              className="h-[83px] min-w-[130px] bg-gray-200"
+              style={{
+                marginRight: isSm ? "" : "10px",
+                backgroundImage: imageURL ? `url(${imageURL})` : "",
+              }}
+            />
+          </Link>
           <Text
             fw={700}
             className="text-[16px] w-full whitespace-nowrap overflow-hidden text-ellipsis text-center"
           >
-            {title}
+            <Link href={`/clip/${clipId}`}>{title}</Link>
           </Text>
         </Flex>
         <div
@@ -75,9 +82,11 @@ export function MypageTableRow({
             width: isSm || isMd ? "100%" : "28.57%",
           }}
         >
-          <Text fw={700} className="text-[16px]">
-            {channel}
-          </Text>
+          <Link href={`/channel/${channelName}`}>
+            <Text fw={700} className="text-[16px]">
+              {channel}
+            </Text>
+          </Link>
         </div>
       </Flex>
       <Flex

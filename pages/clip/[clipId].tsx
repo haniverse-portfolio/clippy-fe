@@ -1,9 +1,10 @@
 import { Container, Flex, SimpleGrid } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navbar } from "../../components/common/Navbar";
 import { NotFoundTitle } from "../../components/common/NotFound";
+import { Sidebar } from "../../components/common/Sidebar";
 import VideoCard from "../../components/common/VideoCard";
 import { apiAddress } from "../../components/constValues";
 import { CloudflareVideo } from "../../components/view/cloudflareVideo";
@@ -24,6 +25,7 @@ const ViewClip = () => {
   const [videoData, setVideoData] = useState<any>({});
 
   const { isSm, isMd } = useTailwindResponsive();
+  const scrollDivRef = useRef<HTMLDivElement>(null);
   const [hotclip, setHotclip] = useState([]);
 
   const getHotclip = (type = "popular") => {
@@ -57,6 +59,8 @@ const ViewClip = () => {
 
   useEffect(() => {
     if (clipId) {
+      if (scrollDivRef && scrollDivRef.current && isSm)
+        scrollDivRef.current.scrollTo({ top: 0, behavior: "smooth" });
       getVideo();
     }
   }, [clipId]);
@@ -68,6 +72,7 @@ const ViewClip = () => {
   return (
     <>
       <Navbar />
+      <Sidebar />
       <Container size="lg">
         {isError ? (
           <NotFoundTitle
@@ -76,6 +81,7 @@ const ViewClip = () => {
           />
         ) : (
           <div
+            ref={scrollDivRef}
             className="relative top-0 left-0 w-full block overflow-auto md:overflow-hidden"
             style={{ height: "calc(100vh - 120px)" }}
           >
