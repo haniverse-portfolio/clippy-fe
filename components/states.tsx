@@ -117,7 +117,10 @@ export const mypageManage_selectedClip = atom({
 });
 export interface mypage_clipType {
   info: string;
+  clipId: string;
+  thumbnail: string;
   channel: string;
+  channelName: string;
   date: string;
   views: string;
 }
