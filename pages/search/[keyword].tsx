@@ -213,7 +213,7 @@ export default function Home() {
                             </Text>
                           </Center>
                           <Container>
-                            <Link href={`/channel/${result.display_name}`}>
+                            <Link href={`/channel/${result.name}`}>
                               <Button
                                 onClick={() => {
                                   setSearchText("");
