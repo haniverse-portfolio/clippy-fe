@@ -221,7 +221,7 @@ const Live = ({ data }: LivePropsWrapper) => {
 
 export const Footer = () => {
   return (
-    <div className="py-[50px]">
+    <div className="pt-[50px] pb-20">
       <Text
         className="w-[75%] lg:w-full mx-auto break-keep"
         size={14}
