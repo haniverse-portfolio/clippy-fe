@@ -42,10 +42,10 @@ export const CloudflareVideo = ({ videoId, clipId, creating }: any) => {
   }, [videoCreating]);
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <div style={{ width: "100%", height: "max-content" }}>
       {videoId !== "" ? (
         videoCreating ? (
-          <div style={{ height: 460 }}>
+          <div style={{ height: "max-content" }}>
             <Flex
               align="center"
               direction="column"
@@ -73,7 +73,7 @@ export const CloudflareVideo = ({ videoId, clipId, creating }: any) => {
             </Flex>
           </div>
         ) : (
-          <div style={{ height: 460 }}>
+          <div style={{ height: "max-content" }}>
             {isLoaded || <Skeleton width="100%" height={460}></Skeleton>}
 
             <Stream
