@@ -2,6 +2,11 @@ import { atom } from "recoil";
 import { mypageMadeClipDummy, selectedClipDefault } from "./constValues";
 
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
+export const recoil_searchText = atom({
+  key: "recoil_searchText",
+  default: "",
+});
+
 export const recoil_isLogined = atom({
   key: "recoil_isLogined",
   default: false,
@@ -110,17 +115,40 @@ export const mypageManage_selectedClip = atom({
   key: "mypageManage_selectedClip",
   default: selectedClipDefault,
 });
-
+export interface mypage_clipType {
+  info: string;
+  channel: string;
+  date: string;
+  views: string;
+}
+interface mypage_clipTypes extends Array<mypage_clipType> {}
 export const mypageManage_madeClip = atom({
   key: "mypageManage_madeClip",
-  default: mypageMadeClipDummy,
+  default: mypageMadeClipDummy as mypage_clipTypes,
 });
 
 export const mypageManage_channelClip = atom({
   key: "mypageManage_channelClip",
-  default: mypageMadeClipDummy,
+  default: [] as mypage_clipTypes,
 });
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
 
-/* ***** ***** ***** ***** ***** create ***** ***** ***** ***** ***** */
-/* ***** ***** ***** ***** ***** create ***** ***** ***** ***** ***** */
+/* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */
+interface searchResultType {
+  nickname: string;
+}
+interface searchResultsType extends Array<searchResultType> {}
+export const search_searchResult = atom({
+  key: "search_searchResult",
+  default: [
+    { nickname: "침착맨" },
+    { nickname: "따효니" },
+    { nickname: "징버거" },
+    { nickname: "주르르" },
+    { nickname: "우왁굳" },
+    { nickname: "오킹" },
+    { nickname: "괴물쥐123" },
+    { nickname: "마젠타_" },
+  ] as searchResultsType,
+});
+/* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */

@@ -18,11 +18,13 @@ import {
   recoil_sidebarOpened,
   recoil_isLogined,
   recoil_loginUserInfo,
+  search_searchResult,
+  recoil_searchText,
 } from "../states";
 import Image from "next/image";
 import { apiAddress } from "../constValues";
 import { IconAt } from "@tabler/icons";
-import { CircleX, Paperclip, Search } from "tabler-icons-react";
+import { CircleX, Paperclip, Router, Search } from "tabler-icons-react";
 import Logo from "./Logo";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,6 +38,7 @@ import { useEffect, useState } from "react";
 import { CreateModal } from "./CreateModal";
 import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const goLogin = () => {
   // use authorization code grant flow
@@ -53,7 +56,7 @@ const goLogout = () => {
 };
 
 export function Navbar() {
-  const [searchText, setSearchText] = useState<string>("");
+  const [searchText, setSearchText] = useRecoilState(recoil_searchText);
   const [searchBarHidden, setSearchBarHidden] = useState(false);
   const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
@@ -103,7 +106,7 @@ export function Navbar() {
     getUserInfo();
     checkLogin();
   }, []);
-
+  const router = useRouter();
   return (
     <div
       className="h-[120px] bg-white sticky top-0 z-50"
@@ -131,6 +134,11 @@ export function Navbar() {
               value={searchText}
               onChange={(e) => {
                 setSearchText(e.currentTarget.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  router.push(`/search/${searchText}`);
+                }
               }}
               icon={
                 <FontAwesomeIcon
