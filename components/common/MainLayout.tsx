@@ -11,7 +11,10 @@ const MainLayout = ({ content, aside }: any): JSX.Element => {
 
   return (
     <Flex justify="space-between" className="relative">
-      <div style={{ height: "calc(100vh - 120px)", flex: 1, overflow: "auto" }}>
+      <div
+        className="pb-20"
+        style={{ height: "calc(100vh - 120px)", flex: 1, overflow: "auto" }}
+      >
         {content()}
       </div>
       <div
