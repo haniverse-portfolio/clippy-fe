@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Navbar } from "../../components/common/Navbar";
 import { NotFoundTitle } from "../../components/common/NotFound";
+import { Sidebar } from "../../components/common/Sidebar";
 import VideoCard from "../../components/common/VideoCard";
 import { apiAddress } from "../../components/constValues";
 import { CloudflareVideo } from "../../components/view/cloudflareVideo";
@@ -71,6 +72,7 @@ const ViewClip = () => {
   return (
     <>
       <Navbar />
+      <Sidebar />
       <Container size="lg">
         {isError ? (
           <NotFoundTitle
