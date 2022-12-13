@@ -138,7 +138,9 @@ const ViewChannel = () => {
 
   const getClips = async () => {
     await axios
-      .get(`${apiAddress}/clip/user/${userData.id}`)
+      .get(`${apiAddress}/clip/user/${userData.id}`, {
+        withCredentials: true,
+      })
       .then((res) => {
         setClips(res.data.data);
         setClipsCount(res.data.data.length);
