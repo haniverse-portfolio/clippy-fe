@@ -29,8 +29,10 @@ import {
   mypageManage_sectionIndex,
   recoil_followed,
   recoil_isLogined,
+  recoil_searchText,
   search_searchResult,
 } from "../../components/states";
+import Link from "next/link";
 
 export default function Home() {
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
@@ -40,6 +42,7 @@ export default function Home() {
     mypageManage_sectionIndex
   );
   const [searchResult, setSearchResult] = useRecoilState(search_searchResult);
+  const [searchText, setSearchText] = useRecoilState(recoil_searchText);
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
 
   /* ***** ***** ***** ***** ***** function ***** ***** ***** ***** ***** */
@@ -186,23 +189,28 @@ export default function Home() {
                             </Text>
                           </Center>
                           <Container>
-                            <Button
-                              mt={40}
-                              mb={24}
-                              leftIcon={<Login size={20} />}
-                              h={58}
-                              color="gray"
-                              radius="xl"
-                              px={20}
-                              style={{
-                                height: "34px",
-                                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                                fontSize: 12,
-                                fontWeight: 700,
-                              }}
-                            >
-                              채널 방문
-                            </Button>
+                            <Link href={`/channel/${result.nickname}`}>
+                              <Button
+                                onClick={() => {
+                                  setSearchText("");
+                                }}
+                                mt={40}
+                                mb={24}
+                                leftIcon={<Login size={20} />}
+                                h={58}
+                                color="gray"
+                                radius="xl"
+                                px={20}
+                                style={{
+                                  height: "34px",
+                                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                  fontSize: 12,
+                                  fontWeight: 700,
+                                }}
+                              >
+                                채널 방문
+                              </Button>
+                            </Link>
                           </Container>
                         </Stack>
                       </Center>

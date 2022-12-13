@@ -2,6 +2,11 @@ import { atom } from "recoil";
 import { mypageMadeClipDummy, selectedClipDefault } from "./constValues";
 
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
+export const recoil_searchText = atom({
+  key: "recoil_searchText",
+  default: "",
+});
+
 export const recoil_isLogined = atom({
   key: "recoil_isLogined",
   default: false,
@@ -130,14 +135,14 @@ interface searchResultsType extends Array<searchResultType> {}
 export const search_searchResult = atom({
   key: "search_searchResult",
   default: [
-    { nickname: "닉네임1" },
-    { nickname: "닉네임2" },
-    { nickname: "닉네임3" },
-    { nickname: "닉네임4" },
-    { nickname: "닉네임5" },
-    { nickname: "닉네임6" },
-    { nickname: "닉네임7" },
-    { nickname: "닉네임8" },
+    { nickname: "침착맨" },
+    { nickname: "따효니" },
+    { nickname: "징버거" },
+    { nickname: "주르르" },
+    { nickname: "우왁굳" },
+    { nickname: "오킹" },
+    { nickname: "괴물쥐123" },
+    { nickname: "마젠타_" },
   ] as searchResultsType,
 });
 /* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */
