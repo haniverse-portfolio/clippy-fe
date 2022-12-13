@@ -160,13 +160,13 @@ const VideoTitle = ({ data }: any) => {
               size={32}
               mx={20}
               className="duration-100"
-              style={isLike ? { color: "#FF0000" } : {}}
+              style={isLike ? { color: "#000000" } : {}}
               onClick={toggleLike}
             >
               <Heart
                 size={36}
                 className="duration-100"
-                style={isLike ? { fill: "#FF0000" } : { fill: "#FFFFFF" }}
+                style={isLike ? { fill: "#000000" } : { fill: "#FFFFFF" }}
               />
             </ActionIcon>
           </Flex>

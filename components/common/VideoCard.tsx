@@ -164,13 +164,13 @@ const VideoCard = ({ clip }: any) => {
               variant="transparent"
               size={36}
               className="duration-100"
-              style={isLike ? { color: "#ff0000" } : {}}
+              style={isLike ? { color: "#000000" } : {}}
               onClick={toggleLike}
             >
               <Heart
                 size={36}
                 className="duration-100"
-                style={isLike ? { fill: "#ff0000" } : { fill: "#ffffff" }}
+                style={isLike ? { fill: "#000000" } : { fill: "#ffffff" }}
               />
             </ActionIcon>
           </div>

@@ -102,7 +102,7 @@ export default function Home() {
             overflowY: "auto",
           }}
         >
-          {isLogined === false ? <IndexBeforeLogin /> : <IndexAfterLogin />}
+          {/*isLogined ===*/ false ? <IndexBeforeLogin /> : <IndexAfterLogin />}
         </div>
         {isLogined === true ? <></> : <></>}
       </main>

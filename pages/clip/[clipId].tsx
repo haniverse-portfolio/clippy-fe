@@ -101,7 +101,7 @@ const ViewClip = () => {
                   direction={"column"}
                   justify="flex-start"
                   align="center"
-                  className="w-full max-w-[700px] h-max mx-auto p-5"
+                  className="w-full max-w-[700px] h-max mx-auto p-5 pb-20"
                 >
                   <SimpleGrid w={"full"} cols={1} spacing={24}>
                     {hotclip.map((clip: any) => {
