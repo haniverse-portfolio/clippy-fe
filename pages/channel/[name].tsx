@@ -2,12 +2,19 @@ import { Avatar, Button, Container, Flex, Text } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 import { Paperclip } from "tabler-icons-react";
 import Explore from "../../components/channel/Explore";
 import TwitchLive from "../../components/channel/TwitchLive";
 import { Navbar } from "../../components/common/Navbar";
 import { NotFoundTitle } from "../../components/common/NotFound";
+import { Sidebar } from "../../components/common/Sidebar";
 import { apiAddress } from "../../components/constValues";
+import {
+  recoil_followed,
+  recoil_isLogined,
+  recoil_loginUserInfo,
+} from "../../components/states";
 import { CloudflareVideo } from "../../components/view/cloudflareVideo";
 import VideoTitle from "../../components/view/videoTitle";
 
@@ -22,6 +29,26 @@ const ViewChannel = () => {
   const [tab, setTab] = useState<string>("explore");
   const [clips, setClips] = useState<any[]>([]);
   const [clipsCount, setClipsCount] = useState<number>(-1);
+
+  const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
+  const [followed, setFollowed] = useRecoilState(recoil_followed);
+  const [loginUserInfo, setLoginUserInfo] =
+    useRecoilState(recoil_loginUserInfo);
+
+  const getUserInfo = () => {
+    const url = `${apiAddress}/user/me`;
+    axios
+      .get(url, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setLoginUserInfo(res.data.data);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const getVideo = async () => {
     await axios
@@ -73,8 +100,13 @@ const ViewChannel = () => {
     }
   }, [userData]);
 
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
   return (
     <>
+      <Sidebar />
       <Navbar />
       <Container
         size="lg"

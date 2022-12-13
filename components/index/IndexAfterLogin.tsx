@@ -62,7 +62,7 @@ export function IndexAfterLogin() {
   const [selectedMenu, setSelectedMenu] = useState("popular");
 
   const [hotclip, setHotclip] = useState([]);
-  e;
+
   const goLogin = () => {
     // use authorization code grant flow
     const clientId = "9n3ebjaenen1jipslsk11ufrcfo51t";

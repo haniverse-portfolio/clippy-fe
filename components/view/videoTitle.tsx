@@ -4,14 +4,18 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Heart, Router } from "tabler-icons-react";
 import { useRouter } from "next/router";
+import { apiAddress } from "../constValues";
+import { useClipboard } from "@mantine/hooks";
 
 const VideoTitle = ({ data }: any) => {
   const router = useRouter();
+  const clipboard = useClipboard({ timeout: 500 });
 
   const [userIcon, setUserIcon] = useState("");
   const [userLogin, setUserLogin] = useState("");
   const [userName, setUserName] = useState("");
   const [clipperName, setClipperName] = useState("");
+  const [isLike, setIsLike] = useState(false);
 
   const getApi = async (userId: number) => {
     const res = await axios.get(`https://twapi.haenu.com/user/id/${userId}`);
@@ -29,9 +33,46 @@ const VideoTitle = ({ data }: any) => {
     });
   };
 
+  const getLikeStatus = async () => {
+    const url = `${apiAddress}/clip/${data.key}/like`;
+    const res = await axios.get(url, { withCredentials: true });
+    setIsLike(res.data.data);
+  };
+
+  const toggleLike = () => {
+    const url = `${apiAddress}/clip/${data.key}/like`;
+
+    if (isLike) {
+      axios
+        .delete(url, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          console.log(res);
+          setIsLike(!isLike);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      axios
+        .post(url, {}, { withCredentials: true })
+        .then((res) => {
+          console.log(res);
+          setIsLike(!isLike);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   useEffect(() => {
     if (data.targetUserId) {
       getUserData();
+    }
+    if (data.id) {
+      getLikeStatus();
     }
   }, [data]);
 
@@ -55,11 +96,23 @@ const VideoTitle = ({ data }: any) => {
                 fontWeight: 400,
               }}
               h={50}
+              onClick={() => {
+                // don't copy query string
+                const url = window.location.href.split("?")[0];
+                clipboard.copy(url);
+                alert("링크가 복사되었습니다.");
+              }}
             >
               링크 복사
             </Button>
-            <ActionIcon variant="transparent" size={32} mx={40}>
-              <Heart size={36} />
+            <ActionIcon
+              variant="transparent"
+              size={32}
+              mx={40}
+              style={isLike ? { color: "#FF0000" } : {}}
+              onClick={toggleLike}
+            >
+              <Heart size={36} style={isLike ? { fill: "#FF0000" } : {}} />
             </ActionIcon>
           </Flex>
         </Flex>
