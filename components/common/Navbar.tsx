@@ -63,13 +63,10 @@ export function Navbar() {
   const { width } = useWindowDimensions();
 
   useEffect(() => {
-    console.log(width, searchBarHidden);
     if (width && width <= 640 && !searchBarHidden) {
-      console.log("hello");
       setSearchBarOpen(false);
       setSearchBarHidden(true);
     } else if (width && width > 640 && searchBarHidden) {
-      console.log("world");
       setSearchBarHidden(false);
     }
   }, [width]);
