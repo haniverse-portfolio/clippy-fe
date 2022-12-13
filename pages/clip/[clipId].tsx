@@ -68,57 +68,13 @@ const ViewClip = () => {
   return (
     <>
       <Navbar />
-      <Container
-        size="lg"
-        // sizes={{
-        //   xs: 540,
-        //   sm: 740,
-        //   md: 980,
-        //   lg: 1200,
-        //   xl: 1320,
-        // }}
-      >
+      <Container size="lg">
         {isError ? (
           <NotFoundTitle
             title="클립을 찾을 수 없어요"
             message="요청하신 클립을 찾을 수 없어요. 주소를 정확히 입력하셨는지 확인해주세요."
           />
         ) : (
-          // <Flex
-          //   direction={isSm || isMd ? "column" : "row"}
-          //   className="relative w-full h-full"
-          //   // style={{ height: "calc(100% - 120px)" }}
-          // >
-          //   <Flex className="p-5" style={{ flex: 1 }} direction="column">
-          //     <div className="relative w-full max-w-[800px] mx-auto flex justify-center items-center">
-          //       <CloudflareVideo
-          //         videoId={videoId}
-          //         clipId={clipId}
-          //         creating={videoCreating}
-          //       />
-          //     </div>
-          //     <div className="mt-[25px]">
-          //       <VideoTitle data={videoData} />
-          //     </div>
-          //   </Flex>
-          //   <div className="relative p-5 w-[350px] h-max :h-full block overflow-x-hidden overflow-y-auto">
-          // <Flex w={"full"} h="max-content">
-          //   <SimpleGrid
-          //     cols={1}
-          //     spacing={24}
-          //     breakpoints={[
-          //       { maxWidth: 1400, cols: 1, spacing: "md" },
-          //       { maxWidth: 980, cols: 2, spacing: "sm" },
-          //       { maxWidth: 600, cols: 1, spacing: "sm" },
-          //     ]}
-          //   >
-          //     {hotclip.map((clip: any) => {
-          //       return <VideoCard key={clip.id} clip={clip} />;
-          //     })}
-          //   </SimpleGrid>
-          // </Flex>
-          //   </div>
-          // </Flex>
           <div
             className="relative top-0 left-0 w-full block overflow-auto md:overflow-hidden"
             style={{ height: "calc(100vh - 120px)" }}
