@@ -146,11 +146,14 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
             text={"팔로우 중인 채널"}
           />
         </Link> */}
-        {/* <UserAsideMenu
+        <UserAsideMenu
           forceLarge={forceLarge}
           icon={<MessageCircle2 size={18} />}
           text={"의견 보내기"}
-        /> */}
+          onClick={() => {
+            window.open("https://forms.gle/sEVEFUuxFnwpqLav6");
+          }}
+        />
         <UserAsideMenu
           onClick={() => {
             goLogout();
