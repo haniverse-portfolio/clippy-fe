@@ -17,11 +17,14 @@ import {
 } from "../../components/states";
 import { CloudflareVideo } from "../../components/view/cloudflareVideo";
 import VideoTitle from "../../components/view/videoTitle";
+import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 
 const ViewChannel = () => {
   // get parameter
   const router = useRouter();
   const { name }: any = router.query;
+
+  const { isSm, isMd } = useTailwindResponsive();
 
   const [userData, setUserData] = useState<any>({});
   const [isError, setIsError] = useState<boolean>(false);
@@ -110,13 +113,14 @@ const ViewChannel = () => {
       <Navbar />
       <Container
         size="lg"
-        sizes={{
-          xs: 540,
-          sm: 740,
-          md: 980,
-          lg: 1200,
-          xl: 1320,
-        }}
+        h={"calc(100vh - 120px)"}
+        // sizes={{
+        //   xs: 540,
+        //   sm: 740,
+        //   md: 980,
+        //   lg: 1200,
+        //   xl: 1320,
+        // }}
       >
         {isError ? (
           <NotFoundTitle
@@ -124,20 +128,20 @@ const ViewChannel = () => {
             message="요청하신 정보를 찾을 수 없어요. 주소를 정확히 입력하셨는지 확인해주세요."
           />
         ) : (
-          <Flex mt={80} direction="column">
-            <Flex align="center">
-              <Avatar
-                size={40}
-                src={userData.profile_image_url || ""}
-                radius={99}
-                mr={16}
-              ></Avatar>
-              <Text size={36} weight={300}>
-                {userData.display_name || ""}
-              </Text>
-            </Flex>
-            <Flex mt={30} mb={30} h={65} align="center">
-              {isLive && (
+          <div className="relative w-full h-full block overflow-auto">
+            <Flex my={40} direction="column">
+              <Flex align="center">
+                <Avatar
+                  size={40}
+                  src={userData.profile_image_url || ""}
+                  radius={99}
+                  mr={16}
+                ></Avatar>
+                <Text size={36} weight={300}>
+                  {userData.display_name || ""}
+                </Text>
+              </Flex>
+              <Flex mt={30} mb={30} h={65} align="center">
                 <Button
                   h={58}
                   color="dark"
@@ -153,45 +157,63 @@ const ViewChannel = () => {
                   }}
                   mr={8}
                 >
-                  방송중
+                  {isLive ? "방송중" : "오프라인"}
                 </Button>
+                <Button
+                  h={58}
+                  color="dark"
+                  variant={tab === "explore" ? "filled" : "outline"}
+                  radius={99}
+                  px={20}
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 700,
+                  }}
+                  onClick={() => {
+                    setTab("explore");
+                  }}
+                >
+                  클립구경
+                </Button>
+              </Flex>
+
+              {tab === "live" && (
+                <>
+                  {/* {isLive ? ( */}
+                  <TwitchLive user={name} />
+                  {/* ) : (
+                    <div className="w-full h-[400px]  border-gray-300 border-[1px] rounded-md flex justify-center items-center text-xl">
+                      {userData.display_name} 님은 오프라인 상태입니다
+                    </div>
+                  )} */}
+
+                  <Flex align="right" mt={30} justify="flex-end">
+                    <Button
+                      leftIcon={<Paperclip />}
+                      size="lg"
+                      color="dark"
+                      disabled={!isLive}
+                      radius="xl"
+                    >
+                      클립 생성
+                    </Button>
+                  </Flex>
+                </>
               )}
-              <Button
-                h={58}
-                color="dark"
-                variant={tab === "explore" ? "filled" : "outline"}
-                radius={99}
-                px={20}
-                style={{
-                  fontSize: 16,
-                  fontWeight: 700,
-                }}
-                onClick={() => {
-                  setTab("explore");
-                }}
-              >
-                클립구경
-              </Button>
+
+              {tab === "explore" && (
+                <>
+                  {clips && clips.length > 0 ? (
+                    <Explore clips={clips} />
+                  ) : (
+                    <div className="w-full h-[400px]  border-gray-300 border-[1px] rounded-md flex justify-center items-center text-xl">
+                      등록된 클립이 없습니다
+                    </div>
+                  )}
+                </>
+              )}
             </Flex>
-
-            {tab === "live" && (
-              <>
-                <TwitchLive user={name} />
-                <Flex align="right" mt={30} justify="flex-end">
-                  <Button
-                    leftIcon={<Paperclip />}
-                    size="lg"
-                    color="dark"
-                    radius="xl"
-                  >
-                    클립 생성
-                  </Button>
-                </Flex>
-              </>
-            )}
-
-            {tab === "explore" && <Explore clips={clips} />}
-          </Flex>
+          </div>
         )}
       </Container>
     </>
