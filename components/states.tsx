@@ -115,15 +115,21 @@ export const mypageManage_selectedClip = atom({
   key: "mypageManage_selectedClip",
   default: selectedClipDefault,
 });
-
+export interface mypage_clipType {
+  info: string;
+  channel: string;
+  date: string;
+  views: string;
+}
+interface mypage_clipTypes extends Array<mypage_clipType> {}
 export const mypageManage_madeClip = atom({
   key: "mypageManage_madeClip",
-  default: mypageMadeClipDummy,
+  default: mypageMadeClipDummy as mypage_clipTypes,
 });
 
 export const mypageManage_channelClip = atom({
   key: "mypageManage_channelClip",
-  default: mypageMadeClipDummy,
+  default: [] as mypage_clipTypes,
 });
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
 

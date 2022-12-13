@@ -81,7 +81,7 @@ export function MypageChannelClip() {
     <div>
       <Sidebar />
       <MainLayout
-        aside={LiveAside}
+        aside={UserAside}
         content={() => {
           return (
             <>
