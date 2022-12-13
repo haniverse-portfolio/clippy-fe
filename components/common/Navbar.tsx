@@ -63,6 +63,7 @@ export function Navbar() {
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
   const [loginUserInfo, setLoginUserInfo] =
     useRecoilState(recoil_loginUserInfo);
+  const [searchResult, setSearchResult] = useRecoilState(search_searchResult);
   const { width } = useWindowDimensions();
 
   useEffect(() => {
@@ -107,6 +108,28 @@ export function Navbar() {
     checkLogin();
   }, []);
   const router = useRouter();
+
+  const getTwitchChannel = async (routerSearchText: string) => {
+    // https://api.clippy.kr/extractor
+    const url = apiAddress + `/search/channel?q=${routerSearchText}`;
+
+    const res = await axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((res) => {
+        setSearchResult(res.data.data);
+        return res.data;
+      })
+      .catch((res) => {
+        const errMessage = res.response.data.message;
+
+        // error 표시해주기
+      });
+  };
   return (
     <div
       className="h-[120px] bg-white sticky top-0 z-50"
@@ -137,6 +160,7 @@ export function Navbar() {
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
+                  getTwitchChannel(searchText);
                   router.push(`/search/${searchText}`);
                 }
               }}

@@ -138,20 +138,15 @@ export const mypageManage_channelClip = atom({
 
 /* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */
 interface searchResultType {
-  nickname: string;
+  id: string;
+  name: string;
+  display_name: string;
+  logo: string;
+  url: string;
 }
 interface searchResultsType extends Array<searchResultType> {}
 export const search_searchResult = atom({
   key: "search_searchResult",
-  default: [
-    { nickname: "침착맨" },
-    { nickname: "따효니" },
-    { nickname: "징버거" },
-    { nickname: "주르르" },
-    { nickname: "우왁굳" },
-    { nickname: "오킹" },
-    { nickname: "괴물쥐123" },
-    { nickname: "마젠타_" },
-  ] as searchResultsType,
+  default: [] as searchResultsType,
 });
 /* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */

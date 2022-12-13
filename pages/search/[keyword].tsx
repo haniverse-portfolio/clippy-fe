@@ -15,6 +15,7 @@ import {
   SimpleGrid,
   Center,
   Avatar,
+  ScrollArea,
 } from "@mantine/core";
 import Head from "next/head";
 import axios from "axios";
@@ -81,14 +82,37 @@ export default function Home() {
         console.log(err);
       });
   };
+
+  const getTwitchChannel = async (routerSearchText: string) => {
+    // https://api.clippy.kr/extractor
+    const url = apiAddress + `/search/channel?q=${routerSearchText}`;
+
+    const res = await axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((res) => {
+        setSearchResult(res.data.data);
+        return res.data;
+      })
+      .catch((res) => {
+        const errMessage = res.response.data.message;
+
+        // error 표시해주기
+      });
+  };
   /* ***** ***** ***** ***** ***** axios call ***** ***** ***** ***** ***** */
 
   /* ***** ***** ***** ***** ***** effect hook ***** ***** ***** ***** ***** */
+  const router = useRouter();
   useEffect(() => {
     checkLogin();
-  }, []);
+    // getTwitchChannel(router.query.keyword as string);
+  }, [router.isReady]);
   /* ***** ***** ***** ***** ***** effect hook ***** ***** ***** ***** ***** */
-  const router = useRouter();
   return (
     <div>
       <Head>
@@ -164,7 +188,7 @@ export default function Home() {
                           mt={32}
                           radius="xl"
                           size={98}
-                          src={null}
+                          src={result.logo}
                           style={{ borderRadius: 99 }}
                         />
                       </Center>
@@ -185,11 +209,11 @@ export default function Home() {
                                 maxWidth: 280,
                               }}
                             >
-                              {result.nickname}
+                              {result.display_name}
                             </Text>
                           </Center>
                           <Container>
-                            <Link href={`/channel/${result.nickname}`}>
+                            <Link href={`/channel/${result.display_name}`}>
                               <Button
                                 onClick={() => {
                                   setSearchText("");
