@@ -122,5 +122,22 @@ export const mypageManage_channelClip = atom({
 });
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
 
-/* ***** ***** ***** ***** ***** create ***** ***** ***** ***** ***** */
-/* ***** ***** ***** ***** ***** create ***** ***** ***** ***** ***** */
+/* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */
+interface searchResultType {
+  nickname: string;
+}
+interface searchResultsType extends Array<searchResultType> {}
+export const search_searchResult = atom({
+  key: "search_searchResult",
+  default: [
+    { nickname: "닉네임1" },
+    { nickname: "닉네임2" },
+    { nickname: "닉네임3" },
+    { nickname: "닉네임4" },
+    { nickname: "닉네임5" },
+    { nickname: "닉네임6" },
+    { nickname: "닉네임7" },
+    { nickname: "닉네임8" },
+  ] as searchResultsType,
+});
+/* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */
