@@ -6,6 +6,7 @@ import { Heart, Router } from "tabler-icons-react";
 import { useRouter } from "next/router";
 import { apiAddress } from "../constValues";
 import { useClipboard } from "@mantine/hooks";
+import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 
 const VideoTitle = ({ data }: any) => {
   const router = useRouter();
@@ -16,6 +17,8 @@ const VideoTitle = ({ data }: any) => {
   const [userName, setUserName] = useState("");
   const [clipperName, setClipperName] = useState("");
   const [isLike, setIsLike] = useState(false);
+
+  const { isSm, isMd } = useTailwindResponsive();
 
   const getApi = async (userId: number) => {
     const res = await axios.get(`https://twapi.haenu.com/user/id/${userId}`);
@@ -80,22 +83,69 @@ const VideoTitle = ({ data }: any) => {
     <>
       <div>
         <Flex direction="row" justify="space-between" align="center">
-          <Text size={36} weight={300}>
+          <Text size={28} weight={300}>
             {data.title}
           </Text>
+        </Flex>
+      </div>
+
+      <div className="mt-[20px]">
+        <Flex direction="row" justify="space-between" align="center">
+          <Flex direction={"column"} justify={"center"} align={"flex-start"}>
+            <Flex
+              align="center"
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                router.push(`/channel/${userLogin}`);
+              }}
+            >
+              <Avatar src={userIcon} size={24} mr={8} radius={99}></Avatar>
+              <Text size={20} weight={700}>
+                {userName}
+              </Text>
+            </Flex>
+            <Flex direction="column" mt={8}>
+              <Flex mr={16}>
+                <Text size={12} weight={300} mr={4}>
+                  게시자
+                </Text>
+                <Text size={12} weight={400}>
+                  {clipperName}
+                </Text>
+              </Flex>
+              <Flex>
+                <Flex mr={16}>
+                  <Text size={12} weight={300} mr={4}>
+                    조회수
+                  </Text>
+                  <Text size={12} weight={400}>
+                    {data.viewCount}
+                  </Text>
+                </Flex>
+                <Flex>
+                  <Text size={12} weight={300} mr={4}>
+                    좋아요
+                  </Text>
+                  <Text size={12} weight={400}>
+                    {data.likeCount}개
+                  </Text>
+                </Flex>
+              </Flex>
+            </Flex>
+          </Flex>
           <Flex align="center">
             {/* <Button>Thanks</Button> */}
             <Button
-              py={12}
-              px={20}
+              py={8}
+              px={15}
               style={{
-                fontSize: 16,
+                fontSize: 14,
                 borderRadius: 99,
                 backgroundColor: "#F0F0F0",
                 color: "black",
                 fontWeight: 400,
               }}
-              h={50}
+              h={40}
               onClick={() => {
                 // don't copy query string
                 const url = window.location.href.split("?")[0];
@@ -108,7 +158,7 @@ const VideoTitle = ({ data }: any) => {
             <ActionIcon
               variant="transparent"
               size={32}
-              mx={40}
+              mx={20}
               style={isLike ? { color: "#FF0000" } : {}}
               onClick={toggleLike}
             >
@@ -118,50 +168,7 @@ const VideoTitle = ({ data }: any) => {
         </Flex>
       </div>
 
-      <div style={{ marginTop: 40 }}>
-        <Flex direction="row" justify="space-between" align="center">
-          <Flex
-            align="center"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              router.push(`/channel/${userLogin}`);
-            }}
-          >
-            <Avatar src={userIcon} size={24} mr={8} radius={99}></Avatar>
-            <Text size={20} weight={700}>
-              {userName}
-            </Text>
-          </Flex>
-          <Flex>
-            <Flex mr={16}>
-              <Text size={16} weight={300} mr={4}>
-                게시자
-              </Text>
-              <Text size={16} weight={400}>
-                {clipperName}
-              </Text>
-            </Flex>
-            <Flex mr={16}>
-              <Text size={16} weight={300} mr={4}>
-                조회수
-              </Text>
-              <Text size={16} weight={400}>
-                {data.viewCount}
-              </Text>
-            </Flex>
-            <Flex>
-              <Text size={16} weight={300} mr={4}>
-                좋아요
-              </Text>
-              <Text size={16} weight={400}>
-                {data.likeCount}개
-              </Text>
-            </Flex>
-          </Flex>
-        </Flex>
-      </div>
-
-      <div style={{ marginTop: 40 }}>
+      <div className="mt-[20px]">
         <Flex>
           <Text size={16} weight={300} mr={4}>
             댓글
@@ -172,7 +179,7 @@ const VideoTitle = ({ data }: any) => {
         </Flex>
       </div>
 
-      <div style={{ marginTop: 20 }}>
+      <div className="my-[20px]">
         <Alert
           icon={<IconAlertCircle size={16} />}
           title="댓글 기능 지원예정"
