@@ -6,6 +6,7 @@ import { ReactNode } from "react";
 import { useRecoilState } from "recoil";
 import {
   Broadcast,
+  InfoCircle,
   Logout,
   MessageCircle2,
   Paperclip,
@@ -146,6 +147,14 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
             text={"팔로우 중인 채널"}
           />
         </Link> */}
+        <UserAsideMenu
+          forceLarge={forceLarge}
+          icon={<InfoCircle size={18} />}
+          text={"고객 센터"}
+          onClick={() => {
+            window.open("https://support.clippy.kr");
+          }}
+        />
         <UserAsideMenu
           forceLarge={forceLarge}
           icon={<MessageCircle2 size={18} />}
