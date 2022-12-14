@@ -182,7 +182,7 @@ export default function Home() {
               <SimpleGrid
                 cols={4}
                 spacing={24}
-                p={10}
+                p={9}
                 breakpoints={[
                   { maxWidth: 1400, cols: 3, spacing: "md" },
                   { maxWidth: 980, cols: 2, spacing: "sm" },
