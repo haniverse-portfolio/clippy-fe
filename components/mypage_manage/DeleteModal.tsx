@@ -102,7 +102,6 @@ export const DeleteModal = () => {
                 return (
                   <MypageTableRow
                     key={i}
-                    checkbox={<></>}
                     title={cur.info}
                     clipId={cur.clipId}
                     imageURL={cur.thumbnail}

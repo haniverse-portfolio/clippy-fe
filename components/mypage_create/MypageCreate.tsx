@@ -33,11 +33,7 @@ import {
   mypageManage_madeClip,
 } from "../states";
 import Image from "next/image";
-import {
-  apiAddress,
-  selectedAllClip,
-  selectedClipDefault,
-} from "../constValues";
+import { apiAddress } from "../constValues";
 import axios from "axios";
 import MainLayout from "../common/MainLayout";
 import UserAside from "../aside/UserAside";
