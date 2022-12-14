@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { selectedClipDefault } from "./constValues";
+import { mypageMadeClipDummy } from "./constValues";
 
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 export const recoil_isLogined = atom({
@@ -124,8 +124,9 @@ export const mypageManage_sectionIndex = atom({
 
 export const mypageManage_selectedClip = atom({
   key: "mypageManage_selectedClip",
-  default: selectedClipDefault,
+  default: [] as string[],
 }); // 관리 - 선택된 클립 배열
+
 export interface mypage_clipType {
   info: string;
   clipId: string;
