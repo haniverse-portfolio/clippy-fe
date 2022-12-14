@@ -6,6 +6,7 @@ import {
   mypageManage_madeClip,
   mypageManage_sectionIndex,
   mypageManage_selectedClip,
+  recoil_mypageManageReloadTrigger,
 } from "../states";
 import { atom, useRecoilState } from "recoil";
 import {
@@ -34,6 +35,9 @@ export function MypageManageCommon() {
     mypageManage_channelClip
   );
   const [isAllCheckClicked, setIsAllCheckClicked] = useState(false);
+  const [isReloadTriggered, setIsReloadTriggered] = useRecoilState(
+    recoil_mypageManageReloadTrigger
+  );
 
   const [deleteModalOpened, setDeleteModalOpened] = useRecoilState(
     mypageManage_deleteModalOpened
@@ -95,9 +99,13 @@ export function MypageManageCommon() {
   };
 
   useEffect(() => {
-    getMypageMadeClip();
-    getMypageChannelClip();
-  }, []);
+    if (isReloadTriggered) {
+      console.log("loaded");
+      getMypageMadeClip();
+      getMypageChannelClip();
+      setIsReloadTriggered(false);
+    }
+  }, [isReloadTriggered]);
 
   const checkAll = () => {
     if (selectAllChecked === false) setSelectedClip(selectedAllClip);

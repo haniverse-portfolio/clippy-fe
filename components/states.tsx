@@ -101,6 +101,16 @@ export const recoil_deleteModalStep = atom({
   default: 0,
 }); // 삭제 modal 화면 인덱스
 
+export const recoil_deleteTargetClips = atom({
+  key: "recoil_deleteTargetClips",
+  default: [] as string[],
+}); // 삭제 대상 클립 배열
+
+export const recoil_mypageManageReloadTrigger = atom({
+  key: "recoil_mypageManageReloadTrigger",
+  default: true,
+});
+
 export const mypageManage_deleteModalOpened = atom({
   key: "mypageManage_deleteModalOpened",
   default: false,
