@@ -117,7 +117,10 @@ export function MypageManageCommon() {
   };
 
   useEffect(() => {
-    setSelectAllChecked(getCurrentSectionClip().length === selectedClip.length);
+    setSelectAllChecked(
+      getCurrentSectionClip().length === selectedClip.length &&
+        selectedClip.length !== 0
+    );
   }, [selectedClip]);
 
   return (
