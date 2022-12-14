@@ -159,18 +159,19 @@ export function Navbar() {
               onChange={(e) => {
                 let changedText = e.currentTarget.value as string;
                 let textLength = changedText.length;
-                if (textLength === 0) {
-                  setSearchText(changedText);
-                  return;
-                }
-                let lastWord = changedText[textLength - 1];
-                let ac = lastWord.charCodeAt(0); // ascii_code
-                let validFlag =
-                  (ac >= 48 && ac <= 57) ||
-                  (ac >= 65 && ac <= 90) ||
-                  (ac >= 97 && ac <= 122) ||
-                  ac === 95;
-                if (validFlag) setSearchText(changedText);
+                // if (textLength === 0) {
+                //   setSearchText(changedText);
+                //   return;
+                // }
+                // let lastWord = changedText[textLength - 1];
+                // let ac = lastWord.charCodeAt(0); // ascii_code
+                // let validFlag =
+                //   (ac >= 48 && ac <= 57) ||
+                //   (ac >= 65 && ac <= 90) ||
+                //   (ac >= 97 && ac <= 122) ||
+                //   ac === 95;
+                // if (validFlag) setSearchText(changedText);
+                setSearchText(changedText);
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
