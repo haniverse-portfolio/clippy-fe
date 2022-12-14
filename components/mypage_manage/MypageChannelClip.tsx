@@ -97,20 +97,6 @@ export function MypageChannelClip() {
                   return (
                     <MypageTableRow
                       key={i}
-                      checkbox={
-                        <Checkbox
-                          onClick={() => {
-                            let copySelectedClip = JSON.parse(
-                              JSON.stringify(selectedClip)
-                            ) as Array<boolean>;
-                            copySelectedClip[i] = !copySelectedClip[i];
-                            setSelectedClip(copySelectedClip);
-                          }}
-                          checked={selectedClip[i]}
-                          color="dark"
-                          className="mb-[-4px]"
-                        />
-                      }
                       title={cur.info}
                       clipId={cur.clipId}
                       imageURL={cur.thumbnail}

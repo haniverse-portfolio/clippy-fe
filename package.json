@@ -19,6 +19,7 @@
     "@mantine/ds": "^5.9.2",
     "@mantine/form": "^5.8.3",
     "@mantine/hooks": "^5.9.2",
+    "@mantine/notifications": "^5.9.4",
     "@mantine/prism": "^5.9.2",
     "@sentry/nextjs": "^7.24.2",
     "@tabler/icons": "^1.116.1",
