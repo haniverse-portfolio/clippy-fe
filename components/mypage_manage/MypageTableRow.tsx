@@ -1,6 +1,7 @@
 import { Flex, Group, Text } from "@mantine/core";
 import Link from "next/link";
 import { ReactNode } from "react";
+import { Trash } from "tabler-icons-react";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 
 interface MyapgeTableRowProps {
@@ -34,12 +35,12 @@ export function MypageTableRow({
         height: isSm || isMd ? 150 : 90,
       }}
     >
-      <div
+      {/* <div
         className="min-w-[70px] flex justify-center items-center"
         style={{ height: isSm || isMd ? 150 : 90 }}
       >
         {checkbox}
-      </div>
+      </div> */}
       <Flex
         direction={isSm || isMd ? "column" : "row"}
         justify="center"
@@ -120,6 +121,12 @@ export function MypageTableRow({
           </Text>
         </div>
       </Flex>
+      <div
+        className="min-w-[67px] flex justify-center items-center"
+        style={{ height: isSm || isMd ? 150 : 90 }}
+      >
+        <Trash />
+      </div>
     </Flex>
   );
 }
