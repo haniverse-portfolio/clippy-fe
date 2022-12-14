@@ -231,7 +231,7 @@ export function Navbar() {
       </Group>
       <Stack className="h-[60px] bg-[#63C81B]">
         <span className="ml-8 my-auto text-xl text-white font-semibold">
-          [공지] &nbsp;12월 14일 오후 6시까지{" "}
+          [공지] 12월 14일 오후 6시까지{" "}
           <span className="underline">클립 생성</span> 기능이 일시적으로
           제한됩니다.
         </span>
