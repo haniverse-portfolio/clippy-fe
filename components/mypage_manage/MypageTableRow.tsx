@@ -1,7 +1,13 @@
 import { Flex, Group, Text } from "@mantine/core";
 import Link from "next/link";
 import { ReactNode } from "react";
+import { useRecoilState } from "recoil";
+import { Trash } from "tabler-icons-react";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import {
+  mypageManage_deleteModalOpened,
+  recoil_deleteTargetClips,
+} from "../states";
 
 interface MyapgeTableRowProps {
   checkbox: ReactNode;
@@ -12,6 +18,7 @@ interface MyapgeTableRowProps {
   views: string;
   clipId: string;
   channelName: string;
+  disableDelete?: boolean;
 }
 export function MypageTableRow({
   checkbox,
@@ -22,8 +29,21 @@ export function MypageTableRow({
   channelName,
   date,
   views,
+  disableDelete = false,
 }: MyapgeTableRowProps) {
+  const [deleteModalOpened, setDeleteModalOpened] = useRecoilState(
+    mypageManage_deleteModalOpened
+  );
+  const [deleteTargetClips, setDeleteTargetClips] = useRecoilState(
+    recoil_deleteTargetClips
+  );
   const { isSm, isMd } = useTailwindResponsive();
+
+  const deleteOneClip = (id: string) => {
+    setDeleteTargetClips([id]);
+    setDeleteModalOpened(true);
+  };
+
   return (
     <Flex
       justify="space-between"
@@ -34,12 +54,12 @@ export function MypageTableRow({
         height: isSm || isMd ? 150 : 90,
       }}
     >
-      <div
+      {/* <div
         className="min-w-[70px] flex justify-center items-center"
         style={{ height: isSm || isMd ? 150 : 90 }}
       >
         {checkbox}
-      </div>
+      </div> */}
       <Flex
         direction={isSm || isMd ? "column" : "row"}
         justify="center"
@@ -120,6 +140,17 @@ export function MypageTableRow({
           </Text>
         </div>
       </Flex>
+      {!disableDelete && (
+        <div
+          className="min-w-[67px] flex justify-center items-center"
+          style={{ height: isSm || isMd ? 150 : 90 }}
+        >
+          <Trash
+            className="cursor-pointer"
+            onClick={() => deleteOneClip(clipId)}
+          />
+        </div>
+      )}
     </Flex>
   );
 }

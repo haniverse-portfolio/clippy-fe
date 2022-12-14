@@ -6,6 +6,7 @@ import {
   mypageManage_madeClip,
   mypageManage_sectionIndex,
   mypageManage_selectedClip,
+  recoil_mypageManageReloadTrigger,
 } from "../states";
 import { atom, useRecoilState } from "recoil";
 import {
@@ -34,6 +35,9 @@ export function MypageManageCommon() {
     mypageManage_channelClip
   );
   const [isAllCheckClicked, setIsAllCheckClicked] = useState(false);
+  const [isReloadTriggered, setIsReloadTriggered] = useRecoilState(
+    recoil_mypageManageReloadTrigger
+  );
 
   const [deleteModalOpened, setDeleteModalOpened] = useRecoilState(
     mypageManage_deleteModalOpened
@@ -95,9 +99,13 @@ export function MypageManageCommon() {
   };
 
   useEffect(() => {
-    getMypageMadeClip();
-    getMypageChannelClip();
-  }, []);
+    if (isReloadTriggered) {
+      console.log("loaded");
+      getMypageMadeClip();
+      getMypageChannelClip();
+      setIsReloadTriggered(false);
+    }
+  }, [isReloadTriggered]);
 
   const checkAll = () => {
     if (selectAllChecked === false) setSelectedClip(selectedAllClip);
@@ -170,11 +178,11 @@ export function MypageManageCommon() {
           height: isSm || isMd ? 60 : 48,
         }}
       >
-        <div
+        {/*<div
           className="w-[70px] flex justify-center items-center border-r-[1px] lg:border-0 border-black"
           style={{ height: isSm || isMd ? 56 : 44 }}
         >
-          {/* <Checkbox
+           <Checkbox
             onClick={() => {
               setIsAllCheckClicked(() => true);
               checkAll();
@@ -182,8 +190,8 @@ export function MypageManageCommon() {
             checked={selectAllChecked}
             color="dark"
             className="mb-[-4px]"
-          /> */}
-        </div>
+          />
+        </div> */}
         <Flex
           direction={isSm || isMd ? "column" : "row"}
           justify="center"
@@ -246,6 +254,14 @@ export function MypageManageCommon() {
             </Text>
           </div>
         </Flex>
+        <div
+          className="w-[70px] flex justify-center items-center border-l-[1px] lg:border-0 border-black"
+          style={{ height: isSm || isMd ? 56 : 44 }}
+        >
+          <Text fw={700} className="text-[16px] whitespace-nowrap">
+            관리
+          </Text>
+        </div>
       </Flex>
     </Stack>
   );
