@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { mypageMadeClipDummy, selectedClipDefault } from "./constValues";
+import { mypageMadeClipDummy } from "./constValues";
 
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 export const recoil_searchText = atom({
@@ -123,7 +123,7 @@ export const mypageManage_sectionIndex = atom({
 
 export const mypageManage_selectedClip = atom({
   key: "mypageManage_selectedClip",
-  default: selectedClipDefault,
+  default: [] as string[],
 });
 export interface mypage_clipType {
   info: string;

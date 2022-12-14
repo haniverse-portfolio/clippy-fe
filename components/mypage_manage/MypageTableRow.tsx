@@ -1,16 +1,16 @@
-import { Flex, Group, Text } from "@mantine/core";
+import { Flex, Group, Text, Checkbox } from "@mantine/core";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { Trash } from "tabler-icons-react";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import {
   mypageManage_deleteModalOpened,
+  mypageManage_selectedClip,
   recoil_deleteTargetClips,
 } from "../states";
 
 interface MyapgeTableRowProps {
-  checkbox: ReactNode;
   imageURL?: string;
   title: string;
   channel: string;
@@ -21,7 +21,6 @@ interface MyapgeTableRowProps {
   disableDelete?: boolean;
 }
 export function MypageTableRow({
-  checkbox,
   imageURL,
   clipId,
   title,
@@ -37,12 +36,20 @@ export function MypageTableRow({
   const [deleteTargetClips, setDeleteTargetClips] = useRecoilState(
     recoil_deleteTargetClips
   );
+  const [selectedClips, setSelectedClips] = useRecoilState(
+    mypageManage_selectedClip
+  );
+  const [isChecked, setIsChecked] = useState(false);
   const { isSm, isMd } = useTailwindResponsive();
 
   const deleteOneClip = (id: string) => {
     setDeleteTargetClips([id]);
     setDeleteModalOpened(true);
   };
+
+  useEffect(() => {
+    setIsChecked(!!selectedClips.includes(clipId));
+  }, [selectedClips]);
 
   return (
     <Flex
@@ -54,12 +61,23 @@ export function MypageTableRow({
         height: isSm || isMd ? 150 : 90,
       }}
     >
-      {/* <div
-        className="min-w-[70px] flex justify-center items-center"
-        style={{ height: isSm || isMd ? 150 : 90 }}
-      >
-        {checkbox}
-      </div> */}
+      {!disableDelete && (
+        <div
+          className="min-w-[50px] sm:min-w-[68px] flex justify-center items-center"
+          style={{ height: isSm || isMd ? 150 : 90 }}
+        >
+          <Checkbox
+            onClick={() => {
+              if (selectedClips.includes(clipId))
+                setSelectedClips(selectedClips.filter((x) => x !== clipId));
+              else setSelectedClips([...selectedClips, clipId]);
+            }}
+            checked={isChecked}
+            color="dark"
+            className="mb-[-4px]"
+          />
+        </div>
+      )}
       <Flex
         direction={isSm || isMd ? "column" : "row"}
         justify="center"
@@ -142,7 +160,7 @@ export function MypageTableRow({
       </Flex>
       {!disableDelete && (
         <div
-          className="min-w-[67px] flex justify-center items-center"
+          className="min-w-[50px] sm:min-w-[68px] flex justify-center items-center"
           style={{ height: isSm || isMd ? 150 : 90 }}
         >
           <Trash
