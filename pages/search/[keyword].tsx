@@ -19,7 +19,7 @@ import {
 } from "@mantine/core";
 import Head from "next/head";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { atom, useRecoilState } from "recoil";
 import { apiAddress } from "../../components/constValues";
 import { Navbar } from "../../components/common/Navbar";
@@ -34,6 +34,7 @@ import {
   search_searchResult,
 } from "../../components/states";
 import Link from "next/link";
+import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 
 export default function Home() {
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
@@ -44,7 +45,13 @@ export default function Home() {
   );
   const [searchResult, setSearchResult] = useRecoilState(search_searchResult);
   const [searchText, setSearchText] = useRecoilState(recoil_searchText);
+  const [scrollAreaHeight, setScrollAreaHeight] = useState<string | number>(
+    "calc(100vh - 320px)"
+  );
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
+
+  const { isSm } = useTailwindResponsive();
+  const searchHeaderDivRef = useRef<HTMLDivElement>(null);
 
   /* ***** ***** ***** ***** ***** function ***** ***** ***** ***** ***** */
 
@@ -112,6 +119,14 @@ export default function Home() {
     checkLogin();
     // getTwitchChannel(router.query.keyword as string);
   }, [router.isReady]);
+
+  useEffect(() => {
+    if (searchHeaderDivRef && searchHeaderDivRef.current) {
+      setScrollAreaHeight(
+        `calc(100vh - ${searchHeaderDivRef.current.offsetHeight + 280}px)`
+      );
+    }
+  }, [searchHeaderDivRef]);
   /* ***** ***** ***** ***** ***** effect hook ***** ***** ***** ***** ***** */
   return (
     <div>
@@ -124,7 +139,10 @@ export default function Home() {
 
       <main>
         <Navbar />
-        <div style={{ height: "calc(100vh - 120px)" }}>
+        <div
+          // className="overflow-auto"
+          style={{ height: "calc(100vh - 120px)" }}
+        >
           <Container
             size="xl"
             sizes={{
@@ -136,14 +154,14 @@ export default function Home() {
             }}
             mb={100}
           >
-            <Stack mt={80}>
-              <Text size={36} weight={300}>
+            <Stack ref={searchHeaderDivRef} mt={80}>
+              <div className="text-2xl md:text-3xl lg:text-4xl font-light">
                 <strong>{router.query.keyword}</strong>에 대한 검색 결과
-              </Text>
+              </div>
               <Group position="apart">
                 <Group>
                   <Button
-                    h={58}
+                    h={isSm ? 48 : 58}
                     color="dark"
                     radius={99}
                     px={20}
@@ -157,92 +175,93 @@ export default function Home() {
                 </Group>
               </Group>
             </Stack>
-            <SimpleGrid
-              cols={4}
-              spacing={24}
-              mt={40}
-              breakpoints={[
-                { maxWidth: 1400, cols: 3, spacing: "md" },
-                { maxWidth: 980, cols: 2, spacing: "sm" },
-                { maxWidth: 600, cols: 1, spacing: "sm" },
-              ]}
-            >
-              {searchResult.map((result: any, i) => {
-                return (
-                  <Card
-                    className="animate-fadeUp"
-                    p={0}
-                    m={0}
-                    key={i}
-                    // onClick={() => {
-                    //   window.location.href = `/create/${stream.user_login}`;
-                    // }}
-                  >
-                    <Flex
-                      className="h-[260px] border-2 rounded-xl"
-                      justify="center"
-                      direction="column"
+            <ScrollArea mt={40} style={{ height: scrollAreaHeight }}>
+              <SimpleGrid
+                cols={4}
+                spacing={24}
+                pb={40}
+                breakpoints={[
+                  { maxWidth: 1400, cols: 3, spacing: "md" },
+                  { maxWidth: 980, cols: 2, spacing: "sm" },
+                  { maxWidth: 600, cols: 1, spacing: "sm" },
+                ]}
+              >
+                {searchResult.map((result: any, i) => {
+                  return (
+                    <Card
+                      className="animate-fadeUp"
+                      p={0}
+                      m={0}
+                      key={i}
+                      // onClick={() => {
+                      //   window.location.href = `/create/${stream.user_login}`;
+                      // }}
                     >
-                      <Center>
-                        <Avatar
-                          mt={32}
-                          radius="xl"
-                          size={98}
-                          src={result.logo}
-                          style={{ borderRadius: 99 }}
-                        />
-                      </Center>
-                      <Center>
-                        <Stack spacing={0}>
-                          <Center>
-                            <Text
-                              size={16}
-                              weight={700}
-                              mt={16}
-                              align="center"
-                              style={{
-                                whiteSpace: "nowrap",
-                                textOverflow: "ellipsis",
-                                overflow: "hidden",
-                                width:
-                                  "calc((100vw - 360px) / 4 - 24px - 60px)",
-                                maxWidth: 280,
-                              }}
-                            >
-                              {result.display_name}
-                            </Text>
-                          </Center>
-                          <Container>
-                            <Link href={`/channel/${result.display_name}`}>
-                              <Button
-                                onClick={() => {
-                                  setSearchText("");
-                                }}
-                                mt={40}
-                                mb={24}
-                                leftIcon={<Login size={20} />}
-                                h={58}
-                                color="gray"
-                                radius="xl"
-                                px={20}
+                      <Flex
+                        className="h-[260px] border-2 rounded-xl"
+                        justify="center"
+                        direction="column"
+                      >
+                        <Center>
+                          <Avatar
+                            mt={32}
+                            radius="xl"
+                            size={98}
+                            src={result.logo}
+                            style={{ borderRadius: 99 }}
+                          />
+                        </Center>
+                        <Center>
+                          <Stack spacing={0}>
+                            <Center>
+                              <Text
+                                size={16}
+                                weight={700}
+                                mt={16}
+                                align="center"
                                 style={{
-                                  height: "34px",
-                                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                                  fontSize: 12,
-                                  fontWeight: 700,
+                                  whiteSpace: "nowrap",
+                                  textOverflow: "ellipsis",
+                                  overflow: "hidden",
+                                  width: "100%",
+                                  maxWidth: 280,
                                 }}
                               >
-                                채널 방문
-                              </Button>
-                            </Link>
-                          </Container>
-                        </Stack>
-                      </Center>
-                    </Flex>
-                  </Card>
-                );
-              })}
-            </SimpleGrid>
+                                {result.display_name}
+                              </Text>
+                            </Center>
+                            <Container>
+                              <Link href={`/channel/${result.display_name}`}>
+                                <Button
+                                  onClick={() => {
+                                    setSearchText("");
+                                  }}
+                                  mt={40}
+                                  mb={24}
+                                  leftIcon={<Login size={20} />}
+                                  h={58}
+                                  color="gray"
+                                  radius="xl"
+                                  px={20}
+                                  style={{
+                                    height: "34px",
+                                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                  }}
+                                >
+                                  채널 방문
+                                </Button>
+                              </Link>
+                            </Container>
+                          </Stack>
+                        </Center>
+                      </Flex>
+                    </Card>
+                  );
+                })}
+              </SimpleGrid>
+            </ScrollArea>
           </Container>
         </div>
       </main>

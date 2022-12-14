@@ -147,6 +147,77 @@ interface searchResultType {
 interface searchResultsType extends Array<searchResultType> {}
 export const search_searchResult = atom({
   key: "search_searchResult",
-  default: [] as searchResultsType,
+  default: [
+    {
+      id: "1",
+      name: "maker_betaman",
+      display_name: "베타맨",
+      logo: "https://avatars.githubusercontent.com/u/33021438?v=4",
+      url: "https://avatars.githubusercontent.com/u/33021438?v=4",
+    },
+    {
+      id: "2",
+      name: "maker_betaman",
+      display_name: "베타맨",
+      logo: "https://avatars.githubusercontent.com/u/33021438?v=4",
+      url: "https://avatars.githubusercontent.com/u/33021438?v=4",
+    },
+    {
+      id: "3",
+      name: "maker_betaman",
+      display_name: "베타맨",
+      logo: "https://avatars.githubusercontent.com/u/33021438?v=4",
+      url: "https://avatars.githubusercontent.com/u/33021438?v=4",
+    },
+    {
+      id: "4",
+      name: "maker_betaman",
+      display_name: "베타맨",
+      logo: "https://avatars.githubusercontent.com/u/33021438?v=4",
+      url: "https://avatars.githubusercontent.com/u/33021438?v=4",
+    },
+    {
+      id: "5",
+      name: "maker_betaman",
+      display_name: "베타맨",
+      logo: "https://avatars.githubusercontent.com/u/33021438?v=4",
+      url: "https://avatars.githubusercontent.com/u/33021438?v=4",
+    },
+    {
+      id: "6",
+      name: "maker_betaman",
+      display_name: "베타맨",
+      logo: "https://avatars.githubusercontent.com/u/33021438?v=4",
+      url: "https://avatars.githubusercontent.com/u/33021438?v=4",
+    },
+    {
+      id: "7",
+      name: "maker_betaman",
+      display_name: "베타맨",
+      logo: "https://avatars.githubusercontent.com/u/33021438?v=4",
+      url: "https://avatars.githubusercontent.com/u/33021438?v=4",
+    },
+    {
+      id: "8",
+      name: "maker_betaman",
+      display_name: "베타맨",
+      logo: "https://avatars.githubusercontent.com/u/33021438?v=4",
+      url: "https://avatars.githubusercontent.com/u/33021438?v=4",
+    },
+    {
+      id: "9",
+      name: "maker_betaman",
+      display_name: "베타맨",
+      logo: "https://avatars.githubusercontent.com/u/33021438?v=4",
+      url: "https://avatars.githubusercontent.com/u/33021438?v=4",
+    },
+    {
+      id: "10",
+      name: "maker_betaman",
+      display_name: "베타맨",
+      logo: "https://avatars.githubusercontent.com/u/33021438?v=4",
+      url: "https://avatars.githubusercontent.com/u/33021438?v=4",
+    },
+  ] as searchResultsType,
 });
 /* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */
