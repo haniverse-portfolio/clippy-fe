@@ -91,7 +91,6 @@ export default function Home() {
   };
 
   const getTwitchChannel = async (routerSearchText: string) => {
-    // https://api.clippy.kr/extractor
     const url = apiAddress + `/search/channel?q=${routerSearchText}`;
 
     const res = await axios
@@ -117,7 +116,7 @@ export default function Home() {
   const router = useRouter();
   useEffect(() => {
     checkLogin();
-    // getTwitchChannel(router.query.keyword as string);
+    getTwitchChannel(router.query.keyword as string);
   }, [router.isReady]);
 
   useEffect(() => {
@@ -175,11 +174,15 @@ export default function Home() {
                 </Group>
               </Group>
             </Stack>
-            <ScrollArea mt={40} style={{ height: scrollAreaHeight }}>
+            <ScrollArea
+              scrollbarSize={0}
+              mt={40}
+              style={{ height: scrollAreaHeight }}
+            >
               <SimpleGrid
                 cols={4}
                 spacing={24}
-                pb={40}
+                p={10}
                 breakpoints={[
                   { maxWidth: 1400, cols: 3, spacing: "md" },
                   { maxWidth: 980, cols: 2, spacing: "sm" },
@@ -189,7 +192,7 @@ export default function Home() {
                 {searchResult.map((result: any, i) => {
                   return (
                     <Card
-                      className="animate-fadeUp"
+                      className="animate-fadeUp transition ease-in-out hover:scale-105"
                       p={0}
                       m={0}
                       key={i}
