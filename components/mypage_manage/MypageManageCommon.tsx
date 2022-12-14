@@ -102,7 +102,6 @@ export function MypageManageCommon() {
 
   useEffect(() => {
     if (isReloadTriggered) {
-      console.log("loaded");
       getMypageMadeClip();
       getMypageChannelClip();
       setSelectedClip([]);
