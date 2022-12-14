@@ -81,7 +81,7 @@ export function MypageTableRow({
           <Link href={`/clip/${clipId}`}>
             <Group
               fw={700}
-              className="h-[83px] min-w-[130px] bg-gray-200"
+              className="h-[83px] min-w-[130px] bg-gray-200 bg-cover"
               style={{
                 marginRight: isSm ? "" : "10px",
                 backgroundImage: imageURL ? `url(${imageURL})` : "",
