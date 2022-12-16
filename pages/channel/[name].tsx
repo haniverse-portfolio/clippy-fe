@@ -37,6 +37,9 @@ const ViewChannel = () => {
   const [isLive, setIsLive] = useState<boolean>(false);
   const [tab, setTab] = useState<string>("explore");
   const [clips, setClips] = useState<any[]>([]);
+  const [loginStatus, setLoginStatus] = useState<
+    "loading" | "authorized" | "unauthorized"
+  >("loading");
   const [clipsCount, setClipsCount] = useState<number>(-1);
 
   const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
@@ -150,6 +153,27 @@ const ViewChannel = () => {
         setClipsCount(0);
       });
   };
+  const getLoginStatus = async () => {
+    await axios
+      .get(`${apiAddress}/user/check`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setLoginStatus("authorized");
+      })
+      .catch((err) => {
+        setLoginStatus("unauthorized");
+      });
+  };
+  const goLogin = () => {
+    // use authorization code grant flow
+    const clientId = "9n3ebjaenen1jipslsk11ufrcfo51t";
+    // api.clippy.kr
+    const redirectUri = `${apiAddress}/user/login`;
+    const url = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=clips:edit+user:read:follows`;
+
+    window.location.href = url;
+  };
 
   useEffect(() => {
     if (name) {
@@ -166,6 +190,7 @@ const ViewChannel = () => {
 
   useEffect(() => {
     getUserInfo();
+    getLoginStatus();
   }, []);
 
   return (
@@ -250,23 +275,35 @@ const ViewChannel = () => {
 
                   <Flex align="right" mt={30} justify="flex-end">
                     <Button
-                      leftIcon={<Paperclip />}
+                      leftIcon={loginStatus === "authorized" && <Paperclip />}
                       size="lg"
                       color="dark"
                       disabled={!isLive}
                       radius="xl"
                       onClick={() => {
-                        postExtractor(userData.id);
-                        setCreateModalOpened(true);
-                        let copyStreamerInfo = JSON.parse(
-                          JSON.stringify(createModalStreamerInfo)
-                        );
-                        copyStreamerInfo.name = userData.displayName;
-                        copyStreamerInfo.image = userData.profileImage;
-                        setCreateModalStreamerInfo(copyStreamerInfo);
+                        if (loginStatus === "authorized") {
+                          postExtractor(userData.id);
+                          setCreateModalOpened(true);
+                          let copyStreamerInfo = JSON.parse(
+                            JSON.stringify(createModalStreamerInfo)
+                          );
+                          copyStreamerInfo.name = userData.displayName;
+                          copyStreamerInfo.image = userData.profileImage;
+                          setCreateModalStreamerInfo(copyStreamerInfo);
+                        } else if (loginStatus === "unauthorized") {
+                          localStorage.setItem(
+                            "redirect_url",
+                            window.location.href
+                          );
+                          goLogin();
+                        }
                       }}
                     >
-                      클립 생성
+                      {loginStatus === "authorized"
+                        ? "클립 생성"
+                        : loginStatus === "unauthorized"
+                        ? "트위치 로그인"
+                        : "..."}
                     </Button>
                   </Flex>
                 </>
