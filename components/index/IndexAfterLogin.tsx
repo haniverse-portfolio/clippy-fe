@@ -124,6 +124,11 @@ export function IndexAfterLogin() {
   };
 
   useEffect(() => {
+    const localStorageLoginRedirectURL = localStorage.getItem("redirect_url");
+    if (localStorageLoginRedirectURL) {
+      localStorage.removeItem("redirect_url");
+      window.location.replace(localStorageLoginRedirectURL);
+    }
     getHotclip();
     getUserInfo();
   }, []);
