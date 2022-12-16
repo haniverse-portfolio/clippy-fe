@@ -1,10 +1,16 @@
-import { Flex, Group, Text } from "@mantine/core";
+import { Flex, Group, Text, Checkbox } from "@mantine/core";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import { Trash } from "tabler-icons-react";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import {
+  mypageManage_deleteModalOpened,
+  mypageManage_selectedClip,
+  recoil_deleteTargetClips,
+} from "../states";
 
 interface MyapgeTableRowProps {
-  checkbox: ReactNode;
   imageURL?: string;
   title: string;
   channel: string;
@@ -12,9 +18,9 @@ interface MyapgeTableRowProps {
   views: string;
   clipId: string;
   channelName: string;
+  disableDelete?: boolean;
 }
 export function MypageTableRow({
-  checkbox,
   imageURL,
   clipId,
   title,
@@ -22,8 +28,29 @@ export function MypageTableRow({
   channelName,
   date,
   views,
+  disableDelete = false,
 }: MyapgeTableRowProps) {
+  const [deleteModalOpened, setDeleteModalOpened] = useRecoilState(
+    mypageManage_deleteModalOpened
+  );
+  const [deleteTargetClips, setDeleteTargetClips] = useRecoilState(
+    recoil_deleteTargetClips
+  );
+  const [selectedClips, setSelectedClips] = useRecoilState(
+    mypageManage_selectedClip
+  );
+  const [isChecked, setIsChecked] = useState(false);
   const { isSm, isMd } = useTailwindResponsive();
+
+  const deleteOneClip = (id: string) => {
+    setDeleteTargetClips([id]);
+    setDeleteModalOpened(true);
+  };
+
+  useEffect(() => {
+    setIsChecked(!!selectedClips.includes(clipId));
+  }, [selectedClips]);
+
   return (
     <Flex
       justify="space-between"
@@ -34,12 +61,23 @@ export function MypageTableRow({
         height: isSm || isMd ? 150 : 90,
       }}
     >
-      <div
-        className="min-w-[70px] flex justify-center items-center"
-        style={{ height: isSm || isMd ? 150 : 90 }}
-      >
-        {checkbox}
-      </div>
+      {!disableDelete && (
+        <div
+          className="min-w-[50px] sm:min-w-[68px] flex justify-center items-center"
+          style={{ height: isSm || isMd ? 150 : 90 }}
+        >
+          <Checkbox
+            onClick={() => {
+              if (selectedClips.includes(clipId))
+                setSelectedClips(selectedClips.filter((x) => x !== clipId));
+              else setSelectedClips([...selectedClips, clipId]);
+            }}
+            checked={isChecked}
+            color="dark"
+            className="mb-[-4px]"
+          />
+        </div>
+      )}
       <Flex
         direction={isSm || isMd ? "column" : "row"}
         justify="center"
@@ -61,7 +99,7 @@ export function MypageTableRow({
           <Link href={`/clip/${clipId}`}>
             <Group
               fw={700}
-              className="h-[83px] min-w-[130px] bg-gray-200"
+              className="h-[83px] min-w-[130px] bg-gray-200 bg-cover"
               style={{
                 marginRight: isSm ? "" : "10px",
                 backgroundImage: imageURL ? `url(${imageURL})` : "",
@@ -120,6 +158,17 @@ export function MypageTableRow({
           </Text>
         </div>
       </Flex>
+      {!disableDelete && (
+        <div
+          className="min-w-[50px] sm:min-w-[68px] flex justify-center items-center"
+          style={{ height: isSm || isMd ? 150 : 90 }}
+        >
+          <Trash
+            className="cursor-pointer"
+            onClick={() => deleteOneClip(clipId)}
+          />
+        </div>
+      )}
     </Flex>
   );
 }

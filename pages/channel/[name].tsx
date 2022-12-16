@@ -11,9 +11,15 @@ import { NotFoundTitle } from "../../components/common/NotFound";
 import { Sidebar } from "../../components/common/Sidebar";
 import { apiAddress } from "../../components/constValues";
 import {
+  recoil_createModalIsLoading,
+  recoil_createModalIsLoadingError,
+  recoil_createModalIsLoadingErrorMessage,
+  recoil_createModalOpened,
+  recoil_createModalStreamerInfo,
   recoil_followed,
   recoil_isLogined,
   recoil_loginUserInfo,
+  recoil_videoInfo,
 } from "../../components/states";
 import { CloudflareVideo } from "../../components/view/cloudflareVideo";
 import VideoTitle from "../../components/view/videoTitle";
@@ -37,6 +43,59 @@ const ViewChannel = () => {
   const [followed, setFollowed] = useRecoilState(recoil_followed);
   const [loginUserInfo, setLoginUserInfo] =
     useRecoilState(recoil_loginUserInfo);
+
+  const [extractorErrorStatus, setExtractorErrorStatus] = useState(false);
+  const [extractorErrorMessage, setExtractorErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useRecoilState<boolean>(
+    recoil_createModalIsLoading
+  );
+  const [videoInfo, setVideoInfo] = useRecoilState(recoil_videoInfo);
+  const [isLoadingError, setIsLoadingError] = useRecoilState<boolean>(
+    recoil_createModalIsLoadingError
+  );
+  const [isLoadingErrorMessage, setIsLoadingErrorMessage] =
+    useRecoilState<string>(recoil_createModalIsLoadingErrorMessage);
+  const [createModalOpened, setCreateModalOpened] = useRecoilState(
+    recoil_createModalOpened
+  );
+  const [createModalStreamerInfo, setCreateModalStreamerInfo] = useRecoilState(
+    recoil_createModalStreamerInfo
+  );
+
+  const postExtractor = async (streamerId: number) => {
+    setExtractorErrorStatus(false);
+    setExtractorErrorMessage("");
+
+    // https://api.clippy.kr/extractor
+    const url = apiAddress + "/extractor";
+
+    const res = await axios
+      .post(
+        url,
+        { streamerId: streamerId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      )
+      .then((res) => {
+        setIsLoading(false);
+        setVideoInfo(res.data.data);
+        return res.data;
+      })
+      .catch((res) => {
+        const errMessage = res.response.data.message;
+        // alert(errMessage);
+        setIsLoadingError(true);
+        setIsLoadingErrorMessage(errMessage);
+        // setExtractorErrorStatus(true);
+        // setExtractorErrorMessage(errMessage);
+
+        // error 표시해주기
+      });
+  };
 
   const getUserInfo = () => {
     const url = `${apiAddress}/user/me`;
@@ -79,7 +138,9 @@ const ViewChannel = () => {
 
   const getClips = async () => {
     await axios
-      .get(`${apiAddress}/clip/user/${userData.id}`)
+      .get(`${apiAddress}/clip/user/${userData.id}`, {
+        withCredentials: true,
+      })
       .then((res) => {
         setClips(res.data.data);
         setClipsCount(res.data.data.length);
@@ -194,6 +255,16 @@ const ViewChannel = () => {
                       color="dark"
                       disabled={!isLive}
                       radius="xl"
+                      onClick={() => {
+                        postExtractor(userData.id);
+                        setCreateModalOpened(true);
+                        let copyStreamerInfo = JSON.parse(
+                          JSON.stringify(createModalStreamerInfo)
+                        );
+                        copyStreamerInfo.name = userData.displayName;
+                        copyStreamerInfo.image = userData.profileImage;
+                        setCreateModalStreamerInfo(copyStreamerInfo);
+                      }}
                     >
                       클립 생성
                     </Button>

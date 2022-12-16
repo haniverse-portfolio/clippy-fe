@@ -6,18 +6,18 @@ import {
   mypageManage_madeClip,
   mypageManage_sectionIndex,
   mypageManage_selectedClip,
+  mypage_clipType,
+  recoil_deleteTargetClips,
+  recoil_mypageManageReloadTrigger,
 } from "../states";
 import { atom, useRecoilState } from "recoil";
-import {
-  apiAddress,
-  selectedAllClip,
-  selectedClipDefault,
-} from "../constValues";
+import { apiAddress } from "../constValues";
 import { useEffect, useState } from "react";
 import * as util from "../../util/util";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import axios from "axios";
 const BREAKPOINT = "@media (max-width: 755px)";
+
 export function MypageManageCommon() {
   const { isSm, isMd } = useTailwindResponsive();
   const [sectionIndex, setSectionIndex] = useRecoilState(
@@ -34,18 +34,18 @@ export function MypageManageCommon() {
     mypageManage_channelClip
   );
   const [isAllCheckClicked, setIsAllCheckClicked] = useState(false);
+  const [isReloadTriggered, setIsReloadTriggered] = useRecoilState(
+    recoil_mypageManageReloadTrigger
+  );
 
   const [deleteModalOpened, setDeleteModalOpened] = useRecoilState(
     mypageManage_deleteModalOpened
   );
+  const [deleteTargetClips, setDeleteTargetClips] = useRecoilState(
+    recoil_deleteTargetClips
+  );
   const isSelected = () => {
-    let cnt = 0 as number;
-    for (let i = 0; i < selectedClip.length; i++) {
-      if (selectedClip[i] === true) {
-        cnt++;
-      }
-    }
-    return cnt;
+    return selectedClip.length !== 0;
   };
 
   // 내가 만든 클립 -> mypageMadeClip
@@ -94,28 +94,33 @@ export function MypageManageCommon() {
       });
   };
 
-  useEffect(() => {
-    getMypageMadeClip();
-    getMypageChannelClip();
-  }, []);
-
-  const checkAll = () => {
-    if (selectAllChecked === false) setSelectedClip(selectedAllClip);
-    else setSelectedClip(selectedClipDefault);
-
-    setSelectAllChecked(!selectAllChecked);
+  const getCurrentSectionClip = () => {
+    if (sectionIndex === 0) return mypageMadeClip;
+    else if (sectionIndex === 1) return mypageChannelClip;
+    else return [];
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      if (!isAllCheckClicked) {
-        let requiredLength = 0;
-        if (sectionIndex === 0) requiredLength = mypageMadeClip.length;
-        if (sectionIndex === 1) requiredLength = mypageChannelClip.length;
-        if (isSelected() !== requiredLength) setSelectAllChecked(false);
-        else setSelectAllChecked(true);
-      } else setIsAllCheckClicked(() => false);
-    }, 50);
+    if (isReloadTriggered) {
+      getMypageMadeClip();
+      getMypageChannelClip();
+      setSelectedClip([]);
+      setDeleteTargetClips([]);
+      setIsReloadTriggered(false);
+    }
+  }, [isReloadTriggered]);
+
+  const checkAll = () => {
+    if (selectAllChecked === false)
+      setSelectedClip(getCurrentSectionClip().map((x) => x.clipId));
+    else setSelectedClip([]);
+  };
+
+  useEffect(() => {
+    setSelectAllChecked(
+      getCurrentSectionClip().length === selectedClip.length &&
+        selectedClip.length !== 0
+    );
   }, [selectedClip]);
 
   return (
@@ -125,7 +130,6 @@ export function MypageManageCommon() {
         <Group>
           <Button
             onClick={() => {
-              setSelectedClip(selectedClipDefault);
               setSectionIndex(0);
             }}
             size={isSm || isMd ? "sm" : "lg"}
@@ -137,7 +141,6 @@ export function MypageManageCommon() {
           </Button>
           <Button
             onClick={() => {
-              setSelectedClip(selectedClipDefault);
               setSectionIndex(1);
             }}
             size={isSm || isMd ? "sm" : "lg"}
@@ -148,9 +151,12 @@ export function MypageManageCommon() {
             내 채널의 클립
           </Button>
         </Group>
-        {/* <Button
+        <Button
           onClick={() => {
-            if (isSelected()) setDeleteModalOpened(true);
+            if (isSelected()) {
+              setDeleteTargetClips(selectedClip);
+              setDeleteModalOpened(true);
+            }
           }}
           className={!isSelected() ? "hover:cursor-not-allowed" : ""}
           disabled={!isSelected()}
@@ -160,7 +166,7 @@ export function MypageManageCommon() {
           radius="xl"
         >
           선택 클립 삭제
-        </Button> */}
+        </Button>
       </Group>
       <Flex
         justify="space-between"
@@ -174,7 +180,7 @@ export function MypageManageCommon() {
           className="w-[70px] flex justify-center items-center border-r-[1px] lg:border-0 border-black"
           style={{ height: isSm || isMd ? 56 : 44 }}
         >
-          {/* <Checkbox
+          <Checkbox
             onClick={() => {
               setIsAllCheckClicked(() => true);
               checkAll();
@@ -182,7 +188,7 @@ export function MypageManageCommon() {
             checked={selectAllChecked}
             color="dark"
             className="mb-[-4px]"
-          /> */}
+          />
         </div>
         <Flex
           direction={isSm || isMd ? "column" : "row"}
@@ -246,6 +252,14 @@ export function MypageManageCommon() {
             </Text>
           </div>
         </Flex>
+        <div
+          className="w-[70px] flex justify-center items-center border-l-[1px] lg:border-0 border-black"
+          style={{ height: isSm || isMd ? 56 : 44 }}
+        >
+          <Text fw={700} className="text-[16px] whitespace-nowrap">
+            관리
+          </Text>
+        </div>
       </Flex>
     </Stack>
   );

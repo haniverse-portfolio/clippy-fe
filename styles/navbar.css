@@ -1,0 +1,34 @@
+#navbar-title {
+  border-color: white;
+  padding-left: 80px;
+}
+
+#navbar-title:focus {
+  border-color: black;
+  color: black;
+}
+
+#navbar-title:focus #navbar-search-icon {
+  color: black !important;
+}
+
+.mantine-TextInput-rightSection {
+  width: 50px !important;
+}
+
+#navbar-avatar {
+  cursor: pointer;
+}
+
+#navbar-avatar div {
+  width: 48px;
+  height: 48px;
+}
+
+/* .mantine-TextInput-icon svg {
+	color: black !important;
+} */
+.mantine-Modal-modal {
+  min-height: 740px;
+}
+/*# sourceMappingURL=navbar.css.map */

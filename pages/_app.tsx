@@ -9,6 +9,7 @@ import {
 } from "recoil";
 import type { AppProps } from "next/app";
 import { MantineProvider, createEmotionCache } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
 import * as Sentry from "@sentry/nextjs";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -81,7 +82,9 @@ export default function App({ Component, pageProps }: AppProps) {
           emotionCache={myCache}
           theme={{ fontFamily: "Noto Sans KR" }}
         >
-          <Component {...pageProps} />
+          <NotificationsProvider>
+            <Component {...pageProps} />
+          </NotificationsProvider>
         </MantineProvider>
       </RecoilRoot>
     </>

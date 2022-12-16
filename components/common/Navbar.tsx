@@ -12,6 +12,7 @@ import {
   Flex,
   Box,
   ThemeIcon,
+  Stack,
 } from "@mantine/core";
 import { useRecoilState } from "recoil";
 import {
@@ -63,6 +64,7 @@ export function Navbar() {
   const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
   const [loginUserInfo, setLoginUserInfo] =
     useRecoilState(recoil_loginUserInfo);
+  const [searchResult, setSearchResult] = useRecoilState(search_searchResult);
   const { width } = useWindowDimensions();
 
   useEffect(() => {
@@ -107,6 +109,28 @@ export function Navbar() {
     checkLogin();
   }, []);
   const router = useRouter();
+
+  const getTwitchChannel = async (routerSearchText: string) => {
+    // https://api.clippy.kr/extractor
+    const url = apiAddress + `/search/channel?q=${routerSearchText}`;
+
+    const res = await axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((res) => {
+        setSearchResult(res.data.data);
+        return res.data;
+      })
+      .catch((res) => {
+        const errMessage = res.response.data.message;
+
+        // error 표시해주기
+      });
+  };
   return (
     <div
       className="h-[120px] bg-white sticky top-0 z-50"
@@ -133,10 +157,26 @@ export function Navbar() {
               placeholder="닉네임, 제목 키워드"
               value={searchText}
               onChange={(e) => {
-                setSearchText(e.currentTarget.value);
+                let changedText = e.currentTarget.value as string;
+                let textLength = changedText.length;
+                // if (textLength === 0) {
+                //   setSearchText(changedText);
+                //   return;
+                // }
+                // let lastWord = changedText[textLength - 1];
+                // let ac = lastWord.charCodeAt(0); // ascii_code
+                // let validFlag =
+                //   (ac >= 48 && ac <= 57) ||
+                //   (ac >= 65 && ac <= 90) ||
+                //   (ac >= 97 && ac <= 122) ||
+                //   ac === 95;
+                // if (validFlag) setSearchText(changedText);
+                setSearchText(changedText);
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
+                  if (searchText === "") return;
+                  getTwitchChannel(searchText);
                   router.push(`/search/${searchText}`);
                 }
               }}
@@ -204,6 +244,13 @@ export function Navbar() {
           </Flex>
         )}
       </Group>
+      {/* <Stack className="h-[60px] bg-[#63C81B]">
+        <span className="ml-8 my-auto text-xl text-white font-semibold">
+          [공지] 12월 14일 오후 6시까지{" "}
+          <span className="underline">클립 생성</span> 기능이 일시적으로
+          제한됩니다.
+        </span>
+      </Stack> */}
     </div>
   );
 }
