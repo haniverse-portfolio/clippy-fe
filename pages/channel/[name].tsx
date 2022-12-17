@@ -287,8 +287,8 @@ const ViewChannel = () => {
                           let copyStreamerInfo = JSON.parse(
                             JSON.stringify(createModalStreamerInfo)
                           );
-                          copyStreamerInfo.name = userData.displayName;
-                          copyStreamerInfo.image = userData.profileImage;
+                          copyStreamerInfo.name = userData.display_name;
+                          copyStreamerInfo.image = userData.profile_image_url;
                           setCreateModalStreamerInfo(copyStreamerInfo);
                         } else if (loginStatus === "unauthorized") {
                           localStorage.setItem(
