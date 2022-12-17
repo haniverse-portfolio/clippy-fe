@@ -14,6 +14,13 @@ export default function Document() {
           strategy="beforeInteractive"
         />
         {/* Google Adsense */}
+
+        {/* Naver SEO */}
+        <meta
+          name="naver-site-verification"
+          content="5d35480e4e49fdd4d1a06010f03f10e180155911"
+        />
+        {/* Naver SEO */}
       </Head>
 
       <body>
