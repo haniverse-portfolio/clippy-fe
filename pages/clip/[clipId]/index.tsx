@@ -2,14 +2,15 @@ import { Container, Flex, SimpleGrid } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { Navbar } from "../../components/common/Navbar";
-import { NotFoundTitle } from "../../components/common/NotFound";
-import { Sidebar } from "../../components/common/Sidebar";
-import VideoCard from "../../components/common/VideoCard";
-import { apiAddress } from "../../components/constValues";
-import { CloudflareVideo } from "../../components/view/cloudflareVideo";
-import VideoTitle from "../../components/view/videoTitle";
-import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import { Navbar } from "../../../components/common/Navbar";
+import { NotFoundTitle } from "../../../components/common/NotFound";
+import { Sidebar } from "../../../components/common/Sidebar";
+import VideoCard from "../../../components/common/VideoCard";
+import { apiAddress } from "../../../components/constValues";
+import { CloudflareVideo } from "../../../components/view/cloudflareVideo";
+import VideoTitle from "../../../components/view/videoTitle";
+import { useTailwindResponsive } from "../../../hooks/useTailwindResponsive";
+import Head from "next/head";
 
 const ViewClip = () => {
   // get parameter
@@ -20,7 +21,7 @@ const ViewClip = () => {
     creating === "true" || creating === true
   );
   const [videoId, setVideoId] = useState<string>("");
-  const [videoTitle, setVideoTitle] = useState<string>("d");
+  const [videoTitle, setVideoTitle] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
   const [videoData, setVideoData] = useState<any>({});
 
@@ -71,6 +72,9 @@ const ViewClip = () => {
 
   return (
     <>
+      <Head>
+        <title>{videoTitle !== "" ? `CLIPPY - ${videoTitle}` : "CLIPPY"}</title>
+      </Head>
       <Navbar />
       <Sidebar />
       <Container size="lg">
