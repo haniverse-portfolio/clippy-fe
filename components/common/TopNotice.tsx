@@ -6,6 +6,7 @@ import { FC, useEffect, useRef, useState } from "react";
 export const TopNotice: FC = () => {
   const [notice, setNotice] = useState<string | null>(null);
   const [noticeLink, setNoticeLink] = useState("#");
+  const [noticeStartsAt, setNoticeStartAt] = useState("");
   const [isIncident, setIsIncident] = useState(false);
   const [isClosable, setIsClosable] = useState(false);
   const [isClose, setIsClose] = useState(false);
@@ -25,19 +26,26 @@ export const TopNotice: FC = () => {
 
   const getNotice = async () => {
     await axios
-      .get("https://assets.clippy.kr/notice.json", { withCredentials: true })
+      .get(`${window.location.origin}/api/notice`)
       .then((res) => {
-        const now = new Date();
-        const noticeStartTime = new Date(res.data.starts_at);
-        const noticeEndTime = new Date(res.data.ends_at);
+        console.log("notice", res);
         if (
-          now.getTime() >= noticeStartTime.getTime() &&
-          now.getTime() < noticeEndTime.getTime()
+          localStorage.getItem("clippy-top-notice-latest") !==
+          res.data.starts_at
         ) {
-          setIsIncident(res.data.type === "incident");
-          setNotice(res.data.title);
-          setNoticeLink(res.data.link);
-          setIsClosable(res.data.closable);
+          const now = new Date();
+          const noticeStartTime = new Date(res.data.starts_at);
+          const noticeEndTime = new Date(res.data.ends_at);
+          if (
+            now.getTime() >= noticeStartTime.getTime() &&
+            now.getTime() < noticeEndTime.getTime()
+          ) {
+            setIsIncident(res.data.type === "incident");
+            setNotice(res.data.title);
+            setNoticeLink(res.data.link);
+            setIsClosable(res.data.closable);
+            setNoticeStartAt(res.data.starts_at);
+          }
         }
       })
       .catch((err) => {
@@ -99,7 +107,13 @@ export const TopNotice: FC = () => {
                 color="white"
                 height="18px"
                 className="absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer"
-                onClick={() => setIsClose(true)}
+                onClick={() => {
+                  localStorage.setItem(
+                    "clippy-top-notice-latest",
+                    noticeStartsAt
+                  );
+                  setIsClose(true);
+                }}
               />
             )}
           </div>
