@@ -36,7 +36,7 @@ import {
   icon,
 } from "@fortawesome/fontawesome-svg-core/import.macro"; // <-- import styles to be used
 import { useEffect, useState } from "react";
-import { CreateModal } from "./CreateModal";
+import { CreateClipModal } from "./CreateClipModal";
 import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -136,7 +136,7 @@ export function Navbar() {
       className="h-[120px] bg-white sticky top-0 z-50"
       style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.1)" }}
     >
-      <CreateModal />
+      <CreateClipModal />
       <Group position="apart">
         <Flex
           w={`calc(100% - ${searchBarHidden ? "300px" : "200px"})`}

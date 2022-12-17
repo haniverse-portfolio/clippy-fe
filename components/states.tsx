@@ -33,21 +33,37 @@ export const recoil_sidebarIndex = atom({
   default: 0,
 }); // 사이드바 - 항목 인덱스
 
-export const recoil_createModalOpened = atom({
-  key: "recoil_createModalOpened",
-  default: false,
-}); // 사이드바 - 항목 인덱스
+/**
+ * 클립을 생성할 스트리머 정보 Interface
+ */
+export interface IStreamerInfo {
+  id: string;
+  login: string;
+  name: string;
+  image: string;
+}
 
-export const recoil_createModalIsLoading = atom({
-  key: "recoil_createModalIsLoading",
-  default: false,
-}); // 생성 - 모달 로딩 여부
+/**
+ * 클립생성 오류 상태 Interface
+ */
+export interface ICreateClipModalError {
+  msg: string;
+}
 
-export const recoil_createModalStreamerInfo = atom({
-  key: "recoil_createModalStreamerInfo",
-  default: { id: "", login: "", name: "", image: "" },
-}); // 생성 - 모달 스트리머 정보
-interface videoType {
+/**
+ * 생성할 클립 정보 Interface
+ */
+export interface ICreateClipInfo {
+  requestId: string;
+  starts: number;
+  ends: number;
+  title: string;
+}
+
+/**
+ * 클립을 생성할 라이브 비디오 정보 Interface
+ */
+interface ILiveVideoInfo {
   thumbnailUrl: string;
   rawMediaUrl: string;
   requestId: string;
@@ -57,42 +73,47 @@ interface videoType {
   };
 }
 
-export const recoil_videoInfo = atom({
-  key: "recoil_videoInfo",
-  default: {} as videoType,
-}); // 생성 - 모달 비디오 정보
-
-export const recoil_createBtnLoading = atom({
-  key: "recoil_createBtnLoading",
+/**
+ * 클립생성모달 - Open 여부
+ */
+export const recoil_createClipModal_isOpen = atom({
+  key: "recoil_createClipModal_isOpen",
   default: false,
-}); // 생성 - 모달 버튼 로딩 여부
+});
 
-export interface clipType {
-  requestId: string;
-  starts: number;
-  ends: number;
-  title: string;
-}
+/**
+ * 클립생성모달 - 클립을 생성할 스트리머 정보
+ */
+export const recoil_createClipModal_streamer = atom<IStreamerInfo | null>({
+  key: "recoil_createClipModal_streamer",
+  default: null,
+});
 
-export const recoil_createClip = atom({
-  key: "recoil_createClip",
-  default: {} as clipType,
-}); // 생성 - 클립 정보
+/**
+ * 클립생성모달 - 초기 로딩 여부
+ */
+export const recoil_createClipModal_isClipInitLoading = atom({
+  key: "recoil_createClipModal_isClipInitLoading",
+  default: true,
+});
 
-export const recoil_createClipTrigger = atom({
-  key: "recoil_createClipTrigger",
-  default: false,
-}); // 생성 - 클립 생성 트리거
+/**
+ * 클립생성모달 - 클립생성 오류 상태
+ */
+export const recoil_createClipModal_error = atom<ICreateClipModalError | null>({
+  key: "recoil_createClipModal_error",
+  default: null,
+});
 
-export const recoil_createModalIsLoadingError = atom({
-  key: "recoil_createModalIsLoadingError",
-  default: false,
-}); // 생성 - 모달 로딩 에러 여부
-
-export const recoil_createModalIsLoadingErrorMessage = atom({
-  key: "recoil_createModalIsLoadingErrorMessage",
-  default: "",
-}); // 생성 - 모달 로딩 에러 메시지
+/**
+ * 클립생성모달 - 클립생성을 위해 획득한 라이브 비디오 정보
+ */
+export const recoil_createClipModal_liveVideoInfo = atom<ILiveVideoInfo | null>(
+  {
+    key: "recoil_createClipModal_liveVideoInfo",
+    default: null,
+  }
+);
 
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 

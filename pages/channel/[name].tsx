@@ -2,7 +2,7 @@ import { Avatar, Button, Container, Flex, Text } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { Paperclip } from "tabler-icons-react";
 import Explore from "../../components/channel/Explore";
 import TwitchLive from "../../components/channel/TwitchLive";
@@ -10,27 +10,11 @@ import { Navbar } from "../../components/common/Navbar";
 import { NotFoundTitle } from "../../components/common/NotFound";
 import { Sidebar } from "../../components/common/Sidebar";
 import { apiAddress } from "../../components/constValues";
-import {
-  recoil_createModalIsLoading,
-  recoil_createModalIsLoadingError,
-  recoil_createModalIsLoadingErrorMessage,
-  recoil_createModalOpened,
-  recoil_createModalStreamerInfo,
-  recoil_followed,
-  recoil_isLogined,
-  recoil_loginUserInfo,
-  recoil_videoInfo,
-} from "../../components/states";
-import { CloudflareVideo } from "../../components/view/cloudflareVideo";
-import VideoTitle from "../../components/view/videoTitle";
-import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import { recoil_loginUserInfo } from "../../components/states";
+import { useCreateClipModal } from "../../hooks/useCreateClipModal";
 
 const ViewChannel = () => {
-  // get parameter
-  const router = useRouter();
-  const { name }: any = router.query;
-
-  const { isSm, isMd } = useTailwindResponsive();
+  const setLoginUserInfo = useSetRecoilState(recoil_loginUserInfo);
 
   const [userData, setUserData] = useState<any>({});
   const [isError, setIsError] = useState<boolean>(false);
@@ -42,63 +26,10 @@ const ViewChannel = () => {
   >("loading");
   const [clipsCount, setClipsCount] = useState<number>(-1);
 
-  const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
-  const [followed, setFollowed] = useRecoilState(recoil_followed);
-  const [loginUserInfo, setLoginUserInfo] =
-    useRecoilState(recoil_loginUserInfo);
+  const { openCreateClipModal } = useCreateClipModal();
 
-  const [extractorErrorStatus, setExtractorErrorStatus] = useState(false);
-  const [extractorErrorMessage, setExtractorErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useRecoilState<boolean>(
-    recoil_createModalIsLoading
-  );
-  const [videoInfo, setVideoInfo] = useRecoilState(recoil_videoInfo);
-  const [isLoadingError, setIsLoadingError] = useRecoilState<boolean>(
-    recoil_createModalIsLoadingError
-  );
-  const [isLoadingErrorMessage, setIsLoadingErrorMessage] =
-    useRecoilState<string>(recoil_createModalIsLoadingErrorMessage);
-  const [createModalOpened, setCreateModalOpened] = useRecoilState(
-    recoil_createModalOpened
-  );
-  const [createModalStreamerInfo, setCreateModalStreamerInfo] = useRecoilState(
-    recoil_createModalStreamerInfo
-  );
-
-  const postExtractor = async (streamerId: number) => {
-    setExtractorErrorStatus(false);
-    setExtractorErrorMessage("");
-
-    // https://api.clippy.kr/extractor
-    const url = apiAddress + "/extractor";
-
-    const res = await axios
-      .post(
-        url,
-        { streamerId: streamerId },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      )
-      .then((res) => {
-        setIsLoading(false);
-        setVideoInfo(res.data.data);
-        return res.data;
-      })
-      .catch((res) => {
-        const errMessage = res.response.data.message;
-        // alert(errMessage);
-        setIsLoadingError(true);
-        setIsLoadingErrorMessage(errMessage);
-        // setExtractorErrorStatus(true);
-        // setExtractorErrorMessage(errMessage);
-
-        // error 표시해주기
-      });
-  };
+  const router = useRouter();
+  const { name }: any = router.query;
 
   const getUserInfo = () => {
     const url = `${apiAddress}/user/me`;
@@ -282,14 +213,11 @@ const ViewChannel = () => {
                       radius="xl"
                       onClick={() => {
                         if (loginStatus === "authorized") {
-                          postExtractor(userData.id);
-                          setCreateModalOpened(true);
-                          let copyStreamerInfo = JSON.parse(
-                            JSON.stringify(createModalStreamerInfo)
+                          openCreateClipModal(
+                            userData.id,
+                            userData.display_name,
+                            userData.profile_image_url
                           );
-                          copyStreamerInfo.name = userData.display_name;
-                          copyStreamerInfo.image = userData.profile_image_url;
-                          setCreateModalStreamerInfo(copyStreamerInfo);
                         } else if (loginStatus === "unauthorized") {
                           localStorage.setItem(
                             "redirect_url",
