@@ -18,13 +18,9 @@ import { Paperclip, Trash } from "tabler-icons-react";
 import {
   mypageManage_deleteModalOpened,
   mypageManage_madeClip,
-  recoil_createModalIsLoading,
-  recoil_createModalOpened,
-  recoil_createModalStreamerInfo,
   recoil_deleteModalStep,
   recoil_deleteTargetClips,
   recoil_mypageManageReloadTrigger,
-  recoil_videoInfo,
 } from "../states";
 import axios, { AxiosResponse } from "axios";
 import { MypageTableRow } from "./MypageTableRow";

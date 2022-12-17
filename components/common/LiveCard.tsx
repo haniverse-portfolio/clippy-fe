@@ -1,123 +1,25 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Card,
-  Flex,
-  Text,
-  Image,
-  Stack,
-  ActionIcon,
-  Group,
-  Avatar,
-} from "@mantine/core";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { useState } from "react";
-import { useRecoilState } from "recoil";
-import { Heart } from "tabler-icons-react";
+import { Card, Flex, Text, Image, Avatar } from "@mantine/core";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
-import * as util from "../../util/util";
-import { apiAddress } from "../constValues";
-import {
-  clipType,
-  recoil_createBtnLoading,
-  recoil_createClip,
-  recoil_createClipTrigger,
-  recoil_createModalIsLoading,
-  recoil_createModalIsLoadingError,
-  recoil_createModalIsLoadingErrorMessage,
-  recoil_createModalOpened,
-  recoil_createModalStreamerInfo,
-  recoil_followed,
-  recoil_videoInfo,
-} from "../states";
 import Clip from "./Clip";
+import { useCreateClipModal } from "../../hooks/useCreateClipModal";
 
 const LiveCard = ({ stream }: any) => {
-  const router = useRouter();
+  const { openCreateClipModal } = useCreateClipModal();
 
   const { isSm, isMd } = useTailwindResponsive();
-
-  const [createModalOpened, setCreateModalOpened] = useRecoilState(
-    recoil_createModalOpened
-  );
-  const [createModalStreamerInfo, setCreateModalStreamerInfo] = useRecoilState(
-    recoil_createModalStreamerInfo
-  );
-  const [isLoading, setIsLoading] = useRecoilState<boolean>(
-    recoil_createModalIsLoading
-  );
-  const [followed, setFollowed] = useRecoilState(recoil_followed);
-  const [videoInfo, setVideoInfo] = useRecoilState(recoil_videoInfo);
-
-  const [extractorErrorStatus, setExtractorErrorStatus] = useState(false);
-  const [extractorErrorMessage, setExtractorErrorMessage] = useState("");
-
-  const [createBtnLoading, setCreateBtnLoading] = useRecoilState<boolean>(
-    recoil_createBtnLoading
-  );
-  const [createClip, triggerCreateClip] =
-    useRecoilState<clipType>(recoil_createClip);
-  const [createClipTrigger, setCreateClipTrigger] = useRecoilState<boolean>(
-    recoil_createClipTrigger
-  );
-  const [isLoadingError, setIsLoadingError] = useRecoilState<boolean>(
-    recoil_createModalIsLoadingError
-  );
-  const [isLoadingErrorMessage, setIsLoadingErrorMessage] =
-    useRecoilState<string>(recoil_createModalIsLoadingErrorMessage);
-
-  const postExtractor = async (streamerId: number) => {
-    setExtractorErrorStatus(false);
-    setExtractorErrorMessage("");
-
-    // https://api.clippy.kr/extractor
-    const url = apiAddress + "/extractor";
-
-    const res = await axios
-      .post(
-        url,
-        { streamerId: streamerId },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      )
-      .then((res) => {
-        setIsLoading(false);
-        setVideoInfo(res.data.data);
-        return res.data;
-      })
-      .catch((res) => {
-        const errMessage = res.response.data.message;
-        // alert(errMessage);
-        setIsLoadingError(true);
-        setIsLoadingErrorMessage(errMessage);
-        // setExtractorErrorStatus(true);
-        // setExtractorErrorMessage(errMessage);
-
-        // error 표시해주기
-      });
-  };
-
-  const make = (item: any) => {
-    postExtractor(parseInt(item.user_id));
-    setCreateModalOpened(true);
-    let copyStreamerInfo = JSON.parse(JSON.stringify(createModalStreamerInfo));
-    copyStreamerInfo.name = item.displayName;
-    copyStreamerInfo.image = item.profileImage;
-    setCreateModalStreamerInfo(copyStreamerInfo);
-  };
 
   return (
     <Card
       p={0}
       m={0}
       onClick={() => {
-        // router.push(`/clip/${clip.key}`);
-        make(stream);
+        openCreateClipModal(
+          stream.user_id,
+          stream.user_name,
+          stream.profile_image_url
+        );
       }}
     >
       <Flex justify="center" direction="column">

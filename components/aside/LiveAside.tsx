@@ -1,25 +1,11 @@
 import { Avatar, Flex, Text } from "@mantine/core";
-import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
-import { useWindowDimensions } from "../../hooks/useWindowDimensions";
 import Clip from "../common/Clip";
-import { apiAddress } from "../constValues";
-import {
-  clipType,
-  recoil_createBtnLoading,
-  recoil_createClip,
-  recoil_createClipTrigger,
-  recoil_createModalIsLoading,
-  recoil_createModalIsLoadingError,
-  recoil_createModalIsLoadingErrorMessage,
-  recoil_createModalOpened,
-  recoil_createModalStreamerInfo,
-  recoil_followed,
-  recoil_videoInfo,
-} from "../states";
+import { recoil_followed } from "../states";
+import { useCreateClipModal } from "../../hooks/useCreateClipModal";
 
 interface LiveProps {
   profileImage: string;
@@ -33,102 +19,8 @@ interface LiveItemProps {
 }
 
 const LiveItem = ({ item }: LiveItemProps) => {
-  const [createModalOpened, setCreateModalOpened] = useRecoilState(
-    recoil_createModalOpened
-  );
-  const [createModalStreamerInfo, setCreateModalStreamerInfo] = useRecoilState(
-    recoil_createModalStreamerInfo
-  );
-  const [isLoading, setIsLoading] = useRecoilState<boolean>(
-    recoil_createModalIsLoading
-  );
-  const [followed, setFollowed] = useRecoilState(recoil_followed);
-  const [videoInfo, setVideoInfo] = useRecoilState(recoil_videoInfo);
-
-  const [extractorErrorStatus, setExtractorErrorStatus] = useState(false);
-  const [extractorErrorMessage, setExtractorErrorMessage] = useState("");
-
+  const { openCreateClipModal } = useCreateClipModal();
   const { isSm, isMd } = useTailwindResponsive();
-
-  const [createBtnLoading, setCreateBtnLoading] = useRecoilState<boolean>(
-    recoil_createBtnLoading
-  );
-  const [createClip, triggerCreateClip] =
-    useRecoilState<clipType>(recoil_createClip);
-  const [createClipTrigger, setCreateClipTrigger] = useRecoilState<boolean>(
-    recoil_createClipTrigger
-  );
-  const [isLoadingError, setIsLoadingError] = useRecoilState<boolean>(
-    recoil_createModalIsLoadingError
-  );
-  const [isLoadingErrorMessage, setIsLoadingErrorMessage] =
-    useRecoilState<string>(recoil_createModalIsLoadingErrorMessage);
-
-  const postCreateClip = async (clip: clipType) => {
-    setCreateBtnLoading(true);
-    // https://api.clippy.kr/clip
-    const url = apiAddress + "/clip";
-    const res = await axios
-      .post(url, clip, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      })
-      .then((res) => {
-        setCreateBtnLoading(false);
-        triggerCreateClip(clip);
-        return res.data;
-      })
-      .catch((res) => {
-        const errMessage = res.response.data.message;
-        alert(errMessage);
-        setCreateBtnLoading(false);
-        // error 표시해주기
-      });
-  };
-
-  // useEffect(() => {
-  //   if (createClipTrigger) {
-  //     setCreateClipTrigger(false);
-  //     postCreateClip(createClip);
-  //   }
-  // }, [createClipTrigger]);
-
-  const postExtractor = async (streamerId: number) => {
-    setExtractorErrorStatus(false);
-    setExtractorErrorMessage("");
-
-    // https://api.clippy.kr/extractor
-    const url = apiAddress + "/extractor";
-
-    const res = await axios
-      .post(
-        url,
-        { streamerId: streamerId },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      )
-      .then((res) => {
-        setIsLoading(false);
-        setVideoInfo(res.data.data);
-        return res.data;
-      })
-      .catch((res) => {
-        const errMessage = res.response.data.message;
-        // alert(errMessage);
-        setIsLoadingError(true);
-        setIsLoadingErrorMessage(errMessage);
-        // setExtractorErrorStatus(true);
-        // setExtractorErrorMessage(errMessage);
-
-        // error 표시해주기
-      });
-  };
 
   return (
     <Flex
@@ -160,14 +52,7 @@ const LiveItem = ({ item }: LiveItemProps) => {
                   bg-black lg:bg-transparent
                   right-[10px] lg:right-auto"
         onClick={() => {
-          postExtractor(item.id);
-          setCreateModalOpened(true);
-          let copyStreamerInfo = JSON.parse(
-            JSON.stringify(createModalStreamerInfo)
-          );
-          copyStreamerInfo.name = item.displayName;
-          copyStreamerInfo.image = item.profileImage;
-          setCreateModalStreamerInfo(copyStreamerInfo);
+          openCreateClipModal(item.id, item.displayName, item.profileImage);
         }}
       >
         <Clip
