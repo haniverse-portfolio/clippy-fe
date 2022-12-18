@@ -7,15 +7,25 @@ import { useRouter } from "next/router";
 import { apiAddress } from "../constValues";
 import { useClipboard } from "@mantine/hooks";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import { useSetRecoilState } from "recoil";
+import {
+  recoil_shareClipModal_clipName,
+  recoil_shareClipModal_isOpen,
+} from "../states";
 
 const VideoTitle = ({ data }: any) => {
   const router = useRouter();
   const clipboard = useClipboard({ timeout: 500 });
 
+  const setIsShareModalOpen = useSetRecoilState(recoil_shareClipModal_isOpen);
+
   const [userIcon, setUserIcon] = useState("");
   const [userLogin, setUserLogin] = useState("");
   const [userName, setUserName] = useState("");
   const [clipperName, setClipperName] = useState("");
+  const setShareModalClipName = useSetRecoilState(
+    recoil_shareClipModal_clipName
+  );
   const [isLike, setIsLike] = useState(false);
 
   const { isSm, isMd } = useTailwindResponsive();
@@ -147,14 +157,11 @@ const VideoTitle = ({ data }: any) => {
               }}
               h={40}
               onClick={() => {
-                // don't copy query string
-                const url = window.location.href.split("?")[0];
-                navigator.clipboard.writeText(url).then(() => {
-                  alert("링크가 복사되었습니다.");
-                });
+                setShareModalClipName(`${userName} - ${data.title}`);
+                setIsShareModalOpen(true);
               }}
             >
-              링크 복사
+              공유하기
             </Button>
             <ActionIcon
               variant="transparent"

@@ -1,4 +1,4 @@
-import { Container, Flex, SimpleGrid } from "@mantine/core";
+import { Container, Flex, Modal, SimpleGrid } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
@@ -11,6 +11,7 @@ import { CloudflareVideo } from "../../../components/view/cloudflareVideo";
 import VideoTitle from "../../../components/view/videoTitle";
 import { useTailwindResponsive } from "../../../hooks/useTailwindResponsive";
 import Head from "next/head";
+import { ShareClipModal } from "../../../components/common/ShareClipModal";
 
 const ViewClip = () => {
   // get parameter
@@ -77,6 +78,7 @@ const ViewClip = () => {
       </Head>
       <Navbar />
       <Sidebar />
+      <ShareClipModal />
       <Container size="lg">
         {isError ? (
           <NotFoundTitle
