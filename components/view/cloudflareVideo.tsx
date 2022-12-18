@@ -4,7 +4,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { apiAddress } from "../constValues";
 
-export const CloudflareVideo = ({ videoId, clipId, creating }: any) => {
+export const CloudflareVideo = ({
+  videoId,
+  clipId,
+  creating,
+  videoPlayState,
+}: any) => {
   console.log(videoId);
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -83,6 +88,18 @@ export const CloudflareVideo = ({ videoId, clipId, creating }: any) => {
               onLoadStart={() => {
                 setIsLoaded(true);
                 setOnPlay(false);
+              }}
+              onPause={() => {
+                if (videoPlayState) {
+                  const [_, setIsVideoPlay] = videoPlayState;
+                  setIsVideoPlay(false);
+                }
+              }}
+              onPlaying={() => {
+                if (videoPlayState) {
+                  const [_, setIsVideoPlay] = videoPlayState;
+                  setIsVideoPlay(true);
+                }
               }}
               onPlay={async () => {
                 if (onPlay) return;

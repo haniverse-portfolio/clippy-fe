@@ -2,15 +2,13 @@ import { ActionIcon, Alert, Avatar, Button, Flex, Text } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Heart, Router } from "tabler-icons-react";
+import { Heart } from "tabler-icons-react";
 import { useRouter } from "next/router";
 import { apiAddress } from "../constValues";
-import { useClipboard } from "@mantine/hooks";
-import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import { useShareClipModal } from "../../hooks/useShareClipModal";
 
 const VideoTitle = ({ data }: any) => {
   const router = useRouter();
-  const clipboard = useClipboard({ timeout: 500 });
 
   const [userIcon, setUserIcon] = useState("");
   const [userLogin, setUserLogin] = useState("");
@@ -18,7 +16,7 @@ const VideoTitle = ({ data }: any) => {
   const [clipperName, setClipperName] = useState("");
   const [isLike, setIsLike] = useState(false);
 
-  const { isSm, isMd } = useTailwindResponsive();
+  const { openShareClipModal } = useShareClipModal();
 
   const getApi = async (userId: number) => {
     const res = await axios.get(`https://twapi.haenu.com/user/id/${userId}`);
@@ -77,6 +75,7 @@ const VideoTitle = ({ data }: any) => {
     if (data.id) {
       getLikeStatus();
     }
+    console.log(data);
   }, [data]);
 
   return (
@@ -147,14 +146,16 @@ const VideoTitle = ({ data }: any) => {
               }}
               h={40}
               onClick={() => {
-                // don't copy query string
-                const url = window.location.href.split("?")[0];
-                navigator.clipboard.writeText(url).then(() => {
-                  alert("링크가 복사되었습니다.");
-                });
+                openShareClipModal(
+                  userName,
+                  data.cfVideoThumbnail,
+                  data.title,
+                  data.likeCount,
+                  clipperName
+                );
               }}
             >
-              링크 복사
+              공유하기
             </Button>
             <ActionIcon
               variant="transparent"
