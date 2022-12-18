@@ -35,6 +35,7 @@ import {
 } from "../../components/states";
 import Link from "next/link";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import { Sidebar } from "../../components/common/Sidebar";
 
 export default function Home() {
   /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
@@ -137,6 +138,7 @@ export default function Home() {
       </Head>
 
       <main>
+        <Sidebar />
         <Navbar />
         <div
           // className="overflow-auto"
