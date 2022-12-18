@@ -162,7 +162,8 @@ const CreateClipModalEditor: FC = () => {
             url={liveVideoInfo.rawMediaUrl}
             width="100%"
             height="100%"
-            playing={true}
+            playing
+            controls
             onDuration={(duration: any) => {
               setVideoDuration(parseInt(duration));
               setClipRangeValue([60, parseInt(duration)]);
