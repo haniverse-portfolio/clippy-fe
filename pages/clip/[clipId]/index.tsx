@@ -98,7 +98,17 @@ const ViewClip = () => {
               wrap="nowrap"
               className="w-full h-max md:h-[100%] relative md:absolute top-0 left-0"
             >
-              <div className="w-full h-full block p-5">
+              <div
+                className="w-full block"
+                style={{
+                  height: "calc(100vh - 150px)",
+                  padding: "20px 20px 0 20px",
+                  marginTop: "-30px",
+                  minHeight: isSm ? "100vh" : "auto",
+                  maxHeight: isSm ? "100vh" : "auto",
+                  overflowY: isSm ? "hidden" : "auto",
+                }}
+              >
                 <CloudflareVideo
                   videoId={videoId}
                   clipId={clipId}

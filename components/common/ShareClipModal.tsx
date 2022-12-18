@@ -6,6 +6,7 @@ import {
 import { Modal, TextInput, Textarea } from "@mantine/core";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { useShareClipModal } from "../../hooks/useShareClipModal";
+import { showNotification } from "@mantine/notifications";
 
 interface ShareClipModalCircleBtnProps {
   children: ReactNode;
@@ -234,7 +235,11 @@ export const ShareClipModal = () => {
           <div
             onClick={() => {
               navigator.clipboard.writeText(URL).then(() => {
-                alert("링크가 복사되었습니다.");
+                showNotification({
+                  title: "클립 링크 복사 완료!",
+                  message: `"Ctrl + V"로 링크를 붙여넣을 수 있어요`,
+                  autoClose: 5000,
+                });
               });
             }}
             className="text-[14px] text-white whitespace-nowrap px-4 py-2 rounded-full cursor-pointer bg-black"
@@ -249,7 +254,11 @@ export const ShareClipModal = () => {
             <div
               onClick={() => {
                 navigator.clipboard.writeText(embedCode).then(() => {
-                  alert("임베드 플레이어 코드가 복사되었습니다.");
+                  showNotification({
+                    title: "임베드 플레이어 코드 복사 완료!",
+                    message: `"Ctrl + V"로 코드를 붙여넣을 수 있어요`,
+                    autoClose: 5000,
+                  });
                 });
               }}
               className="text-[14px] w-max mt-2 ml-auto mr-0 text-white whitespace-nowrap px-4 py-2 rounded-full cursor-pointer bg-black"
