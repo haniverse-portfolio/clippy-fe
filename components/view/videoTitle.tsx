@@ -2,33 +2,21 @@ import { ActionIcon, Alert, Avatar, Button, Flex, Text } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Heart, Router } from "tabler-icons-react";
+import { Heart } from "tabler-icons-react";
 import { useRouter } from "next/router";
 import { apiAddress } from "../constValues";
-import { useClipboard } from "@mantine/hooks";
-import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
-import { useSetRecoilState } from "recoil";
-import {
-  recoil_shareClipModal_clipName,
-  recoil_shareClipModal_isOpen,
-} from "../states";
+import { useShareClipModal } from "../../hooks/useShareClipModal";
 
 const VideoTitle = ({ data }: any) => {
   const router = useRouter();
-  const clipboard = useClipboard({ timeout: 500 });
-
-  const setIsShareModalOpen = useSetRecoilState(recoil_shareClipModal_isOpen);
 
   const [userIcon, setUserIcon] = useState("");
   const [userLogin, setUserLogin] = useState("");
   const [userName, setUserName] = useState("");
   const [clipperName, setClipperName] = useState("");
-  const setShareModalClipName = useSetRecoilState(
-    recoil_shareClipModal_clipName
-  );
   const [isLike, setIsLike] = useState(false);
 
-  const { isSm, isMd } = useTailwindResponsive();
+  const { openShareClipModal } = useShareClipModal();
 
   const getApi = async (userId: number) => {
     const res = await axios.get(`https://twapi.haenu.com/user/id/${userId}`);
@@ -87,6 +75,7 @@ const VideoTitle = ({ data }: any) => {
     if (data.id) {
       getLikeStatus();
     }
+    console.log(data);
   }, [data]);
 
   return (
@@ -157,8 +146,13 @@ const VideoTitle = ({ data }: any) => {
               }}
               h={40}
               onClick={() => {
-                setShareModalClipName(`${userName} - ${data.title}`);
-                setIsShareModalOpen(true);
+                openShareClipModal(
+                  userName,
+                  data.cfVideoThumbnail,
+                  data.title,
+                  data.likeCount,
+                  clipperName
+                );
               }}
             >
               공유하기

@@ -35,7 +35,19 @@ const myCache = createEmotionCache({
   prepend: false,
 });
 
+declare global {
+  interface Window {
+    Kakao: any;
+  }
+}
+
 export default function App({ Component, pageProps }: AppProps) {
+  // Kakao SDK 설정 시작
+  useEffect(() => {
+    window.Kakao.init("5941386c58984aaa4a1e0e36a4c8fc87");
+  }, []);
+  // Kakao SDK 설정 끝
+
   // GA 설정 시작
   const router = useRouter();
   useEffect(() => {
@@ -74,6 +86,13 @@ export default function App({ Component, pageProps }: AppProps) {
         }}
       />
       {/* GA 설정 끝 */}
+
+      {/* Kakao SDK 시작 */}
+      <Script
+        strategy="beforeInteractive"
+        src="https://developers.kakao.com/sdk/js/kakao.js"
+      />
+      {/* Kakao SDK 끝 */}
 
       <RecoilRoot>
         <MantineProvider

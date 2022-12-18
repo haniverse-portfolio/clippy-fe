@@ -122,14 +122,24 @@ export const recoil_shareClipModal_isOpen = atom({
   key: "recoil_shareClipModal_isOpen",
   default: false,
 });
-
 /**
- * 클립공유모달 - 클립이름
+ * 클립공유모달 - 공유할 클립정보 interface
  */
-export const recoil_shareClipModal_clipName = atom<string | null>({
-  key: "recoil_shareClipModal_clipName",
-  default: null,
-});
+interface IShareClipModalContent {
+  streamer: string;
+  thumbnail: string;
+  title: string;
+  like: number;
+  clipper: string;
+}
+/**
+ * 클립공유모달 - 공유할 클립정보
+ */
+export const recoil_shareClipModal_content =
+  atom<IShareClipModalContent | null>({
+    key: "recoil_shareClipModal_content",
+    default: null,
+  });
 
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 

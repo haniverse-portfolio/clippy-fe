@@ -1,10 +1,11 @@
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import {
-  recoil_shareClipModal_clipName,
+  recoil_shareClipModal_content,
   recoil_shareClipModal_isOpen,
 } from "../states";
 import { Modal, TextInput, Textarea } from "@mantine/core";
 import { FC, ReactNode, useEffect, useState } from "react";
+import { useShareClipModal } from "../../hooks/useShareClipModal";
 
 interface ShareClipModalCircleBtnProps {
   children: ReactNode;
@@ -30,29 +31,62 @@ const ShareClipModalCircleBtn: FC<ShareClipModalCircleBtnProps> = ({
 };
 
 export const ShareClipModal = () => {
-  const [isOpen, setIsOpen] = useRecoilState(recoil_shareClipModal_isOpen);
   const [URL, setURL] = useState("");
   const [embedCode, setEmbedCode] = useState("");
   const [toggleCopyEmbedCode, setToggleCopyEmbedCode] = useState(false);
-  const [clipName, setClipName] = useRecoilState(
-    recoil_shareClipModal_clipName
-  );
+  const isOpen = useRecoilValue(recoil_shareClipModal_isOpen);
+  const shareModalContent = useRecoilValue(recoil_shareClipModal_content);
 
-  const getShareClipText = () => encodeURIComponent(`[Clippy] ${clipName}`);
+  const { closeShareClopModal } = useShareClipModal();
+
+  const getShareClipText = () =>
+    `[Clippy] ${shareModalContent?.streamer} - ${shareModalContent?.title}`;
+
+  const shareToKakao = () => {
+    window.Kakao.Share.sendDefault({
+      objectType: "feed",
+      content: {
+        title: `📎 ${shareModalContent?.title}`,
+        description: `게시자: ${shareModalContent?.clipper}`,
+        imageUrl: shareModalContent?.thumbnail,
+        link: {
+          mobileWebUrl: URL,
+          webUrl: URL,
+        },
+      },
+      itemContent: {
+        profileText: `[Clippy] ${shareModalContent?.streamer}`,
+      },
+      social: {
+        likeCount: shareModalContent?.like,
+        // commentCount: 20,
+        // sharedCount: 30,
+      },
+      buttons: [
+        {
+          title: "클립 보러가기",
+          link: {
+            mobileWebUrl: URL,
+            webUrl: URL,
+          },
+        },
+      ],
+    });
+  };
 
   const shareToTwitter = () => {
     window.open(
-      `https://www.twitter.com/intent/tweet?&text=${getShareClipText()}&url=${encodeURIComponent(
-        URL
-      )}`
+      `https://www.twitter.com/intent/tweet?&text=${encodeURIComponent(
+        getShareClipText()
+      )}&url=${encodeURIComponent(URL)}`
     );
   };
 
   const shareToFacebook = () => {
     window.open(
-      `http://www.facebook.com/share.php?t=${getShareClipText()}&u=${encodeURIComponent(
-        URL
-      )}`
+      `http://www.facebook.com/share.php?t=${encodeURIComponent(
+        getShareClipText()
+      )}&u=${encodeURIComponent(URL)}`
     );
   };
 
@@ -60,7 +94,7 @@ export const ShareClipModal = () => {
     setURL(window.location.href.split("?")[0]);
     setEmbedCode(
       `<iframe src="${
-        window.location.href.split("?")[0]
+        window.location.href.split("?")[0] + "/embed"
       }" frameborder="0" width="533" height="300"></iframe>`
     );
   }, []);
@@ -74,10 +108,7 @@ export const ShareClipModal = () => {
         size="md"
         title="클립 공유하기"
         opened={isOpen}
-        onClose={() => {
-          setClipName(null);
-          setIsOpen(false);
-        }}
+        onClose={closeShareClopModal}
       >
         <div className="w-full flex justify-center items-center gap-8 py-4">
           <ShareClipModalCircleBtn
@@ -111,7 +142,7 @@ export const ShareClipModal = () => {
               </g>
             </svg>
           </ShareClipModalCircleBtn>
-          <ShareClipModalCircleBtn label="카카오톡">
+          <ShareClipModalCircleBtn label="카카오톡" onClick={shareToKakao}>
             <svg
               viewBox="0 0 60 60"
               preserveAspectRatio="xMidYMid meet"
@@ -212,7 +243,8 @@ export const ShareClipModal = () => {
           </div>
         </div>
         {toggleCopyEmbedCode && (
-          <>
+          <div className="pt-1 mt-4 border-t-[1px] border-[#ccc]">
+            <div className="text-[14px] mt-2">임베드 플레이어 코드</div>
             <Textarea size="xs" mt={10} value={embedCode} />
             <div
               onClick={() => {
@@ -224,7 +256,7 @@ export const ShareClipModal = () => {
             >
               코드복사
             </div>
-          </>
+          </div>
         )}
       </Modal>
       <style jsx global>{`
