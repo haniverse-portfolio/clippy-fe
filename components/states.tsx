@@ -115,6 +115,32 @@ export const recoil_createClipModal_liveVideoInfo = atom<ILiveVideoInfo | null>(
   }
 );
 
+/**
+ * 클립공유모달 - Open 여부
+ */
+export const recoil_shareClipModal_isOpen = atom({
+  key: "recoil_shareClipModal_isOpen",
+  default: false,
+});
+/**
+ * 클립공유모달 - 공유할 클립정보 interface
+ */
+interface IShareClipModalContent {
+  streamer: string;
+  thumbnail: string;
+  title: string;
+  like: number;
+  clipper: string;
+}
+/**
+ * 클립공유모달 - 공유할 클립정보
+ */
+export const recoil_shareClipModal_content =
+  atom<IShareClipModalContent | null>({
+    key: "recoil_shareClipModal_content",
+    default: null,
+  });
+
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */

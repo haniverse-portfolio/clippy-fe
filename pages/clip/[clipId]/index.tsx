@@ -1,15 +1,17 @@
-import { Container, Flex, SimpleGrid } from "@mantine/core";
+import { Container, Flex, Modal, SimpleGrid } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { Navbar } from "../../components/common/Navbar";
-import { NotFoundTitle } from "../../components/common/NotFound";
-import { Sidebar } from "../../components/common/Sidebar";
-import VideoCard from "../../components/common/VideoCard";
-import { apiAddress } from "../../components/constValues";
-import { CloudflareVideo } from "../../components/view/cloudflareVideo";
-import VideoTitle from "../../components/view/videoTitle";
-import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import { Navbar } from "../../../components/common/Navbar";
+import { NotFoundTitle } from "../../../components/common/NotFound";
+import { Sidebar } from "../../../components/common/Sidebar";
+import VideoCard from "../../../components/common/VideoCard";
+import { apiAddress } from "../../../components/constValues";
+import { CloudflareVideo } from "../../../components/view/cloudflareVideo";
+import VideoTitle from "../../../components/view/videoTitle";
+import { useTailwindResponsive } from "../../../hooks/useTailwindResponsive";
+import Head from "next/head";
+import { ShareClipModal } from "../../../components/common/ShareClipModal";
 
 const ViewClip = () => {
   // get parameter
@@ -20,7 +22,7 @@ const ViewClip = () => {
     creating === "true" || creating === true
   );
   const [videoId, setVideoId] = useState<string>("");
-  const [videoTitle, setVideoTitle] = useState<string>("d");
+  const [videoTitle, setVideoTitle] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
   const [videoData, setVideoData] = useState<any>({});
 
@@ -71,8 +73,12 @@ const ViewClip = () => {
 
   return (
     <>
+      <Head>
+        <title>{videoTitle !== "" ? `CLIPPY - ${videoTitle}` : "CLIPPY"}</title>
+      </Head>
       <Navbar />
       <Sidebar />
+      <ShareClipModal />
       <Container size="lg">
         {isError ? (
           <NotFoundTitle
@@ -92,7 +98,17 @@ const ViewClip = () => {
               wrap="nowrap"
               className="w-full h-max md:h-[100%] relative md:absolute top-0 left-0"
             >
-              <div className="w-full h-full block p-5">
+              <div
+                className="w-full block"
+                style={{
+                  height: "calc(100vh - 150px)",
+                  padding: "20px 20px 0 20px",
+                  marginTop: "-30px",
+                  minHeight: isSm ? "100vh" : "auto",
+                  maxHeight: isSm ? "100vh" : "auto",
+                  overflowY: isSm ? "hidden" : "auto",
+                }}
+              >
                 <CloudflareVideo
                   videoId={videoId}
                   clipId={clipId}
