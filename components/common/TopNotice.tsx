@@ -28,7 +28,6 @@ export const TopNotice: FC = () => {
     await axios
       .get(`${window.location.origin}/api/notice`)
       .then((res) => {
-        console.log("notice", res);
         if (
           localStorage.getItem("clippy-top-notice-latest") !==
           res.data.starts_at
@@ -55,9 +54,9 @@ export const TopNotice: FC = () => {
 
   useEffect(() => {
     getNotice();
-    window.addEventListener("resize", windowResizeEventHandler);
+    const interval = setInterval(windowResizeEventHandler, 500);
     return () => {
-      window.removeEventListener("resize", windowResizeEventHandler);
+      clearInterval(interval);
     };
   }, []);
 
@@ -68,12 +67,6 @@ export const TopNotice: FC = () => {
       isScrollable && setScrollable(false);
     }
   }, [wrapDivWidth, msgSpanWidth]);
-
-  useEffect(() => {
-    if (wrapDivRef.current && msgSpanRef.current) {
-      windowResizeEventHandler();
-    }
-  }, [wrapDivRef, msgSpanRef]);
 
   return (
     <>
@@ -123,7 +116,7 @@ export const TopNotice: FC = () => {
               left: 0 !important;
               top: 50% !important;
               transform: translateY(calc(-50% + 2px));
-              animation: notice-scroll 20s 3s linear infinite;
+              animation: notice-scroll 20s linear infinite;
             }
             .clippy-notice-msg.scrollable::after {
               content: attr(data-notice-msg);
