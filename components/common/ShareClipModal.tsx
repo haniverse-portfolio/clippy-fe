@@ -96,7 +96,7 @@ export const ShareClipModal = () => {
     setEmbedCode(
       `<iframe src="${
         window.location.href.split("?")[0] + "/embed"
-      }" frameborder="0" width="533" height="300"></iframe>`
+      }" frameborder="0" width="533" height="300" allowFullscreen></iframe>`
     );
   }, []);
 
