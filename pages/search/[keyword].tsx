@@ -20,7 +20,7 @@ import { Navbar } from "../../components/common/Navbar";
 import { Login } from "tabler-icons-react";
 import { useRouter } from "next/router";
 import {
-  recoil_searchText,
+  common_searchText,
   search_searchResult,
 } from "../../components/states";
 import Link from "next/link";
@@ -29,7 +29,7 @@ import { Sidebar } from "../../components/common/Sidebar";
 
 export default function Home() {
   const [searchResult, setSearchResult] = useRecoilState(search_searchResult);
-  const [searchText, setSearchText] = useRecoilState(recoil_searchText);
+  const [searchText, setSearchText] = useRecoilState(common_searchText);
 
   const { isSm } = useTailwindResponsive();
   const searchHeaderDivRef = useRef<HTMLDivElement>(null);

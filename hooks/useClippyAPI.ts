@@ -1,14 +1,14 @@
 import { useRecoilState } from "recoil";
-import { recoil_isLogined, recoil_loginUserInfo } from "../components/states";
+import { common_isLogined, common_loginUserInfo } from "../components/states";
 import axios from "axios";
 import { apiAddress } from "../components/constValues";
 import { useCallback } from "react";
 
 export const useClippyLogin = () => {
   const [isClippyLogined, setIsClippyLogined] =
-    useRecoilState(recoil_isLogined);
+    useRecoilState(common_isLogined);
   const [loginedClippyUserInfo, setLoginedClippyUserInfo] =
-    useRecoilState(recoil_loginUserInfo);
+    useRecoilState(common_loginUserInfo);
 
   const checkClipyLogin = () => {
     return axios

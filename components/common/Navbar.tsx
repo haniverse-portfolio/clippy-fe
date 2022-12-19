@@ -1,9 +1,9 @@
 import { Button, Group, TextInput, Avatar, Flex } from "@mantine/core";
 import { useRecoilState } from "recoil";
 import {
-  recoil_sidebarOpened,
+  common_sidebarOpened,
   search_searchResult,
-  recoil_searchText,
+  common_searchText,
 } from "../states";
 import { apiAddress } from "../constValues";
 import Logo from "./Logo";
@@ -19,10 +19,10 @@ import { TopNotice } from "./TopNotice";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
 
 export function Navbar() {
-  const [searchText, setSearchText] = useRecoilState(recoil_searchText);
+  const [searchText, setSearchText] = useRecoilState(common_searchText);
   const [searchBarHidden, setSearchBarHidden] = useState(false);
   const [searchBarOpen, setSearchBarOpen] = useState(false);
-  const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
+  const [drawerOpened, setDrawerOpened] = useRecoilState(common_sidebarOpened);
   const [searchResult, setSearchResult] = useRecoilState(search_searchResult);
 
   const { width } = useWindowDimensions();

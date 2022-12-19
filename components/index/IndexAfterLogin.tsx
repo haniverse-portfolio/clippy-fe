@@ -13,6 +13,8 @@ import { Sidebar } from "../common/Sidebar";
 import { useEffect, useState } from "react";
 import VideoCard from "../common/VideoCard";
 import { getHotclip } from "../../util/clippy";
+import { useRouter } from "next/router";
+import { useLoginModal } from "../../hooks/useLoginModal";
 
 export const scale = keyframes({
   "from, to": { transform: "scale(0.7)" },
@@ -22,6 +24,10 @@ export function IndexAfterLogin() {
   const [selectedMenu, setSelectedMenu] = useState("popular");
   const [hotclip, setHotclip] = useState<IClipInfo[]>([]);
 
+  const { openLoginModal } = useLoginModal();
+
+  const router = useRouter();
+
   useEffect(() => {
     const localStorageLoginRedirectURL = localStorage.getItem("redirect_url");
     if (localStorageLoginRedirectURL) {
@@ -30,6 +36,12 @@ export function IndexAfterLogin() {
     }
     getHotclip().then((res) => setHotclip(res));
   }, []);
+
+  useEffect(() => {
+    if (router.isReady && router.query.login) {
+      openLoginModal();
+    }
+  }, [router.isReady]);
 
   return (
     <div>

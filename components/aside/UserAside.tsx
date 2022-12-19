@@ -10,7 +10,7 @@ import {
   Settings,
 } from "tabler-icons-react";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
-import { recoil_sidebarOpened } from "../states";
+import { common_sidebarOpened } from "../states";
 import { Footer } from "./LiveAside";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
 
@@ -61,7 +61,7 @@ interface UserAsideProps {
 }
 const UserAside = ({ forceLarge }: UserAsideProps) => {
   const [sidebarOpened, setSidebarOpened] =
-    useRecoilState(recoil_sidebarOpened);
+    useRecoilState(common_sidebarOpened);
 
   const { isSm, isMd } = useTailwindResponsive();
 

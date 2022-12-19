@@ -6,8 +6,8 @@ import {
   mypageManage_madeClip,
   mypageManage_sectionIndex,
   mypageManage_selectedClip,
-  recoil_deleteTargetClips,
-  recoil_mypageManageReloadTrigger,
+  common_deleteTargetClips,
+  common_mypageManageReloadTrigger,
 } from "../states";
 import { useRecoilState } from "recoil";
 import { apiAddress } from "../constValues";
@@ -33,14 +33,14 @@ export function MypageManageCommon() {
   );
   const [isAllCheckClicked, setIsAllCheckClicked] = useState(false);
   const [isReloadTriggered, setIsReloadTriggered] = useRecoilState(
-    recoil_mypageManageReloadTrigger
+    common_mypageManageReloadTrigger
   );
 
   const [deleteModalOpened, setDeleteModalOpened] = useRecoilState(
     mypageManage_deleteModalOpened
   );
   const [deleteTargetClips, setDeleteTargetClips] = useRecoilState(
-    recoil_deleteTargetClips
+    common_deleteTargetClips
   );
   const isSelected = () => {
     return selectedClip.length !== 0;

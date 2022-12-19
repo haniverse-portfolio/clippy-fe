@@ -1,13 +1,13 @@
 import { Group, Drawer, Stack } from "@mantine/core";
 import { Menu2 } from "tabler-icons-react";
 import { useRecoilState } from "recoil";
-import { recoil_sidebarOpened } from "../states";
+import { common_sidebarOpened } from "../states";
 import Logo from "./Logo";
 import UserAside from "../aside/UserAside";
 
 export const SidebarInner = () => {
   const [sidebarOpened, setSidebarOpened] =
-    useRecoilState(recoil_sidebarOpened);
+    useRecoilState(common_sidebarOpened);
 
   return (
     <>
@@ -32,7 +32,7 @@ export const SidebarInner = () => {
 
 export function Sidebar() {
   const [sidebarOpened, setSidebarOpened] =
-    useRecoilState(recoil_sidebarOpened);
+    useRecoilState(common_sidebarOpened);
 
   return (
     <Drawer

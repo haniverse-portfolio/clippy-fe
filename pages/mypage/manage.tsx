@@ -7,15 +7,18 @@ import { MypageMadeClip } from "../../components/mypage_manage/MypageMadeClip";
 import { MypageChannelClip } from "../../components/mypage_manage/MypageChannelClip";
 import { DeleteModal } from "../../components/mypage_manage/DeleteModal";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
+import { useRouter } from "next/router";
 
 export default function Home() {
   const sectionIndex = useRecoilValue(mypageManage_sectionIndex);
 
   const { checkClipyLogin } = useClippyLogin();
 
+  const router = useRouter();
+
   useEffect(() => {
     checkClipyLogin().then((res) => {
-      if (!res) window.location.replace("/");
+      if (!res) router.push("/?login=true");
     });
   }, []);
 

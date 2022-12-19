@@ -13,10 +13,10 @@ import {
 import { FC, useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import {
-  recoil_createClipModal_error,
-  recoil_createClipModal_isClipInitLoading,
-  recoil_createClipModal_liveVideoInfo,
-  recoil_createClipModal_streamer,
+  common_createClipModal_error,
+  common_createClipModal_isClipInitLoading,
+  common_createClipModal_liveVideoInfo,
+  common_createClipModal_streamer,
 } from "../states";
 import { CircleX, DotsVertical, Paperclip } from "tabler-icons-react";
 import ReactPlayer from "react-player";
@@ -26,7 +26,7 @@ import { useRouter } from "next/router";
 import { useCreateClipModal } from "../../hooks/useCreateClipModal";
 
 const CreateClipModalTitle: FC = () => {
-  const streamerInfo = useRecoilValue(recoil_createClipModal_streamer);
+  const streamerInfo = useRecoilValue(common_createClipModal_streamer);
 
   return (
     <Group>
@@ -39,9 +39,9 @@ const CreateClipModalTitle: FC = () => {
 };
 
 const CreateClipModalInitLoading: FC = () => {
-  const isLoading = useRecoilValue(recoil_createClipModal_isClipInitLoading);
-  const liveVideoInfo = useRecoilValue(recoil_createClipModal_liveVideoInfo);
-  const error = useRecoilValue(recoil_createClipModal_error);
+  const isLoading = useRecoilValue(common_createClipModal_isClipInitLoading);
+  const liveVideoInfo = useRecoilValue(common_createClipModal_liveVideoInfo);
+  const error = useRecoilValue(common_createClipModal_error);
 
   return (
     <>
@@ -62,7 +62,7 @@ const CreateClipModalInitLoading: FC = () => {
 };
 
 const CreateClipModalError: FC = () => {
-  const error = useRecoilValue(recoil_createClipModal_error);
+  const error = useRecoilValue(common_createClipModal_error);
 
   return (
     <>
@@ -83,9 +83,9 @@ const CreateClipModalError: FC = () => {
 };
 
 const CreateClipModalEditor: FC = () => {
-  const isLoading = useRecoilValue(recoil_createClipModal_isClipInitLoading);
-  const error = useRecoilValue(recoil_createClipModal_error);
-  const liveVideoInfo = useRecoilValue(recoil_createClipModal_liveVideoInfo);
+  const isLoading = useRecoilValue(common_createClipModal_isClipInitLoading);
+  const error = useRecoilValue(common_createClipModal_error);
+  const liveVideoInfo = useRecoilValue(common_createClipModal_liveVideoInfo);
 
   const [isCreateClipBtnLoading, setIsCreateClipBtnLoading] = useState(false);
   const [videoDuration, setVideoDuration] = useState(0);

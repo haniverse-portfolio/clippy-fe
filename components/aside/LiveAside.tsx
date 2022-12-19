@@ -6,6 +6,8 @@ import Clip from "../common/Clip";
 import { useCreateClipModal } from "../../hooks/useCreateClipModal";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { getFollowedStreamer } from "../../util/clippy";
+import { useRouter } from "next/router";
+import { useLoginModal } from "../../hooks/useLoginModal";
 
 interface LiveItemProps {
   item: IFollowedStreamerInfo;
@@ -67,6 +69,10 @@ interface LivePropsWrapper {
 }
 
 const Live = ({ data }: LivePropsWrapper) => {
+  const { isClippyLogined } = useClippyLogin();
+  const { openLoginModal } = useLoginModal();
+  const router = useRouter();
+
   return (
     <Flex className="flex-1" direction="column" justify="space-around">
       <div>
@@ -84,18 +90,21 @@ const Live = ({ data }: LivePropsWrapper) => {
             <LiveItem key={item.id} item={item} />
           ))}
         </Flex>
-        <Link href="/mypage/create">
-          <Text
-            align="center"
-            className="w-[80%] lg:w-full mx-auto break-keep"
-            size={14}
-            weight={300}
-            mt={15}
-            underline
-          >
-            팔로우 중인 스트리머 모두 보기
-          </Text>
-        </Link>
+        <Text
+          align="center"
+          className="w-[80%] lg:w-full mx-auto break-keep"
+          size={14}
+          weight={300}
+          mt={15}
+          underline
+          onClick={
+            isClippyLogined
+              ? () => router.push("/mypage/create")
+              : openLoginModal
+          }
+        >
+          팔로우 중인 스트리머 모두 보기
+        </Text>
       </div>
     </Flex>
   );

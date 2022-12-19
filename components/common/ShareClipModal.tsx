@@ -1,5 +1,5 @@
 import { useRecoilValue } from "recoil";
-import { recoil_shareClipModal_content } from "../states";
+import { common_shareClipModal_content } from "../states";
 import { Modal, TextInput, Textarea } from "@mantine/core";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { useShareClipModal } from "../../hooks/useShareClipModal";
@@ -32,7 +32,7 @@ export const ShareClipModal = () => {
   const [URL, setURL] = useState("");
   const [embedCode, setEmbedCode] = useState("");
   const [toggleCopyEmbedCode, setToggleCopyEmbedCode] = useState(false);
-  const shareModalContent = useRecoilValue(recoil_shareClipModal_content);
+  const shareModalContent = useRecoilValue(common_shareClipModal_content);
 
   const { isShareModalOpen, closeShareClopModal } = useShareClipModal();
 
