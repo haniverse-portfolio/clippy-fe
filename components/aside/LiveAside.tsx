@@ -1,21 +1,14 @@
 import { Avatar, Flex, Text } from "@mantine/core";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import Clip from "../common/Clip";
-import { recoil_followed } from "../states";
 import { useCreateClipModal } from "../../hooks/useCreateClipModal";
-
-interface LiveProps {
-  profileImage: string;
-  id: number;
-  name: string;
-  displayName: string;
-}
+import { useClippyLogin } from "../../hooks/useClippyAPI";
+import { getFollowedStreamer } from "../../util/clippy";
 
 interface LiveItemProps {
-  item: LiveProps;
+  item: IFollowedStreamerInfo;
 }
 
 const LiveItem = ({ item }: LiveItemProps) => {
@@ -31,15 +24,15 @@ const LiveItem = ({ item }: LiveItemProps) => {
       mb={32}
       className="mx-auto w-max lg:w-[100%]"
     >
-      <Link href={`/channel/${item.name}`}>
+      <Link href={`/channel/${item.user_login}`}>
         <Flex className="flex-col lg:flex-row" align="center">
           <Avatar
-            src={item.profileImage}
+            src={item.profile_image_url}
             mr={8}
             size={isSm || isMd ? 48 : 32}
             radius="xl"
           ></Avatar>
-          <Text className="mt-[5px] lg:mt-0">{item.displayName}</Text>
+          <Text className="mt-[5px] lg:mt-0">{item.user_name}</Text>
         </Flex>
       </Link>
       <div
@@ -52,7 +45,11 @@ const LiveItem = ({ item }: LiveItemProps) => {
                   bg-black lg:bg-transparent
                   right-[10px] lg:right-auto"
         onClick={() => {
-          openCreateClipModal(item.id, item.displayName, item.profileImage);
+          openCreateClipModal(
+            parseInt(item.user_id),
+            item.user_name,
+            item.profile_image_url
+          );
         }}
       >
         <Clip
@@ -66,7 +63,7 @@ const LiveItem = ({ item }: LiveItemProps) => {
 };
 
 interface LivePropsWrapper {
-  data: LiveProps[];
+  data: IFollowedStreamerInfo[];
 }
 
 const Live = ({ data }: LivePropsWrapper) => {
@@ -139,34 +136,18 @@ const itemMock = [
   },
 ];
 
-const calc = (items: any): LiveProps[] => {
-  let count = 0;
-  const returnData: LiveProps[] = [];
-  items.forEach((item: any) => {
-    if (count > 8) return;
-    count++;
-    returnData.push({
-      id: item.user_id,
-      name: item.user_login,
-      displayName: item.user_name,
-      profileImage: item.profile_image_url,
-    });
-  });
-
-  return returnData;
-};
-
 const LiveAside = () => {
-  const [followed, setFollowed] = useRecoilState(recoil_followed);
-  const [calcFollowed, setCalcFollowed] = useState<LiveProps[]>([...followed]);
+  const [followed, setFollowed] = useState<IFollowedStreamerInfo[]>([]);
 
   useEffect(() => {
-    setCalcFollowed(calc(followed));
-  }, [followed]);
+    getFollowedStreamer().then((res) => {
+      setFollowed(res);
+    });
+  }, []);
 
   return (
     <Flex direction="column" align="center" h="100%" justify="space-between">
-      <Live data={calcFollowed} />
+      <Live data={followed.filter((itm, idx) => idx < 8)} />
       <Footer />
     </Flex>
   );

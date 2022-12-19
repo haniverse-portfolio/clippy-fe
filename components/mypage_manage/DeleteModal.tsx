@@ -1,20 +1,16 @@
 import {
-  Avatar,
   Button,
   Center,
-  Group,
   Loader,
   Modal,
-  RangeSlider,
   ScrollArea,
   Stack,
   Text,
-  TextInput,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { Paperclip, Trash } from "tabler-icons-react";
+import { Trash } from "tabler-icons-react";
 import {
   mypageManage_deleteModalOpened,
   mypageManage_madeClip,

@@ -7,9 +7,9 @@ export const recoil_isLogined = atom({
   default: false,
 }); // 로그인 여부
 
-export const recoil_loginUserInfo = atom({
+export const recoil_loginUserInfo = atom<ILoginedUserInfo | null>({
   key: "recoil_loginUserInfo",
-  default: {} as any,
+  default: null,
 }); // 로그인 유저 정보
 
 export const recoil_searchText = atom({
@@ -17,7 +17,7 @@ export const recoil_searchText = atom({
   default: "",
 }); // 내비게이션바 - 검색 텍스트
 
-export const recoil_followed = atom({
+export const recoil_followed = atom<IFollowedStreamerInfo[]>({
   key: "recoil_followed",
   default: [],
 }); // 사이드바 - 팔로우 목록
@@ -34,46 +34,6 @@ export const recoil_sidebarIndex = atom({
 }); // 사이드바 - 항목 인덱스
 
 /**
- * 클립을 생성할 스트리머 정보 Interface
- */
-export interface IStreamerInfo {
-  id: string;
-  login: string;
-  name: string;
-  image: string;
-}
-
-/**
- * 클립생성 오류 상태 Interface
- */
-export interface ICreateClipModalError {
-  msg: string;
-}
-
-/**
- * 생성할 클립 정보 Interface
- */
-export interface ICreateClipInfo {
-  requestId: string;
-  starts: number;
-  ends: number;
-  title: string;
-}
-
-/**
- * 클립을 생성할 라이브 비디오 정보 Interface
- */
-interface ILiveVideoInfo {
-  thumbnailUrl: string;
-  rawMediaUrl: string;
-  requestId: string;
-  clip: {
-    clipId: string;
-    editUrl: string;
-  };
-}
-
-/**
  * 클립생성모달 - Open 여부
  */
 export const recoil_createClipModal_isOpen = atom({
@@ -84,10 +44,11 @@ export const recoil_createClipModal_isOpen = atom({
 /**
  * 클립생성모달 - 클립을 생성할 스트리머 정보
  */
-export const recoil_createClipModal_streamer = atom<IStreamerInfo | null>({
-  key: "recoil_createClipModal_streamer",
-  default: null,
-});
+export const recoil_createClipModal_streamer =
+  atom<ICreateClipStreamerInfo | null>({
+    key: "recoil_createClipModal_streamer",
+    default: null,
+  });
 
 /**
  * 클립생성모달 - 초기 로딩 여부
@@ -141,6 +102,13 @@ export const recoil_shareClipModal_content =
     default: null,
   });
 
+/**
+ * 로그인모달 - Open 여부
+ */
+export const recoil_loginModal_isOpen = atom({
+  key: "recoil_loginModal_isOpen",
+  default: false,
+});
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
@@ -173,16 +141,6 @@ export const mypageManage_selectedClip = atom({
   key: "mypageManage_selectedClip",
   default: [] as string[],
 }); // 관리 - 선택된 클립 배열
-
-export interface mypage_clipType {
-  info: string;
-  clipId: string;
-  thumbnail: string;
-  channel: string;
-  channelName: string;
-  date: string;
-  views: string;
-}
 
 interface mypage_clipTypes extends Array<mypage_clipType> {}
 export const mypageManage_madeClip = atom({

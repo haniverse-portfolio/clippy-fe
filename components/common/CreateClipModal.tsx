@@ -13,10 +13,8 @@ import {
 import { FC, useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import {
-  ICreateClipInfo,
   recoil_createClipModal_error,
   recoil_createClipModal_isClipInitLoading,
-  recoil_createClipModal_isOpen,
   recoil_createClipModal_liveVideoInfo,
   recoil_createClipModal_streamer,
 } from "../states";
@@ -225,9 +223,7 @@ const CreateClipModalEditor: FC = () => {
 };
 
 export const CreateClipModal: FC = () => {
-  const isModalOpen = useRecoilValue(recoil_createClipModal_isOpen);
-
-  const { closeCreateClipModal } = useCreateClipModal();
+  const { isCreateClipModalOpen, closeCreateClipModal } = useCreateClipModal();
 
   return (
     <Modal
@@ -236,7 +232,7 @@ export const CreateClipModal: FC = () => {
       title={<CreateClipModalTitle />}
       withCloseButton
       centered
-      opened={isModalOpen}
+      opened={isCreateClipModalOpen}
       onClose={closeCreateClipModal}
     >
       <CreateClipModalInitLoading />

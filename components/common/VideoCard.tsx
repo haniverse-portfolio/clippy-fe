@@ -15,10 +15,15 @@ import { useEffect, useState } from "react";
 import { Heart } from "tabler-icons-react";
 import * as util from "../../util/util";
 import { apiAddress } from "../constValues";
+import { useClippyLogin } from "../../hooks/useClippyAPI";
+import { useLoginModal } from "../../hooks/useLoginModal";
 
 const VideoCard = ({ clip }: any) => {
   const router = useRouter();
   const [isLike, setIsLike] = useState(false);
+
+  const { isClippyLogined } = useClippyLogin();
+  const { openLoginModal } = useLoginModal();
 
   const getLikeStatus = async () => {
     const url = `${apiAddress}/clip/${clip.key}/like`;
@@ -55,7 +60,7 @@ const VideoCard = ({ clip }: any) => {
   };
 
   useEffect(() => {
-    getLikeStatus();
+    if (isClippyLogined) getLikeStatus();
   }, []);
 
   return (
@@ -83,17 +88,7 @@ const VideoCard = ({ clip }: any) => {
                   marginRight: 4,
                 }}
               />
-              <Text
-                size={12}
-                weight={700}
-                color="white"
-                style={
-                  {
-                    // lineHeight: "34px",
-                    // padding: "0 15px",
-                  }
-                }
-              >
+              <Text size={12} weight={700} color="white">
                 {Intl.NumberFormat("ko-KR").format(clip.viewCount)}
               </Text>
             </Flex>
@@ -133,7 +128,6 @@ const VideoCard = ({ clip }: any) => {
                 whiteSpace: "nowrap",
                 textOverflow: "ellipsis",
                 overflow: "hidden",
-                // width: "calc((100vw - 360px) / 4 - 24px - 60px)",
                 maxWidth: 280,
                 cursor: "pointer",
               }}
@@ -165,7 +159,7 @@ const VideoCard = ({ clip }: any) => {
               size={36}
               className="duration-100"
               style={isLike ? { color: "#000000" } : {}}
-              onClick={toggleLike}
+              onClick={isClippyLogined ? toggleLike : openLoginModal}
             >
               <Heart
                 size={36}

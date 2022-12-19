@@ -1,127 +1,26 @@
 import {
-  createStyles,
   Container,
   Text,
   Button,
   Group,
   keyframes,
-  Badge,
-  Flex,
-  Card,
   Stack,
-  ActionIcon,
-  Drawer,
-  ThemeIcon,
   SimpleGrid,
-  Image,
 } from "@mantine/core";
-import { GithubIcon } from "@mantine/ds";
-import {
-  BrandTwitch,
-  Heart,
-  Menu2,
-  Scale,
-  Paperclip,
-} from "tabler-icons-react";
-import { atom, useRecoilState } from "recoil";
-import {
-  recoil_sidebarOpened,
-  recoil_followed,
-  recoil_isLogined,
-  recoil_loginUserInfo,
-} from "../states";
-// import Image from "next/image";
-import { apiAddress } from "../constValues";
-import axios from "axios";
 import MainLayout from "../common/MainLayout";
-import UserAside from "../aside/UserAside";
 import LiveAside from "../aside/LiveAside";
 import { Sidebar } from "../common/Sidebar";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { useRouter } from "next/router";
-import dayjs from "dayjs";
-import * as util from "../../util/util";
 import VideoCard from "../common/VideoCard";
-
-const BREAKPOINT = "@media (max-width: 755px)";
+import { getHotclip } from "../../util/clippy";
 
 export const scale = keyframes({
   "from, to": { transform: "scale(0.7)" },
 });
 
 export function IndexAfterLogin() {
-  const router = useRouter();
-
-  const [isLogined, setIsLogined] = useRecoilState(recoil_isLogined);
-  const [followed, setFollowed] = useRecoilState(recoil_followed);
-  const [drawerOpened, setDrawerOpened] = useRecoilState(recoil_sidebarOpened);
-  const [loginUserInfo, setLoginUserInfo] =
-    useRecoilState(recoil_loginUserInfo);
   const [selectedMenu, setSelectedMenu] = useState("popular");
-
-  const [hotclip, setHotclip] = useState([]);
-
-  const goLogin = () => {
-    // use authorization code grant flow
-    const clientId = "9n3ebjaenen1jipslsk11ufrcfo51t";
-    // api.clippy.kr
-    const redirectUri = `${apiAddress}/user/login`;
-    const url = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=clips:edit+user:read:follows`;
-
-    window.location.href = url;
-  };
-
-  const goLogout = () => {
-    const url = `${apiAddress}/user/logout`;
-    window.location.href = url;
-  };
-
-  const getFollowed = () => {
-    const url = `${apiAddress}/twitch/followed_streams`;
-    axios
-      .get(url, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setFollowed(res.data.data);
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getHotclip = (type = "popular") => {
-    const url = `${apiAddress}/hotclip/${type}`;
-    axios
-      .get(url, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setHotclip(res.data.data);
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getUserInfo = () => {
-    const url = `${apiAddress}/user/me`;
-    axios
-      .get(url, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setLoginUserInfo(res.data.data);
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const [hotclip, setHotclip] = useState<IClipInfo[]>([]);
 
   useEffect(() => {
     const localStorageLoginRedirectURL = localStorage.getItem("redirect_url");
@@ -129,8 +28,7 @@ export function IndexAfterLogin() {
       localStorage.removeItem("redirect_url");
       window.location.replace(localStorageLoginRedirectURL);
     }
-    getHotclip();
-    getUserInfo();
+    getHotclip().then((res) => setHotclip(res));
   }, []);
 
   return (
@@ -171,7 +69,7 @@ export function IndexAfterLogin() {
                       }}
                       onClick={() => {
                         setSelectedMenu("popular");
-                        getHotclip("popular");
+                        getHotclip("popular").then((res) => setHotclip(res));
                       }}
                     >
                       인기
@@ -188,7 +86,7 @@ export function IndexAfterLogin() {
                       }}
                       onClick={() => {
                         setSelectedMenu("new");
-                        getHotclip("new");
+                        getHotclip("new").then((res) => setHotclip(res));
                       }}
                     >
                       최근 업로드

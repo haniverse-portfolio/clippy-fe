@@ -1,12 +1,6 @@
 import "../styles/globals.css";
 import "../styles/navbar.scss";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-} from "recoil";
+import { RecoilRoot } from "recoil";
 import type { AppProps } from "next/app";
 import { MantineProvider, createEmotionCache } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
@@ -15,6 +9,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import * as gtag from "../lib/gtag";
 import Script from "next/script";
+import { LoginModal } from "../components/common/LoginModal";
 // import * as dotenv from "dotenv";
 // dotenv.config();
 
@@ -102,6 +97,7 @@ export default function App({ Component, pageProps }: AppProps) {
           theme={{ fontFamily: "Noto Sans KR" }}
         >
           <NotificationsProvider>
+            <LoginModal />
             <Component {...pageProps} />
           </NotificationsProvider>
         </MantineProvider>

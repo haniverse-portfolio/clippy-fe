@@ -6,17 +6,15 @@ import {
   mypageManage_madeClip,
   mypageManage_sectionIndex,
   mypageManage_selectedClip,
-  mypage_clipType,
   recoil_deleteTargetClips,
   recoil_mypageManageReloadTrigger,
 } from "../states";
-import { atom, useRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { apiAddress } from "../constValues";
 import { useEffect, useState } from "react";
 import * as util from "../../util/util";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import axios from "axios";
-const BREAKPOINT = "@media (max-width: 755px)";
 
 export function MypageManageCommon() {
   const { isSm, isMd } = useTailwindResponsive();

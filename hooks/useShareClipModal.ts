@@ -1,11 +1,13 @@
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   recoil_shareClipModal_content,
   recoil_shareClipModal_isOpen,
 } from "../components/states";
 
 export const useShareClipModal = () => {
-  const setIsShareModalOpen = useSetRecoilState(recoil_shareClipModal_isOpen);
+  const [isShareModalOpen, setIsShareModalOpen] = useRecoilState(
+    recoil_shareClipModal_isOpen
+  );
   const setShareModalContent = useSetRecoilState(recoil_shareClipModal_content);
 
   const openShareClipModal = (
@@ -30,5 +32,5 @@ export const useShareClipModal = () => {
     setIsShareModalOpen(false);
   };
 
-  return { openShareClipModal, closeShareClopModal };
+  return { isShareModalOpen, openShareClipModal, closeShareClopModal };
 };

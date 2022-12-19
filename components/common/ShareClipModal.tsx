@@ -1,8 +1,5 @@
 import { useRecoilValue } from "recoil";
-import {
-  recoil_shareClipModal_content,
-  recoil_shareClipModal_isOpen,
-} from "../states";
+import { recoil_shareClipModal_content } from "../states";
 import { Modal, TextInput, Textarea } from "@mantine/core";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { useShareClipModal } from "../../hooks/useShareClipModal";
@@ -35,10 +32,9 @@ export const ShareClipModal = () => {
   const [URL, setURL] = useState("");
   const [embedCode, setEmbedCode] = useState("");
   const [toggleCopyEmbedCode, setToggleCopyEmbedCode] = useState(false);
-  const isOpen = useRecoilValue(recoil_shareClipModal_isOpen);
   const shareModalContent = useRecoilValue(recoil_shareClipModal_content);
 
-  const { closeShareClopModal } = useShareClipModal();
+  const { isShareModalOpen, closeShareClopModal } = useShareClipModal();
 
   const getShareClipText = () =>
     `[Clippy] ${shareModalContent?.streamer} - ${shareModalContent?.title}`;
@@ -108,7 +104,7 @@ export const ShareClipModal = () => {
         centered
         size="md"
         title="클립 공유하기"
-        opened={isOpen}
+        opened={isShareModalOpen}
         onClose={closeShareClopModal}
       >
         <div className="w-full flex justify-center items-center gap-8 py-4">

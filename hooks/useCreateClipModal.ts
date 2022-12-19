@@ -1,6 +1,5 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
-  IStreamerInfo,
   recoil_createClipModal_error,
   recoil_createClipModal_isClipInitLoading,
   recoil_createClipModal_isOpen,
@@ -9,9 +8,11 @@ import {
 } from "../components/states";
 import axios from "axios";
 import { apiAddress } from "../components/constValues";
+import { useClippyLogin } from "./useClippyAPI";
 
 export const useCreateClipModal = () => {
-  const [isModalOpen, setIsModalOpen] = useRecoilState(
+  const { isClippyLogined } = useClippyLogin();
+  const [isCreateClipModalOpen, setCreateClipIsModalOpen] = useRecoilState(
     recoil_createClipModal_isOpen
   );
   const setIsClipInitLoading = useSetRecoilState(
@@ -49,7 +50,7 @@ export const useCreateClipModal = () => {
     streamerName: string,
     streamerProfileImage: string
   ) => {
-    if (!isModalOpen) {
+    if (!isCreateClipModalOpen && isClippyLogined) {
       postExtractor(streamerId);
       setStreamerInfo({
         id: "",
@@ -58,17 +59,17 @@ export const useCreateClipModal = () => {
         image: streamerProfileImage,
       });
       setIsClipInitLoading(true);
-      setIsModalOpen(true);
+      setCreateClipIsModalOpen(true);
     }
   };
 
   const closeCreateClipModal = () => {
-    setIsModalOpen(false);
+    setCreateClipIsModalOpen(false);
     setIsClipInitLoading(false);
     setCreateClipError(null);
     setStreamerInfo(null);
     setLiveVideoInfo(null);
   };
 
-  return { openCreateClipModal, closeCreateClipModal };
+  return { isCreateClipModalOpen, openCreateClipModal, closeCreateClipModal };
 };
