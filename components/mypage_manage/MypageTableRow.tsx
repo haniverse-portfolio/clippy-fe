@@ -1,13 +1,13 @@
 import { Flex, Group, Text, Checkbox } from "@mantine/core";
 import Link from "next/link";
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { Trash } from "tabler-icons-react";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import {
   mypageManage_deleteModalOpened,
   mypageManage_selectedClip,
-  recoil_deleteTargetClips,
+  common_deleteTargetClips,
 } from "../states";
 
 interface MyapgeTableRowProps {
@@ -34,7 +34,7 @@ export function MypageTableRow({
     mypageManage_deleteModalOpened
   );
   const [deleteTargetClips, setDeleteTargetClips] = useRecoilState(
-    recoil_deleteTargetClips
+    common_deleteTargetClips
   );
   const [selectedClips, setSelectedClips] = useRecoilState(
     mypageManage_selectedClip

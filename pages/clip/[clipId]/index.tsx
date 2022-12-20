@@ -1,17 +1,16 @@
-import { Container, Flex, Modal, SimpleGrid } from "@mantine/core";
-import axios from "axios";
+import { Container, Flex, SimpleGrid } from "@mantine/core";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Navbar } from "../../../components/common/Navbar";
 import { NotFoundTitle } from "../../../components/common/NotFound";
 import { Sidebar } from "../../../components/common/Sidebar";
 import VideoCard from "../../../components/common/VideoCard";
-import { apiAddress } from "../../../components/constValues";
 import { CloudflareVideo } from "../../../components/view/cloudflareVideo";
 import VideoTitle from "../../../components/view/videoTitle";
 import { useTailwindResponsive } from "../../../hooks/useTailwindResponsive";
 import Head from "next/head";
 import { ShareClipModal } from "../../../components/common/ShareClipModal";
+import { getClip, getHotclip } from "../../../util/clippy";
 
 const ViewClip = () => {
   // get parameter
@@ -26,49 +25,28 @@ const ViewClip = () => {
   const [isError, setIsError] = useState<boolean>(false);
   const [videoData, setVideoData] = useState<any>({});
 
-  const { isSm, isMd } = useTailwindResponsive();
+  const { isSm } = useTailwindResponsive();
   const scrollDivRef = useRef<HTMLDivElement>(null);
-  const [hotclip, setHotclip] = useState([]);
-
-  const getHotclip = (type = "popular") => {
-    const url = `${apiAddress}/hotclip/${type}`;
-    axios
-      .get(url, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setHotclip(res.data.data);
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getVideo = async () => {
-    await axios
-      .get(`${apiAddress}/clip/${clipId}`)
-      .then((res) => {
-        setVideoData(res.data.data);
-        setVideoId(res.data.data.cfVideoId);
-        setVideoTitle(res.data.data.title);
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsError(true);
-      });
-  };
+  const [hotclip, setHotclip] = useState<IClipInfo[]>([]);
 
   useEffect(() => {
     if (clipId) {
       if (scrollDivRef && scrollDivRef.current && isSm)
         scrollDivRef.current.scrollTo({ top: 0, behavior: "smooth" });
-      getVideo();
+      getClip(clipId).then((res) => {
+        if (res) {
+          setVideoData(res);
+          setVideoId(res.cfVideoId);
+          setVideoTitle(res.title);
+        }
+      });
     }
   }, [clipId]);
 
   useEffect(() => {
-    getHotclip();
+    getHotclip().then((res) => {
+      setHotclip(res);
+    });
   }, []);
 
   return (

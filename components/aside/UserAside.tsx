@@ -1,11 +1,8 @@
-import { solid, regular } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Avatar, Center, Flex, Group, Stack, Text } from "@mantine/core";
+import { Avatar, Center, Stack } from "@mantine/core";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { useRecoilState } from "recoil";
 import {
-  Broadcast,
   InfoCircle,
   Logout,
   MessageCircle2,
@@ -13,9 +10,9 @@ import {
   Settings,
 } from "tabler-icons-react";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
-import { apiAddress } from "../constValues";
-import { recoil_loginUserInfo, recoil_sidebarOpened } from "../states";
+import { common_sidebarOpened } from "../states";
 import { Footer } from "./LiveAside";
+import { useClippyLogin } from "../../hooks/useClippyAPI";
 
 interface UserAsideMenuProps {
   icon: ReactNode;
@@ -63,17 +60,12 @@ interface UserAsideProps {
   forceLarge?: boolean;
 }
 const UserAside = ({ forceLarge }: UserAsideProps) => {
-  const [loginUserInfo, setLoginUserInfo] =
-    useRecoilState(recoil_loginUserInfo);
-  const goLogout = () => {
-    const url = `${apiAddress}/user/logout`;
-    window.location.href = url;
-  };
-
   const [sidebarOpened, setSidebarOpened] =
-    useRecoilState(recoil_sidebarOpened);
+    useRecoilState(common_sidebarOpened);
 
   const { isSm, isMd } = useTailwindResponsive();
+
+  const { loginedClippyUserInfo, goClippyLogout } = useClippyLogin();
 
   return (
     <Stack style={{ height: "calc(100vh - 120px)" }}>
@@ -94,12 +86,12 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
           onClick={() => {
             setSidebarOpened(false);
           }}
-          href={`/channel/${loginUserInfo.twitchName}`}
+          href={`/channel/${loginedClippyUserInfo?.twitchName}`}
         >
           <Avatar
             radius="xl"
             size={(isSm || isMd) && !forceLarge ? 48 : 98}
-            src={loginUserInfo.profileImageUrl}
+            src={loginedClippyUserInfo?.profileImageUrl}
             style={{ borderRadius: 99 }}
           />
         </Link>
@@ -108,7 +100,7 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
         className="text-[16px] text-center mt-[-10px] lg:mt-[-5px]"
         style={{ marginTop: forceLarge ? "-5px" : "" }}
       >
-        {loginUserInfo.twitchDisplayName}
+        {loginedClippyUserInfo?.twitchDisplayName}
       </span>
       <Stack className="m-0 p-0" mt={38}>
         <Link
@@ -165,7 +157,7 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
         />
         <UserAsideMenu
           onClick={() => {
-            goLogout();
+            goClippyLogout();
           }}
           forceLarge={forceLarge}
           icon={<Logout size={18} />}

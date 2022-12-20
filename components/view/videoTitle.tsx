@@ -6,8 +6,15 @@ import { Heart } from "tabler-icons-react";
 import { useRouter } from "next/router";
 import { apiAddress } from "../constValues";
 import { useShareClipModal } from "../../hooks/useShareClipModal";
+import { getTwitchUserInfoById } from "../../util/clippy";
+import { useClippyLogin } from "../../hooks/useClippyAPI";
+import { useLoginModal } from "../../hooks/useLoginModal";
 
-const VideoTitle = ({ data }: any) => {
+interface VideoTitleProps {
+  data: IClipInfo;
+}
+
+const VideoTitle = ({ data }: VideoTitleProps) => {
   const router = useRouter();
 
   const [userIcon, setUserIcon] = useState("");
@@ -16,21 +23,22 @@ const VideoTitle = ({ data }: any) => {
   const [clipperName, setClipperName] = useState("");
   const [isLike, setIsLike] = useState(false);
 
+  const { openLoginModal } = useLoginModal();
   const { openShareClipModal } = useShareClipModal();
-
-  const getApi = async (userId: number) => {
-    const res = await axios.get(`https://twapi.haenu.com/user/id/${userId}`);
-    return res.data;
-  };
+  const { isClippyLogined } = useClippyLogin();
 
   const getUserData = () => {
-    getApi(data.targetUserId).then((res) => {
-      setUserIcon(res.profile_image_url);
-      setUserLogin(res.login);
-      setUserName(res.display_name);
+    getTwitchUserInfoById(data.targetUserId).then((res) => {
+      if (res) {
+        setUserIcon(res.profile_image_url);
+        setUserLogin(res.login);
+        setUserName(res.display_name);
+      }
     });
-    getApi(data.createUserId).then((res) => {
-      setClipperName(res.display_name);
+    getTwitchUserInfoById(data.createUserId).then((res) => {
+      if (res) {
+        setClipperName(res.display_name);
+      }
     });
   };
 
@@ -72,7 +80,7 @@ const VideoTitle = ({ data }: any) => {
     if (data.targetUserId) {
       getUserData();
     }
-    if (data.id) {
+    if (data.id && isClippyLogined) {
       getLikeStatus();
     }
     console.log(data);
@@ -163,7 +171,7 @@ const VideoTitle = ({ data }: any) => {
               mx={20}
               className="duration-100"
               style={isLike ? { color: "#000000" } : {}}
-              onClick={toggleLike}
+              onClick={isClippyLogined ? toggleLike : openLoginModal}
             >
               <Heart
                 size={36}

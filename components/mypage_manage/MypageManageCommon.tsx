@@ -6,17 +6,15 @@ import {
   mypageManage_madeClip,
   mypageManage_sectionIndex,
   mypageManage_selectedClip,
-  mypage_clipType,
-  recoil_deleteTargetClips,
-  recoil_mypageManageReloadTrigger,
+  common_deleteTargetClips,
+  common_mypageManageReloadTrigger,
 } from "../states";
-import { atom, useRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { apiAddress } from "../constValues";
 import { useEffect, useState } from "react";
 import * as util from "../../util/util";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import axios from "axios";
-const BREAKPOINT = "@media (max-width: 755px)";
 
 export function MypageManageCommon() {
   const { isSm, isMd } = useTailwindResponsive();
@@ -35,14 +33,14 @@ export function MypageManageCommon() {
   );
   const [isAllCheckClicked, setIsAllCheckClicked] = useState(false);
   const [isReloadTriggered, setIsReloadTriggered] = useRecoilState(
-    recoil_mypageManageReloadTrigger
+    common_mypageManageReloadTrigger
   );
 
   const [deleteModalOpened, setDeleteModalOpened] = useRecoilState(
     mypageManage_deleteModalOpened
   );
   const [deleteTargetClips, setDeleteTargetClips] = useRecoilState(
-    recoil_deleteTargetClips
+    common_deleteTargetClips
   );
   const isSelected = () => {
     return selectedClip.length !== 0;
