@@ -88,7 +88,12 @@ const ViewClipEmbed: FC = () => {
             {!isVideoPlay && (
               <>
                 <div className="screen-saver absolute top-0 left-0 w-full h-full bg-black pointer-events-none"></div>
-                <div className="video-title absolute top-4 left-4 text-white text-3xl">
+                <div
+                  className="video-title absolute top-4 left-4 text-white text-2xl cursor-pointer hover:underline"
+                  onClick={() =>
+                    window.open(`https://clippy.kr/clip/${clipId}`)
+                  }
+                >
                   {videoTitle}
                 </div>
               </>
