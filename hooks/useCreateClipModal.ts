@@ -1,26 +1,27 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
-  IStreamerInfo,
-  recoil_createClipModal_error,
-  recoil_createClipModal_isClipInitLoading,
-  recoil_createClipModal_isOpen,
-  recoil_createClipModal_liveVideoInfo,
-  recoil_createClipModal_streamer,
+  common_createClipModal_error,
+  common_createClipModal_isClipInitLoading,
+  common_createClipModal_isOpen,
+  common_createClipModal_liveVideoInfo,
+  common_createClipModal_streamer,
 } from "../components/states";
 import axios from "axios";
 import { apiAddress } from "../components/constValues";
+import { useClippyLogin } from "./useClippyAPI";
 
 export const useCreateClipModal = () => {
-  const [isModalOpen, setIsModalOpen] = useRecoilState(
-    recoil_createClipModal_isOpen
+  const { isClippyLogined } = useClippyLogin();
+  const [isCreateClipModalOpen, setCreateClipIsModalOpen] = useRecoilState(
+    common_createClipModal_isOpen
   );
   const setIsClipInitLoading = useSetRecoilState(
-    recoil_createClipModal_isClipInitLoading
+    common_createClipModal_isClipInitLoading
   );
-  const setStreamerInfo = useSetRecoilState(recoil_createClipModal_streamer);
-  const setCreateClipError = useSetRecoilState(recoil_createClipModal_error);
+  const setStreamerInfo = useSetRecoilState(common_createClipModal_streamer);
+  const setCreateClipError = useSetRecoilState(common_createClipModal_error);
   const setLiveVideoInfo = useSetRecoilState(
-    recoil_createClipModal_liveVideoInfo
+    common_createClipModal_liveVideoInfo
   );
 
   const postExtractor = async (streamerId: number) => {
@@ -49,7 +50,7 @@ export const useCreateClipModal = () => {
     streamerName: string,
     streamerProfileImage: string
   ) => {
-    if (!isModalOpen) {
+    if (!isCreateClipModalOpen && isClippyLogined) {
       postExtractor(streamerId);
       setStreamerInfo({
         id: "",
@@ -58,17 +59,17 @@ export const useCreateClipModal = () => {
         image: streamerProfileImage,
       });
       setIsClipInitLoading(true);
-      setIsModalOpen(true);
+      setCreateClipIsModalOpen(true);
     }
   };
 
   const closeCreateClipModal = () => {
-    setIsModalOpen(false);
+    setCreateClipIsModalOpen(false);
     setIsClipInitLoading(false);
     setCreateClipError(null);
     setStreamerInfo(null);
     setLiveVideoInfo(null);
   };
 
-  return { openCreateClipModal, closeCreateClipModal };
+  return { isCreateClipModalOpen, openCreateClipModal, closeCreateClipModal };
 };

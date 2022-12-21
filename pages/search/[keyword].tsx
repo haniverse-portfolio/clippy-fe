@@ -1,16 +1,10 @@
 import {
-  Badge,
   Flex,
-  Title,
   Text,
   Button,
   Card,
-  Image,
-  Grid,
   Group,
-  TextInput,
   Stack,
-  ActionIcon,
   Container,
   SimpleGrid,
   Center,
@@ -19,18 +13,14 @@ import {
 } from "@mantine/core";
 import Head from "next/head";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import { atom, useRecoilState } from "recoil";
+import { useEffect, useRef } from "react";
+import { useRecoilState } from "recoil";
 import { apiAddress } from "../../components/constValues";
 import { Navbar } from "../../components/common/Navbar";
-import { Login, Paperclip } from "tabler-icons-react";
-
+import { Login } from "tabler-icons-react";
 import { useRouter } from "next/router";
 import {
-  mypageManage_sectionIndex,
-  recoil_followed,
-  recoil_isLogined,
-  recoil_searchText,
+  common_searchText,
   search_searchResult,
 } from "../../components/states";
 import Link from "next/link";
@@ -38,58 +28,13 @@ import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import { Sidebar } from "../../components/common/Sidebar";
 
 export default function Home() {
-  /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
-  const [isLogined, setIsLogined] = useRecoilState<boolean>(recoil_isLogined);
-  const [followed, setFollowed] = useRecoilState(recoil_followed);
-  const [sectionIndex, setSectionIndex] = useRecoilState(
-    mypageManage_sectionIndex
-  );
   const [searchResult, setSearchResult] = useRecoilState(search_searchResult);
-  const [searchText, setSearchText] = useRecoilState(recoil_searchText);
-  const [scrollAreaHeight, setScrollAreaHeight] = useState<string | number>(
-    "calc(100vh - 320px)"
-  );
-  /* ***** ***** ***** ***** ***** states ***** ***** ***** ***** ***** */
+  const [searchText, setSearchText] = useRecoilState(common_searchText);
 
   const { isSm } = useTailwindResponsive();
   const searchHeaderDivRef = useRef<HTMLDivElement>(null);
 
-  /* ***** ***** ***** ***** ***** function ***** ***** ***** ***** ***** */
-
-  /* ***** ***** ***** ***** ***** function ***** ***** ***** ***** ***** */
-
-  /* ***** ***** ***** ***** ***** axios call ***** ***** ***** ***** ***** */
-  const checkLogin = () => {
-    const url = `${apiAddress}/user/check`;
-    axios
-      .get(url, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setIsLogined(true);
-        console.log(res);
-        getFollowed();
-      })
-      .catch((err) => {
-        setIsLogined(false);
-        console.log(err);
-      });
-  };
-
-  const getFollowed = () => {
-    const url = `${apiAddress}/twitch/followed_streams`;
-    axios
-      .get(url, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setFollowed(res.data.data);
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const router = useRouter();
 
   const getTwitchChannel = async (routerSearchText: string) => {
     const url = apiAddress + `/search/channel?q=${routerSearchText}`;
@@ -111,27 +56,14 @@ export default function Home() {
         // error 표시해주기
       });
   };
-  /* ***** ***** ***** ***** ***** axios call ***** ***** ***** ***** ***** */
 
-  /* ***** ***** ***** ***** ***** effect hook ***** ***** ***** ***** ***** */
-  const router = useRouter();
   useEffect(() => {
-    checkLogin();
     getTwitchChannel(router.query.keyword as string);
   }, [router.isReady]);
 
-  useEffect(() => {
-    if (searchHeaderDivRef && searchHeaderDivRef.current) {
-      setScrollAreaHeight(
-        `calc(100vh - ${searchHeaderDivRef.current.offsetHeight + 280}px)`
-      );
-    }
-  }, [searchHeaderDivRef]);
-  /* ***** ***** ***** ***** ***** effect hook ***** ***** ***** ***** ***** */
   return (
     <div>
       <Head>
-        {/* <script src="https://kit.fontawesome.com/beb5b729ea.js" crossOrigin="anonymous"/> */}
         <title>CLIPPY</title>
         <meta name="description" content="CLIPPY" />
         <link rel="icon" href="/favicon.ico" />
@@ -140,10 +72,7 @@ export default function Home() {
       <main>
         <Sidebar />
         <Navbar />
-        <div
-          // className="overflow-auto"
-          style={{ height: "calc(100vh - 120px)" }}
-        >
+        <ScrollArea scrollbarSize={0} style={{ height: "calc(100vh - 120px)" }}>
           <Container
             size="xl"
             sizes={{
@@ -176,102 +105,96 @@ export default function Home() {
                 </Group>
               </Group>
             </Stack>
-            <ScrollArea
-              scrollbarSize={0}
+
+            <SimpleGrid
               mt={40}
-              style={{ height: scrollAreaHeight }}
+              cols={4}
+              spacing={24}
+              p={9}
+              breakpoints={[
+                { maxWidth: 1400, cols: 3, spacing: "md" },
+                { maxWidth: 980, cols: 2, spacing: "sm" },
+                { maxWidth: 600, cols: 1, spacing: "sm" },
+              ]}
             >
-              <SimpleGrid
-                cols={4}
-                spacing={24}
-                p={9}
-                breakpoints={[
-                  { maxWidth: 1400, cols: 3, spacing: "md" },
-                  { maxWidth: 980, cols: 2, spacing: "sm" },
-                  { maxWidth: 600, cols: 1, spacing: "sm" },
-                ]}
-              >
-                {searchResult.map((result: any, i) => {
-                  return (
-                    <Card
-                      className="animate-fadeUp transition ease-in-out hover:scale-105"
-                      p={0}
-                      m={0}
-                      key={i}
-                      // onClick={() => {
-                      //   window.location.href = `/create/${stream.user_login}`;
-                      // }}
+              {searchResult.map((result: any, i) => {
+                return (
+                  <Card
+                    className="animate-fadeUp transition ease-in-out hover:scale-105"
+                    p={0}
+                    m={0}
+                    key={i}
+                    // onClick={() => {
+                    //   window.location.href = `/create/${stream.user_login}`;
+                    // }}
+                  >
+                    <Flex
+                      className="h-[260px] border-2 rounded-xl"
+                      justify="center"
+                      direction="column"
                     >
-                      <Flex
-                        className="h-[260px] border-2 rounded-xl"
-                        justify="center"
-                        direction="column"
-                      >
-                        <Center>
-                          <Avatar
-                            mt={32}
-                            radius="xl"
-                            size={98}
-                            src={result.logo}
-                            style={{ borderRadius: 99 }}
-                          />
-                        </Center>
-                        <Center>
-                          <Stack spacing={0}>
-                            <Center>
-                              <Text
-                                size={16}
-                                weight={700}
-                                mt={16}
-                                align="center"
+                      <Center>
+                        <Avatar
+                          mt={32}
+                          radius="xl"
+                          size={98}
+                          src={result.logo}
+                          style={{ borderRadius: 99 }}
+                        />
+                      </Center>
+                      <Center>
+                        <Stack spacing={0}>
+                          <Center>
+                            <Text
+                              size={16}
+                              weight={700}
+                              mt={16}
+                              align="center"
+                              style={{
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                                overflow: "hidden",
+                                width: "100%",
+                                maxWidth: 280,
+                              }}
+                            >
+                              {result.display_name}
+                            </Text>
+                          </Center>
+                          <Container>
+                            <Link href={`/channel/${result.name}`}>
+                              <Button
+                                onClick={() => {
+                                  setSearchText("");
+                                }}
+                                mt={40}
+                                mb={24}
+                                leftIcon={<Login size={20} />}
+                                h={58}
+                                color="gray"
+                                radius="xl"
+                                px={20}
                                 style={{
-                                  whiteSpace: "nowrap",
-                                  textOverflow: "ellipsis",
-                                  overflow: "hidden",
-                                  width: "100%",
-                                  maxWidth: 280,
+                                  height: "34px",
+                                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                  fontSize: 12,
+                                  fontWeight: 700,
                                 }}
                               >
-                                {result.display_name}
-                              </Text>
-                            </Center>
-                            <Container>
-                              <Link href={`/channel/${result.name}`}>
-                                <Button
-                                  onClick={() => {
-                                    setSearchText("");
-                                  }}
-                                  mt={40}
-                                  mb={24}
-                                  leftIcon={<Login size={20} />}
-                                  h={58}
-                                  color="gray"
-                                  radius="xl"
-                                  px={20}
-                                  style={{
-                                    height: "34px",
-                                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                                    fontSize: 12,
-                                    fontWeight: 700,
-                                  }}
-                                >
-                                  채널 방문
-                                </Button>
-                              </Link>
-                            </Container>
-                          </Stack>
-                        </Center>
-                      </Flex>
-                    </Card>
-                  );
-                })}
-              </SimpleGrid>
-            </ScrollArea>
+                                채널 방문
+                              </Button>
+                            </Link>
+                          </Container>
+                        </Stack>
+                      </Center>
+                    </Flex>
+                  </Card>
+                );
+              })}
+            </SimpleGrid>
           </Container>
-        </div>
+        </ScrollArea>
       </main>
     </div>
   );
 }
-
-// throw new Error("Sentry Frontend Error");

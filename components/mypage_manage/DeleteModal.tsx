@@ -1,26 +1,22 @@
 import {
-  Avatar,
   Button,
   Center,
-  Group,
   Loader,
   Modal,
-  RangeSlider,
   ScrollArea,
   Stack,
   Text,
-  TextInput,
 } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { Paperclip, Trash } from "tabler-icons-react";
+import { Trash } from "tabler-icons-react";
 import {
   mypageManage_deleteModalOpened,
   mypageManage_madeClip,
-  recoil_deleteModalStep,
-  recoil_deleteTargetClips,
-  recoil_mypageManageReloadTrigger,
+  common_deleteModalStep,
+  common_deleteTargetClips,
+  common_mypageManageReloadTrigger,
 } from "../states";
 import axios, { AxiosResponse } from "axios";
 import { MypageTableRow } from "./MypageTableRow";
@@ -31,15 +27,15 @@ export const DeleteModal = () => {
     mypageManage_deleteModalOpened
   );
   const [deleteTargetClips, setDeleteTargetClips] = useRecoilState(
-    recoil_deleteTargetClips
+    common_deleteTargetClips
   );
   const [mypageMadeClip, setMypageMadeClip] = useRecoilState(
     mypageManage_madeClip
   );
   const [isReloadTriggered, setIsReloadTriggered] = useRecoilState(
-    recoil_mypageManageReloadTrigger
+    common_mypageManageReloadTrigger
   );
-  const [step, setStep] = useRecoilState<number>(recoil_deleteModalStep);
+  const [step, setStep] = useRecoilState<number>(common_deleteModalStep);
 
   useEffect(() => {
     if (step === 0 && deleteTargetClips.length <= 0) {

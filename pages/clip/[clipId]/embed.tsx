@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
 import { FC, useEffect, useRef, useState } from "react";
 import { CloudflareVideo } from "../../../components/view/cloudflareVideo";
-import axios from "axios";
-import { apiAddress } from "../../../components/constValues";
 import Head from "next/head";
 import { NotFoundTitle } from "../../../components/common/NotFound";
+import { getClip } from "../../../util/clippy";
 
 const ViewClipEmbed: FC = () => {
   const router = useRouter();
@@ -16,25 +15,10 @@ const ViewClipEmbed: FC = () => {
   const videoPlayState = useState(false);
   const [isVideoPlay] = videoPlayState;
   const [isError, setIsError] = useState(false);
-  const [videoData, setVideoData] = useState<any>({});
   const [videoCreating, setVideoCreating] = useState<boolean>(
     creating === "true" || creating === true
   );
   const wrapDivRef = useRef<HTMLDivElement>(null);
-
-  const getVideo = async () => {
-    await axios
-      .get(`${apiAddress}/clip/${clipId}`)
-      .then((res) => {
-        setVideoData(res.data.data);
-        setVideoId(res.data.data.cfVideoId);
-        setVideoTitle(res.data.data.title);
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsError(true);
-      });
-  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -50,13 +34,16 @@ const ViewClipEmbed: FC = () => {
 
   useEffect(() => {
     if (clipId) {
-      getVideo();
+      getClip(clipId).then((res) => {
+        if (res) {
+          setVideoId(res.cfVideoId);
+          setVideoTitle(res.title);
+        } else {
+          setIsError(true);
+        }
+      });
     }
   }, [clipId]);
-
-  useEffect(() => {
-    console.log(videoData);
-  }, [videoData]);
 
   return (
     <>
