@@ -6,6 +6,7 @@ import {
   keyframes,
   Stack,
   SimpleGrid,
+  Flex,
 } from "@mantine/core";
 import MainLayout from "../common/MainLayout";
 import LiveAside from "../aside/LiveAside";
@@ -23,7 +24,11 @@ export const scale = keyframes({
 });
 
 export function IndexAfterLogin() {
-  const tabNames = { suggest: "추천", popular: "인기", new: "최근 업로드" };
+  const tabNames = {
+    suggest: "추천",
+    popular: "인기",
+    new: "최근 업로드",
+  };
   const [selectedMenu, setSelectedMenu] = useState("suggest");
   const [hotclip, setHotclip] = useState<IClipInfo[]>([]);
   const [isReloading, setIsReloading] = useState(false);
@@ -91,7 +96,16 @@ export function IndexAfterLogin() {
                   Hot Clip
                 </Text>
                 <Group position="apart" className="relative">
-                  <Group>
+                  <Flex
+                    justify="flex-start"
+                    align="center"
+                    gap="xs"
+                    style={{
+                      maxWidth: "calc(100% - 80px)",
+                      overflowY: "hidden",
+                      overflowX: "auto",
+                    }}
+                  >
                     {Object.keys(tabNames).map((itm, idx) => (
                       <Button
                         key={idx}
@@ -138,7 +152,7 @@ export function IndexAfterLogin() {
                         height="24px"
                       />
                     </Button>
-                  </Group>
+                  </Flex>
                 </Group>
               </Stack>
               <SimpleGrid
