@@ -12,13 +12,18 @@ const MainLayout = ({ content, aside }: any): JSX.Element => {
 
   return (
     <Flex justify="space-between" className="relative">
-      <GoogleAdsense
-        className="google-ad-display-v-1 min-w-[150px] max-w-[300px] max-h-[600px] mr-2 hidden sm:block"
-        layoutKey=""
-        slot="5162478170"
-        format="auto"
-        responsive={true}
-      />
+      <div
+        className="mt-10 min-w-[150px] max-w-[300px] mr-2 hidden sm:flex justify-center items-center"
+        style={{ height: `calc(100vh - 200px)` }}
+      >
+        <GoogleAdsense
+          className="google-ad-display-v-1"
+          layoutKey=""
+          slot="5162478170"
+          format="auto"
+          responsive={true}
+        />
+      </div>
       <div
         className="pb-20"
         style={{ height: "calc(100vh - 120px)", flex: 1, overflow: "auto" }}
