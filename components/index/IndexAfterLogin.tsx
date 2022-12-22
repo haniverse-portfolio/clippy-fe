@@ -15,14 +15,18 @@ import VideoCard from "../common/VideoCard";
 import { getHotclip } from "../../util/clippy";
 import { useRouter } from "next/router";
 import { useLoginModal } from "../../hooks/useLoginModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 
 export const scale = keyframes({
   "from, to": { transform: "scale(0.7)" },
 });
 
 export function IndexAfterLogin() {
-  const [selectedMenu, setSelectedMenu] = useState("popular");
+  const tabNames = { suggest: "추천", popular: "인기", new: "최근 업로드" };
+  const [selectedMenu, setSelectedMenu] = useState("suggest");
   const [hotclip, setHotclip] = useState<IClipInfo[]>([]);
+  const [isReloading, setIsReloading] = useState(false);
 
   const { openLoginModal } = useLoginModal();
 
@@ -30,11 +34,20 @@ export function IndexAfterLogin() {
 
   useEffect(() => {
     const localStorageLoginRedirectURL = localStorage.getItem("redirect_url");
+    const currentHotClipTabName = localStorage.getItem(
+      "current_hotclip_tab_name"
+    );
     if (localStorageLoginRedirectURL) {
       localStorage.removeItem("redirect_url");
       window.location.replace(localStorageLoginRedirectURL);
     }
-    getHotclip().then((res) => setHotclip(res));
+    if (
+      currentHotClipTabName &&
+      Object.keys(tabNames).includes(currentHotClipTabName)
+    ) {
+      setSelectedMenu(() => currentHotClipTabName);
+      getHotclip(currentHotClipTabName).then((res) => setHotclip(res));
+    } else getHotclip(selectedMenu).then((res) => setHotclip(res));
   }, []);
 
   useEffect(() => {
@@ -42,6 +55,18 @@ export function IndexAfterLogin() {
       openLoginModal();
     }
   }, [router.isReady]);
+
+  const selectHotClipTab = (tabName: string) => {
+    if (!isReloading) {
+      localStorage.setItem("current_hotclip_tab_name", tabName);
+      setIsReloading(() => true);
+      setSelectedMenu(tabName);
+      getHotclip(tabName).then((res) => {
+        setHotclip(res);
+        setIsReloading(() => false);
+      });
+    }
+  };
 
   return (
     <div>
@@ -61,47 +86,57 @@ export function IndexAfterLogin() {
               }}
               mb={100}
             >
-              <Stack mt={80}>
+              <Stack mt={40}>
                 <Text size={36} weight={300}>
                   Hot Clip
                 </Text>
-                <Group position="apart">
+                <Group position="apart" className="relative">
                   <Group>
+                    {Object.keys(tabNames).map((itm, idx) => (
+                      <Button
+                        key={idx}
+                        h={48}
+                        color="dark"
+                        variant={selectedMenu === itm ? "filled" : "outline"}
+                        radius={99}
+                        px={20}
+                        style={{
+                          fontSize: 16,
+                          fontWeight: 700,
+                        }}
+                        onClick={() => selectHotClipTab(itm)}
+                      >
+                        {tabNames[itm as keyof typeof tabNames]}
+                      </Button>
+                    ))}
                     <Button
-                      h={58}
+                      w={70}
+                      h={48}
                       color="dark"
-                      variant={
-                        selectedMenu === "popular" ? "filled" : "outline"
-                      }
+                      variant="outline"
                       radius={99}
                       px={20}
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 700,
-                      }}
+                      pos="absolute"
+                      right={0}
                       onClick={() => {
-                        setSelectedMenu("popular");
-                        getHotclip("popular").then((res) => setHotclip(res));
+                        if (!isReloading) {
+                          setIsReloading(() => true);
+                          getHotclip(selectedMenu).then((res) => {
+                            setHotclip(res);
+                            setIsReloading(() => false);
+                          });
+                        }
                       }}
                     >
-                      인기
-                    </Button>
-                    <Button
-                      h={58}
-                      color="dark"
-                      variant={selectedMenu === "new" ? "filled" : "outline"}
-                      radius={99}
-                      px={20}
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 700,
-                      }}
-                      onClick={() => {
-                        setSelectedMenu("new");
-                        getHotclip("new").then((res) => setHotclip(res));
-                      }}
-                    >
-                      최근 업로드
+                      <FontAwesomeIcon
+                        icon={
+                          isReloading
+                            ? solid("ellipsis")
+                            : solid("rotate-right")
+                        }
+                        color="#000"
+                        height="24px"
+                      />
                     </Button>
                   </Group>
                 </Group>
