@@ -19,6 +19,7 @@ const GoogleAdsense: FC<GoogleAdsenseProps> = ({
     setTimeout(() => {
       if (process.env.NODE_ENV === "production") {
         try {
+          console.log(className);
           (window.adsbygoogle = window.adsbygoogle || []).push({});
         } catch (e) {
           console.error("AdvertiseError", e);
