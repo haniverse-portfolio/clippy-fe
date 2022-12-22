@@ -16,7 +16,7 @@ const GoogleAdsense: FC<GoogleAdsenseProps> = ({
   responsive = true,
 }) => {
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV === "production") {
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch (e) {
