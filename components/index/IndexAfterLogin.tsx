@@ -72,7 +72,7 @@ export function IndexAfterLogin() {
       });
     }
   };
-
+  
   return (
     <div>
       <Sidebar />
