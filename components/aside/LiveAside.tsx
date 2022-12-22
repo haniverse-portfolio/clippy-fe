@@ -5,15 +5,17 @@ import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import Clip from "../common/Clip";
 import { useCreateClipModal } from "../../hooks/useCreateClipModal";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
-import { getFollowedStreamer } from "../../util/clippy";
+import { getDefaultLiveStreamer, getFollowedStreamer } from "../../util/clippy";
 import { useRouter } from "next/router";
 import { useLoginModal } from "../../hooks/useLoginModal";
 
 interface LiveItemProps {
-  item: IFollowedStreamerInfo;
+  item: ILiveStreamerInfo;
 }
 
 const LiveItem = ({ item }: LiveItemProps) => {
+  const { isClippyLogined } = useClippyLogin();
+  const { openLoginModal } = useLoginModal();
   const { openCreateClipModal } = useCreateClipModal();
   const { isSm, isMd } = useTailwindResponsive();
 
@@ -46,13 +48,17 @@ const LiveItem = ({ item }: LiveItemProps) => {
                   top-0 lg:top-auto 
                   bg-black lg:bg-transparent
                   right-[10px] lg:right-auto"
-        onClick={() => {
-          openCreateClipModal(
-            parseInt(item.user_id),
-            item.user_name,
-            item.profile_image_url
-          );
-        }}
+        onClick={
+          isClippyLogined
+            ? () => {
+                openCreateClipModal(
+                  parseInt(item.user_id),
+                  item.user_name,
+                  item.profile_image_url
+                );
+              }
+            : openLoginModal
+        }
       >
         <Clip
           w={isSm || isMd ? 9 : 14}
@@ -65,7 +71,7 @@ const LiveItem = ({ item }: LiveItemProps) => {
 };
 
 interface LivePropsWrapper {
-  data: IFollowedStreamerInfo[];
+  data: ILiveStreamerInfo[];
 }
 
 const Live = ({ data }: LivePropsWrapper) => {
@@ -92,7 +98,7 @@ const Live = ({ data }: LivePropsWrapper) => {
         </Flex>
         <Text
           align="center"
-          className="w-[80%] lg:w-full mx-auto break-keep"
+          className="w-[80%] lg:w-full mx-auto break-keep cursor-pointer"
           size={14}
           weight={300}
           mt={15}
@@ -146,13 +152,19 @@ const itemMock = [
 ];
 
 const LiveAside = () => {
-  const [followed, setFollowed] = useState<IFollowedStreamerInfo[]>([]);
+  const { isClippyLogined } = useClippyLogin();
+  const [followed, setFollowed] = useState<ILiveStreamerInfo[]>([]);
 
   useEffect(() => {
-    getFollowedStreamer().then((res) => {
-      setFollowed(res);
-    });
-  }, []);
+    if (isClippyLogined)
+      getFollowedStreamer().then((res) => {
+        setFollowed(res);
+      });
+    else
+      getDefaultLiveStreamer().then((res) => {
+        setFollowed(res);
+      });
+  }, [isClippyLogined]);
 
   return (
     <Flex direction="column" align="center" h="100%" justify="space-between">

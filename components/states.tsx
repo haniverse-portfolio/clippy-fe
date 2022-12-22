@@ -17,7 +17,7 @@ export const common_searchText = atom({
   default: "",
 }); // 내비게이션바 - 검색 텍스트
 
-export const common_followed = atom<IFollowedStreamerInfo[]>({
+export const common_followed = atom<ILiveStreamerInfo[]>({
   key: "common_followed",
   default: [],
 }); // 사이드바 - 팔로우 목록
