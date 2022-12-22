@@ -25,9 +25,9 @@ const MainLayout = ({ content, aside }: any): JSX.Element => {
       >
         <GoogleAdsense
           className="google-ad-display-h-1 max-h-[120px]"
-          layoutKey=""
-          slot="3575980050"
-          format="auto"
+          layoutKey="-h2+d+5c-9-3e"
+          slot="3846624551"
+          format="fluid"
           responsive={true}
         />
         {content()}
