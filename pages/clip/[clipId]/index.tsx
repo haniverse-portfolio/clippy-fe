@@ -77,13 +77,6 @@ const ViewClip = () => {
               wrap="nowrap"
               className="w-full h-max md:h-[100%] relative md:absolute top-0 left-0"
             >
-              {/* <GoogleAdsense
-                className="google-ad-display-v-1 w-[150px] max-h-[600px] mr-2 hidden lg:block"
-                layoutKey=""
-                slot="5162478170"
-                format="auto"
-                responsive={true}
-              /> */}
               <div
                 className="w-full block"
                 style={{

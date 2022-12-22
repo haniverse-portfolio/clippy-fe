@@ -14,7 +14,7 @@ const MainLayout = ({ content, aside }: any): JSX.Element => {
     <Flex justify="space-between" className="relative">
       <div className="hidden md:block">
         <GoogleAdsense
-          className="google-ad-display-v-1 min-w-[150px] max-w-[180px] max-h-[600px] mr-2 mt-20"
+          className="google-ad-display-v-1 min-w-[150px] max-w-[180px] max-h-[600px] mr-2 mt-28"
           layoutKey=""
           slot="5162478170"
           format="auto"
