@@ -8,7 +8,6 @@ import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { getDefaultLiveStreamer, getFollowedStreamer } from "../../util/clippy";
 import { useRouter } from "next/router";
 import { useLoginModal } from "../../hooks/useLoginModal";
-import axios from "axios";
 
 interface LiveItemProps {
   item: ILiveStreamerInfo;
