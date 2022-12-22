@@ -38,7 +38,7 @@ const GoogleAdsense: FC<GoogleAdsenseProps> = ({
   //production인 경우 구글 광고 표시
   return (
     <ins
-      className={className}
+      className={`adsbygoogle ${className}`}
       style={{
         overflowX: "auto",
         overflowY: "hidden",
