@@ -13,7 +13,7 @@ const MainLayout = ({ content, aside }: any): JSX.Element => {
   return (
     <Flex justify="space-between" className="relative">
       <div
-        className="mt-10 min-w-[150px] max-w-[300px] mr-2 hidden sm:flex justify-center items-center"
+        className="mt-10 w-[150px] h-full max-w-[300px] mr-2 hidden sm:flex justify-center items-center"
         style={{ height: `calc(100vh - 200px)` }}
       >
         <GoogleAdsense
