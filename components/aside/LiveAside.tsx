@@ -8,6 +8,7 @@ import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { getDefaultLiveStreamer, getFollowedStreamer } from "../../util/clippy";
 import { useRouter } from "next/router";
 import { useLoginModal } from "../../hooks/useLoginModal";
+import axios from "axios";
 
 interface LiveItemProps {
   item: ILiveStreamerInfo;
@@ -152,19 +153,21 @@ const itemMock = [
 ];
 
 const LiveAside = () => {
-  const { isClippyLogined } = useClippyLogin();
+  const { checkClipyLogin } = useClippyLogin();
   const [followed, setFollowed] = useState<ILiveStreamerInfo[]>([]);
 
   useEffect(() => {
-    if (isClippyLogined)
-      getFollowedStreamer().then((res) => {
-        setFollowed(res);
-      });
-    else
-      getDefaultLiveStreamer().then((res) => {
-        setFollowed(res);
-      });
-  }, [isClippyLogined]);
+    checkClipyLogin().then((isLogined) => {
+      if (isLogined)
+        getFollowedStreamer().then((res) => {
+          setFollowed(res);
+        });
+      else
+        getDefaultLiveStreamer().then((res) => {
+          setFollowed(res);
+        });
+    });
+  }, []);
 
   return (
     <Flex direction="column" align="center" h="100%" justify="space-between">
