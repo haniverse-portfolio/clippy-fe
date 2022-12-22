@@ -7,7 +7,7 @@ import LiveCard from "../common/LiveCard";
 import { getFollowedStreamer } from "../../util/clippy";
 
 export function MypageCreate() {
-  const [followed, setFollowed] = useState<IFollowedStreamerInfo[]>([]);
+  const [followed, setFollowed] = useState<ILiveStreamerInfo[]>([]);
 
   useEffect(() => {
     getFollowedStreamer().then((res) => {

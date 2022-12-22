@@ -71,7 +71,7 @@ interface ITwitchUserInfo {
 /**
  * 팔로우한 스트리머의 정보 Interface
  */
-interface IFollowedStreamerInfo {
+interface ILiveStreamerInfo {
   game_id: string;
   game_name: string;
   id: string;
