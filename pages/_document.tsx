@@ -10,7 +10,7 @@ export default function Document() {
           id="google-adsense"
           data-ad-client="ca-pub-3857090800854368"
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3857090800854368"
           strategy="beforeInteractive"
         />
         {/* Google Adsense */}

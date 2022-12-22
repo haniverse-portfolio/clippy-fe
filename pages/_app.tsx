@@ -33,6 +33,7 @@ const myCache = createEmotionCache({
 declare global {
   interface Window {
     Kakao: any;
+    adsbygoogle: any;
   }
 }
 

@@ -194,7 +194,8 @@ export function Navbar() {
                 }}
                 onClick={() => goClippyLogin()}
               >
-                트위치 로그인
+                <span className="hidden sm:inline mr-[.3em]">트위치</span>
+                로그인
               </Button>
             )}
           </Flex>
