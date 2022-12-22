@@ -11,6 +11,7 @@ import { useTailwindResponsive } from "../../../hooks/useTailwindResponsive";
 import Head from "next/head";
 import { ShareClipModal } from "../../../components/common/ShareClipModal";
 import { getClip, getHotclip } from "../../../util/clippy";
+import GoogleAdsense from "../../../components/common/GoogleAdsense";
 
 const ViewClip = () => {
   // get parameter
@@ -76,17 +77,39 @@ const ViewClip = () => {
               wrap="nowrap"
               className="w-full h-max md:h-[100%] relative md:absolute top-0 left-0"
             >
+              <div className="hidden lg:block h-full pt-5">
+                <GoogleAdsense
+                  className="google-ad-display-v-1 w-[150px] max-h-[600px] mr-2 hidden sm:block"
+                  layoutKey=""
+                  slot="5162478170"
+                  format="auto"
+                  responsive={true}
+                />
+              </div>
               <div
                 className="w-full block"
                 style={{
-                  height: "calc(100vh - 150px)",
+                  height: isSm ? "max-content" : "calc(100vh - 150px)",
                   padding: "20px 20px 0 20px",
                   marginTop: "-30px",
-                  minHeight: isSm ? "100vh" : "auto",
-                  maxHeight: isSm ? "100vh" : "auto",
                   overflowY: isSm ? "hidden" : "auto",
                 }}
               >
+                <div
+                  className="h-max mb-5 relative top-0"
+                  style={{
+                    width: isSm ? "calc(100% + 50px)" : "100%",
+                    left: isSm ? "-25px" : "0",
+                  }}
+                >
+                  <GoogleAdsense
+                    className="google-ad-display-h-1 min-h-[120px]"
+                    layoutKey=""
+                    slot="3575980050"
+                    format="auto"
+                    responsive={true}
+                  />
+                </div>
                 <CloudflareVideo
                   videoId={videoId}
                   clipId={clipId}
