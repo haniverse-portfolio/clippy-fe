@@ -6,11 +6,17 @@ export default function Document() {
     <Html>
       <Head>
         {/* Google Adsense */}
-        <Script
+        {/* <Script
           id="google-adsense"
           data-ad-client="ca-pub-3857090800854368"
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3857090800854368"
+          strategy="beforeInteractive"
+        /> */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3857090800854368"
+          crossOrigin="anonymous"
           strategy="beforeInteractive"
         />
         {/* Google Adsense */}
