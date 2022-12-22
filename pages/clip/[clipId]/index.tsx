@@ -12,8 +12,50 @@ import Head from "next/head";
 import { ShareClipModal } from "../../../components/common/ShareClipModal";
 import { getClip, getHotclip } from "../../../util/clippy";
 import GoogleAdsense from "../../../components/common/GoogleAdsense";
+import { GetServerSideProps } from "next";
 
-const ViewClip = () => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  if (params?.clipId) {
+    const clipInfo = await getClip(params.clipId as string);
+    if (clipInfo) {
+      console.log(clipInfo);
+      const ogTitle = `[Clippy] ${clipInfo.title}`;
+      const ogURL = `https://clippy.kr/clip/${clipInfo.key}`;
+      const ogType = "website";
+      const ogImageURL = clipInfo.cfVideoThumbnail;
+      const ogDescription =
+        "클립 생성할땐? 클리피! - 지상 최고의 클립 생성/공유 서비스";
+      return {
+        props: {
+          ogTitle,
+          ogURL,
+          ogType,
+          ogImageURL,
+          ogDescription,
+        },
+      };
+    }
+  }
+  return {
+    props: {},
+  };
+};
+
+interface ViewClipProps {
+  ogTitle?: string;
+  ogURL?: string;
+  ogType?: string;
+  ogImageURL?: string;
+  ogDescription?: string;
+}
+
+const ViewClip = ({
+  ogTitle,
+  ogURL,
+  ogType,
+  ogImageURL,
+  ogDescription,
+}: ViewClipProps) => {
   // get parameter
   const router = useRouter();
   const { clipId, creating }: any = router.query;
@@ -54,6 +96,25 @@ const ViewClip = () => {
     <>
       <Head>
         <title>{videoTitle !== "" ? `CLIPPY - ${videoTitle}` : "CLIPPY"}</title>
+        {ogTitle && ogURL && ogType && ogImageURL && ogDescription && (
+          <>
+            <meta property="og:title" content={ogTitle} />
+            <meta property="twitter:title" content={ogTitle} />
+
+            <meta property="og:url" content={ogURL} />
+
+            <meta property="og:type" content={ogType} />
+
+            <meta property="og:image" content={ogImageURL} />
+            <meta property="twitter:image" content={ogImageURL} />
+
+            <meta property="description" content={ogDescription} />
+            <meta property="og:description" content={ogDescription} />
+            <meta property="twitter:description" content={ogDescription} />
+
+            <meta property="twitter:card" content="summary" />
+          </>
+        )}
       </Head>
       <Navbar />
       <Sidebar />
