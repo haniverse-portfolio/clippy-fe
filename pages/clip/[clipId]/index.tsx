@@ -94,17 +94,17 @@ const ViewClip = () => {
                 }}
               >
                 <div
-                  className="h-max mb-5 relative top-0"
+                  className="h-[120px] mb-5 relative top-0 max-h-[120px]"
                   style={{
                     width: isSm ? "calc(100% + 50px)" : "100%",
                     left: isSm ? "-25px" : "0",
                   }}
                 >
                   <GoogleAdsense
-                    className="google-ad-display-h-1 min-h-[120px]"
-                    layoutKey=""
-                    slot="3575980050"
-                    format="auto"
+                    className="google-ad-display-h-1 max-h-[120px]"
+                    layoutKey="-h2+d+5c-9-3e"
+                    slot="3846624551"
+                    format="fluid"
                     responsive={true}
                   />
                 </div>
