@@ -16,13 +16,15 @@ const GoogleAdsense: FC<GoogleAdsenseProps> = ({
   responsive = true,
 }) => {
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") {
-      try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (e) {
-        console.error("AdvertiseError", e);
+    setTimeout(() => {
+      if (process.env.NODE_ENV === "production") {
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+          console.error("AdvertiseError", e);
+        }
       }
-    }
+    }, 500);
   }, []);
 
   //production이 아닌 경우 대체 컴포넌트 표시
