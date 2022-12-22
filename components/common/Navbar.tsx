@@ -73,13 +73,6 @@ export function Navbar() {
   return (
     <>
       <TopNotice />
-      <GoogleAdsense
-        className="google-ad-display-v-1 w-[150px] max-h-[600px] mr-2 hidden lg:block"
-        layoutKey=""
-        slot="5162478170"
-        format="auto"
-        responsive={true}
-      />
       <div
         className="h-[120px] bg-white sticky top-0 z-50"
         style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.1)" }}
