@@ -450,6 +450,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
         </Grid.Col>
         <Grid.Col span="auto">
           <Textarea
+            className="border-b-2 border-gray-300"
             maxLength={10000}
             spellCheck="false"
             autosize
@@ -464,53 +465,51 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
             placeholder="댓글 추가"
           />
         </Grid.Col>
-        <Grid.Col span="content">
-          <Group>
-            {commentText.length === 0 ? (
-              <></>
-            ) : (
-              <Button
-                style={{
-                  fontSize: 14,
-                  borderRadius: 99,
-                  backgroundColor: "white",
-                  color: "black",
-                  fontWeight: 700,
-                }}
-                h={40}
-                onClick={() => {
-                  setCommentText("");
-                }}
-              >
-                취소
-              </Button>
-            )}
-            <Button
-              leftIcon={<BrandTelegram />}
-              style={{
-                fontSize: 14,
-                borderRadius: 99,
-                backgroundColor: "black",
-                color: "white",
-                fontWeight: 700,
-              }}
-              h={40}
-              onClick={() => {
-                if (isClippyLogined === false) {
-                  setIsLoginModalOpen(true);
-                  return;
-                }
-                if (commentText.length === 0) return;
-                setEditMode(false);
-                setCurrentCursor(0);
-                postComments(router.query.clipId as string);
-              }}
-            >
-              게시
-            </Button>
-          </Group>
-        </Grid.Col>
       </Grid>
+      <Group mt={12} position="right">
+        {commentText.length === 0 ? (
+          <></>
+        ) : (
+          <Button
+            style={{
+              fontSize: 14,
+              borderRadius: 99,
+              backgroundColor: "white",
+              color: "black",
+              fontWeight: 700,
+            }}
+            h={40}
+            onClick={() => {
+              setCommentText("");
+            }}
+          >
+            취소
+          </Button>
+        )}
+        <Button
+          leftIcon={<BrandTelegram />}
+          style={{
+            fontSize: 14,
+            borderRadius: 99,
+            backgroundColor: "black",
+            color: "white",
+            fontWeight: 700,
+          }}
+          h={40}
+          onClick={() => {
+            if (isClippyLogined === false) {
+              setIsLoginModalOpen(true);
+              return;
+            }
+            if (commentText.length === 0) return;
+            setEditMode(false);
+            setCurrentCursor(0);
+            postComments(router.query.clipId as string);
+          }}
+        >
+          게시
+        </Button>
+      </Group>
 
       <Divider mt={12} mb={16} size="xs" />
 
@@ -626,7 +625,6 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                     <Ban
                       onClick={() => {
                         setActionType(0);
-                        if (notiModalOpened === false) setNotiModalOpened(true);
                         reportComments(
                           router.query.clipId as string,
                           cur.commentId
@@ -669,6 +667,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                 </Grid.Col>
                 <Grid.Col span="auto">
                   <Textarea
+                    className="border-b-2 border-gray-300"
                     spellCheck="false"
                     autosize
                     minRows={1}
