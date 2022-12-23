@@ -18,7 +18,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (params?.clipId) {
     const clipInfo = await getClip(params.clipId as string);
     if (clipInfo) {
-      console.log(clipInfo);
       const ogTitle = `[Clippy] ${clipInfo.title}`;
       const ogURL = `https://clippy.kr/clip/${clipInfo.key}`;
       const ogType = "website";
