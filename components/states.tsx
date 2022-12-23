@@ -59,6 +59,14 @@ export const common_createClipModal_isClipInitLoading = atom({
 });
 
 /**
+ * 클립생성모달 - 초기 로딩 여부
+ */
+export const common_createClipModal_isClipInitDone = atom({
+  key: "common_createClipModal_isClipInitDone",
+  default: false,
+});
+
+/**
  * 클립생성모달 - 클립생성 오류 상태
  */
 export const common_createClipModal_error = atom<ICreateClipModalError | null>({
