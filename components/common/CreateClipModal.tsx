@@ -249,7 +249,9 @@ const CreateClipModalEditor: FC = () => {
           <TextInput
             value={createModalClipName}
             onChange={(event) => {
-              setCreateModalClipName(event.currentTarget.value);
+              setCreateModalClipName(
+                event.currentTarget.value.replace(/　/g, "")
+              );
             }}
             size="md"
             placeholder="클립 제목"
@@ -260,7 +262,7 @@ const CreateClipModalEditor: FC = () => {
               className={
                 createModalClipName === "" ? "hover:cursor-not-allowed" : ""
               }
-              disabled={createModalClipName === ""}
+              disabled={createModalClipName.trim() === ""}
               leftIcon={<Paperclip />}
               size="lg"
               color="dark"
