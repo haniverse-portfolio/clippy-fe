@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       const ogTitle = `[Clippy] ${clipInfo.title}`;
       const ogURL = `https://clippy.kr/clip/${clipInfo.key}`;
       const ogType = "website";
-      const ogImageURL = clipInfo.cfVideoThumbnail;
+      const ogImageURL = `https://clippy.kr/api/thumbnail/${clipInfo.key}`;
       const ogDescription =
         "클립 생성할땐? 클리피! - 지상 최고의 클립 생성/공유 서비스";
       return {
