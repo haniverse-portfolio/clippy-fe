@@ -53,9 +53,6 @@ const CreateClipModalInitLoading: FC = () => {
   const [progressValue, setProgressValue] = useState(0);
   const [intervalDelay, setIntervalDelay] = useState<number | null>(100);
 
-  const getProgressDisplayValue = () =>
-    Math.round((Math.atan(progressValue) / (Math.PI / 2)) * 100 * 1000) / 1000;
-
   useEffect(() => {
     if (isLoadingDone || error) {
       setIntervalDelay(null);
@@ -67,16 +64,23 @@ const CreateClipModalInitLoading: FC = () => {
   }, [isLoadingDone, error]);
 
   useEffect(() => {
-    if (!isLoading) setIsLoadingDone(true);
+    if (!isLoading) {
+      setProgressValue(() => 100);
+      setTimeout(() => {
+        setIsLoadingDone(true);
+      }, 1000);
+    }
   }, [isLoading]);
 
   useInterval(() => {
-    setProgressValue((state) => (state >= 100 ? 100 : state + 0.1));
+    setProgressValue((state) =>
+      state === 100 ? 100 : state >= 99.8 ? 99.8 : state + 0.6
+    );
   }, intervalDelay);
 
   return (
     <>
-      {isLoading && !isLoadingDone && !liveVideoInfo && !error && (
+      {!isLoadingDone && !liveVideoInfo && !error && (
         <div className="w-full h-[600px] flex flex-col justify-center items-center p-20">
           <p className="text-center text-xl text-gray-500 font-semibold mt-[-20px] mb-10">
             영상을 불러오는 중...
@@ -85,11 +89,11 @@ const CreateClipModalInitLoading: FC = () => {
             <div className="relative w-full h-[6px] rounded-[3px] bg-gray-200 block">
               <div
                 className="h-[6px] rounded-[3px] bg-purple-500 block duration-200"
-                style={{ width: `${getProgressDisplayValue()}%` }}
+                style={{ width: `${progressValue}%` }}
               ></div>
             </div>
             <div className="text-right w-[40px] mt-[-.15em] text-gray-500 whitespace-nowrap">
-              {getProgressDisplayValue().toFixed(0)}%
+              {progressValue.toFixed(1)}%
             </div>
           </div>
         </div>
@@ -293,9 +297,11 @@ export const CreateClipModal: FC = () => {
       opened={isCreateClipModalOpen}
       onClose={closeCreateClipModal}
     >
-      <CreateClipModalInitLoading />
-      <CreateClipModalEditor />
-      <CreateClipModalError />
+      <div className="h-[600px]">
+        <CreateClipModalInitLoading />
+        <CreateClipModalEditor />
+        <CreateClipModalError />
+      </div>
     </Modal>
   );
 };
