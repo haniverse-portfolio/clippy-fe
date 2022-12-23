@@ -57,7 +57,7 @@ const ViewClip = ({
 }: ViewClipProps) => {
   // get parameter
   const router = useRouter();
-  const { clipId, creating }: any = router.query;
+  const { clipId, creating, start }: any = router.query;
 
   const [videoCreating, setVideoCreating] = useState<boolean>(
     creating === "true" || creating === true
@@ -165,6 +165,12 @@ const ViewClip = ({
                   videoId={videoId}
                   clipId={clipId}
                   creating={videoCreating}
+                  autoPlay={true}
+                  startAt={
+                    start && (start as string).match(/^[0-9]+$/)
+                      ? parseInt(start as string)
+                      : 0
+                  }
                 />
                 <div className="mt-[25px]">
                   <VideoTitle data={videoData} />
