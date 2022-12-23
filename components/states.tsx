@@ -109,6 +109,14 @@ export const common_loginModal_isOpen = atom({
   key: "common_loginModal_isOpen",
   default: false,
 });
+
+/**
+ * 사이트정보모달 - Open 여부
+ */
+export const common_siteInfoModal_isOpen = atom({
+  key: "common_siteInfoModal_isOpen",
+  default: false,
+});
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
