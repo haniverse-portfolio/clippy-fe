@@ -17,6 +17,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { TopNotice } from "./TopNotice";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
+import GoogleAdsense from "./GoogleAdsense";
 
 export function Navbar() {
   const [searchText, setSearchText] = useRecoilState(common_searchText);
@@ -194,7 +195,8 @@ export function Navbar() {
                 }}
                 onClick={() => goClippyLogin()}
               >
-                트위치 로그인
+                <span className="hidden sm:inline mr-[.3em]">트위치</span>
+                로그인
               </Button>
             )}
           </Flex>

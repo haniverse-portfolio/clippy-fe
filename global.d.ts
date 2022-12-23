@@ -71,7 +71,7 @@ interface ITwitchUserInfo {
 /**
  * 팔로우한 스트리머의 정보 Interface
  */
-interface IFollowedStreamerInfo {
+interface ILiveStreamerInfo {
   game_id: string;
   game_name: string;
   id: string;
@@ -94,7 +94,7 @@ interface IFollowedStreamerInfo {
  * 클립을 생성할 스트리머 정보 Interface
  */
 interface ICreateClipStreamerInfo {
-  id: string;
+  id: number;
   login: string;
   name: string;
   image: string;
@@ -105,6 +105,7 @@ interface ICreateClipStreamerInfo {
  */
 interface ICreateClipModalError {
   msg: string;
+  statusCode: number;
 }
 
 /**

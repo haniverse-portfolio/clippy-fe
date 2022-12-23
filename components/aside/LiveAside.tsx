@@ -5,15 +5,18 @@ import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import Clip from "../common/Clip";
 import { useCreateClipModal } from "../../hooks/useCreateClipModal";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
-import { getFollowedStreamer } from "../../util/clippy";
+import { getDefaultLiveStreamer, getFollowedStreamer } from "../../util/clippy";
 import { useRouter } from "next/router";
 import { useLoginModal } from "../../hooks/useLoginModal";
+import { useSiteInfoModal } from "../../hooks/useSiteInfoModal";
 
 interface LiveItemProps {
-  item: IFollowedStreamerInfo;
+  item: ILiveStreamerInfo;
 }
 
 const LiveItem = ({ item }: LiveItemProps) => {
+  const { isClippyLogined } = useClippyLogin();
+  const { openLoginModal } = useLoginModal();
   const { openCreateClipModal } = useCreateClipModal();
   const { isSm, isMd } = useTailwindResponsive();
 
@@ -46,13 +49,17 @@ const LiveItem = ({ item }: LiveItemProps) => {
                   top-0 lg:top-auto 
                   bg-black lg:bg-transparent
                   right-[10px] lg:right-auto"
-        onClick={() => {
-          openCreateClipModal(
-            parseInt(item.user_id),
-            item.user_name,
-            item.profile_image_url
-          );
-        }}
+        onClick={
+          isClippyLogined
+            ? () => {
+                openCreateClipModal(
+                  parseInt(item.user_id),
+                  item.user_name,
+                  item.profile_image_url
+                );
+              }
+            : openLoginModal
+        }
       >
         <Clip
           w={isSm || isMd ? 9 : 14}
@@ -65,12 +72,13 @@ const LiveItem = ({ item }: LiveItemProps) => {
 };
 
 interface LivePropsWrapper {
-  data: IFollowedStreamerInfo[];
+  data: ILiveStreamerInfo[];
 }
 
 const Live = ({ data }: LivePropsWrapper) => {
   const { isClippyLogined } = useClippyLogin();
   const { openLoginModal } = useLoginModal();
+  const { openSiteInfoModal } = useSiteInfoModal();
   const router = useRouter();
 
   return (
@@ -92,7 +100,7 @@ const Live = ({ data }: LivePropsWrapper) => {
         </Flex>
         <Text
           align="center"
-          className="w-[80%] lg:w-full mx-auto break-keep"
+          className="w-[80%] lg:w-full mx-auto break-keep cursor-pointer"
           size={14}
           weight={300}
           mt={15}
@@ -105,6 +113,30 @@ const Live = ({ data }: LivePropsWrapper) => {
         >
           팔로우 중인 스트리머 모두 보기
         </Text>
+        <Text
+          align="center"
+          className="w-[80%] lg:w-full mx-auto break-keep cursor-pointer"
+          size={14}
+          weight={300}
+          mt={15}
+          underline
+          onClick={() => {
+            window.open("https://support.clippy.kr");
+          }}
+        >
+          고객센터 바로가기
+        </Text>
+        {/* <Text
+          align="center"
+          className="w-[80%] lg:w-full mx-auto break-keep cursor-pointer"
+          size={14}
+          weight={300}
+          mt={15}
+          underline
+          onClick={openSiteInfoModal}
+        >
+          사이트정보
+        </Text> */}
       </div>
     </Flex>
   );
@@ -112,7 +144,7 @@ const Live = ({ data }: LivePropsWrapper) => {
 
 export const Footer = () => {
   return (
-    <div className="pt-[50px] pb-20">
+    <div className="pt-[50px] pb-40">
       <Text
         className="w-[75%] lg:w-full mx-auto break-keep"
         size={14}
@@ -146,11 +178,19 @@ const itemMock = [
 ];
 
 const LiveAside = () => {
-  const [followed, setFollowed] = useState<IFollowedStreamerInfo[]>([]);
+  const { checkClipyLogin } = useClippyLogin();
+  const [followed, setFollowed] = useState<ILiveStreamerInfo[]>([]);
 
   useEffect(() => {
-    getFollowedStreamer().then((res) => {
-      setFollowed(res);
+    checkClipyLogin().then((isLogined) => {
+      if (isLogined)
+        getFollowedStreamer().then((res) => {
+          setFollowed(res);
+        });
+      else
+        getDefaultLiveStreamer().then((res) => {
+          setFollowed(res);
+        });
     });
   }, []);
 

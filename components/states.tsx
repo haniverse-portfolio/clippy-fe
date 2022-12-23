@@ -17,7 +17,7 @@ export const common_searchText = atom({
   default: "",
 }); // 내비게이션바 - 검색 텍스트
 
-export const common_followed = atom<IFollowedStreamerInfo[]>({
+export const common_followed = atom<ILiveStreamerInfo[]>({
   key: "common_followed",
   default: [],
 }); // 사이드바 - 팔로우 목록
@@ -56,6 +56,14 @@ export const common_createClipModal_streamer =
 export const common_createClipModal_isClipInitLoading = atom({
   key: "common_createClipModal_isClipInitLoading",
   default: true,
+});
+
+/**
+ * 클립생성모달 - 초기 로딩 여부
+ */
+export const common_createClipModal_isClipInitDone = atom({
+  key: "common_createClipModal_isClipInitDone",
+  default: false,
 });
 
 /**
@@ -107,6 +115,14 @@ export const common_shareClipModal_content =
  */
 export const common_loginModal_isOpen = atom({
   key: "common_loginModal_isOpen",
+  default: false,
+});
+
+/**
+ * 사이트정보모달 - Open 여부
+ */
+export const common_siteInfoModal_isOpen = atom({
+  key: "common_siteInfoModal_isOpen",
   default: false,
 });
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */

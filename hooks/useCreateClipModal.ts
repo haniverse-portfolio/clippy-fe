@@ -1,6 +1,7 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   common_createClipModal_error,
+  common_createClipModal_isClipInitDone,
   common_createClipModal_isClipInitLoading,
   common_createClipModal_isOpen,
   common_createClipModal_liveVideoInfo,
@@ -18,8 +19,13 @@ export const useCreateClipModal = () => {
   const setIsClipInitLoading = useSetRecoilState(
     common_createClipModal_isClipInitLoading
   );
+  const setIsClipInitDone = useSetRecoilState(
+    common_createClipModal_isClipInitDone
+  );
   const setStreamerInfo = useSetRecoilState(common_createClipModal_streamer);
-  const setCreateClipError = useSetRecoilState(common_createClipModal_error);
+  const [createClipError, setCreateClipError] = useRecoilState(
+    common_createClipModal_error
+  );
   const setLiveVideoInfo = useSetRecoilState(
     common_createClipModal_liveVideoInfo
   );
@@ -41,7 +47,10 @@ export const useCreateClipModal = () => {
         setLiveVideoInfo(res.data.data);
       })
       .catch((res) => {
-        setCreateClipError({ msg: res.response.data.message });
+        setCreateClipError({
+          msg: res.response.data.message,
+          statusCode: res.response.data.statusCode,
+        });
       });
   };
 
@@ -53,23 +62,40 @@ export const useCreateClipModal = () => {
     if (!isCreateClipModalOpen && isClippyLogined) {
       postExtractor(streamerId);
       setStreamerInfo({
-        id: "",
+        id: streamerId,
         login: "",
         name: streamerName,
         image: streamerProfileImage,
       });
       setIsClipInitLoading(true);
+      setIsClipInitDone(false);
       setCreateClipIsModalOpen(true);
     }
   };
 
   const closeCreateClipModal = () => {
     setCreateClipIsModalOpen(false);
-    setIsClipInitLoading(false);
+    setIsClipInitLoading(true);
+    setIsClipInitDone(false);
     setCreateClipError(null);
     setStreamerInfo(null);
     setLiveVideoInfo(null);
   };
 
-  return { isCreateClipModalOpen, openCreateClipModal, closeCreateClipModal };
+  const retryCreateClip = (streamerId: number) => {
+    if (createClipError && createClipError.statusCode === 500) {
+      setIsClipInitLoading(true);
+      setIsClipInitDone(false);
+      setCreateClipError(null);
+      setLiveVideoInfo(null);
+      postExtractor(streamerId);
+    }
+  };
+
+  return {
+    isCreateClipModalOpen,
+    openCreateClipModal,
+    closeCreateClipModal,
+    retryCreateClip,
+  };
 };

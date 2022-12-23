@@ -1,14 +1,20 @@
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Card, Flex, Text, Image, Avatar } from "@mantine/core";
+import { Card, Flex, Text, Image, Avatar, AspectRatio } from "@mantine/core";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import Clip from "./Clip";
 import { useCreateClipModal } from "../../hooks/useCreateClipModal";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
-const LiveCard = ({ stream }: any) => {
+interface LiveCardInterface {
+  stream: ILiveStreamerInfo;
+}
+const LiveCard = ({ stream }: LiveCardInterface) => {
   const { openCreateClipModal } = useCreateClipModal();
 
   const { isSm, isMd } = useTailwindResponsive();
+  const router = useRouter();
 
   return (
     <Card
@@ -16,7 +22,7 @@ const LiveCard = ({ stream }: any) => {
       m={0}
       onClick={() => {
         openCreateClipModal(
-          stream.user_id,
+          parseInt(stream.user_id),
           stream.user_name,
           stream.profile_image_url
         );
@@ -51,25 +57,34 @@ const LiveCard = ({ stream }: any) => {
             </Flex>
           </div>
         </div>
-        <Image
-          className="cursor-pointer rounded-md"
-          src={stream.thumbnail_url
-            .replace("{width}", "640")
-            .replace("{height}", "360")}
-          alt="stream thumbnail"
-          radius={8}
-        />
+        <AspectRatio ratio={239 / 134.438} className="bg-gray-200 rounded-md">
+          <Image
+            className="cursor-pointer rounded-md"
+            src={stream.thumbnail_url
+              .replace("{width}", "640")
+              .replace("{height}", "360")}
+            alt="stream thumbnail"
+          />
+        </AspectRatio>
         <Flex m={16} align="center" justify="space-between">
           <Flex align="center" direction="row">
-            <Avatar
-              src={stream.profile_image_url}
-              radius={99}
-              size={32}
-              mr={16}
-            />
-            <Text size={16} weight={700}>
-              {stream.user_name}
-            </Text>
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/channel/${stream.user_login}`);
+              }}
+              className="w-full flex justify-start items-center cursor-pointer"
+            >
+              <Avatar
+                src={stream.profile_image_url}
+                radius={99}
+                size={32}
+                mr={16}
+              />
+              <Text size={16} weight={700}>
+                {stream.user_name}
+              </Text>
+            </div>
           </Flex>
           <Clip
             w={isSm || isMd ? 9 : 14}

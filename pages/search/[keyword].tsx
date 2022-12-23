@@ -26,6 +26,7 @@ import {
 import Link from "next/link";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import { Sidebar } from "../../components/common/Sidebar";
+import MainLayout from "../../components/common/MainLayout";
 
 export default function Home() {
   const [searchResult, setSearchResult] = useRecoilState(search_searchResult);
@@ -69,10 +70,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <Sidebar />
-        <Navbar />
-        <ScrollArea scrollbarSize={0} style={{ height: "calc(100vh - 120px)" }}>
+      <Sidebar />
+      <Navbar />
+      <MainLayout
+        content={() => (
           <Container
             size="xl"
             sizes={{
@@ -193,8 +194,8 @@ export default function Home() {
               })}
             </SimpleGrid>
           </Container>
-        </ScrollArea>
-      </main>
+        )}
+      />
     </div>
   );
 }

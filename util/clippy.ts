@@ -107,7 +107,7 @@ export const checkStreamerIsLive = (
  * Clippy에 로그인한 사용자가 팔로우 중인 스트리머 정보를 요청하는 함수
  * @returns 팔로우 스트리머 정보 배열
  */
-export const getFollowedStreamer = (): Promise<IFollowedStreamerInfo[]> => {
+export const getFollowedStreamer = (): Promise<ILiveStreamerInfo[]> => {
   return axios
     .get(`${apiAddress}/twitch/followed_streams`, {
       withCredentials: true,
@@ -117,6 +117,16 @@ export const getFollowedStreamer = (): Promise<IFollowedStreamerInfo[]> => {
     })
     .catch((err) => {
       console.error("cannot load followed streamer", err);
+      return [];
+    });
+};
+
+export const getDefaultLiveStreamer = (): Promise<ILiveStreamerInfo[]> => {
+  return axios
+    .get(`${apiAddress}/twitch/followed_streams/default`)
+    .then((res) => res.data.data)
+    .catch((err) => {
+      console.error("cannot load default live streamer", err);
       return [];
     });
 };
