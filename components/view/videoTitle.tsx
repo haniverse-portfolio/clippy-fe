@@ -7,6 +7,7 @@ import {
   Flex,
   Grid,
   Group,
+  Stack,
   Text,
   Textarea,
 } from "@mantine/core";
@@ -29,6 +30,17 @@ import { getTwitchUserInfoById } from "../../util/clippy";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { useLoginModal } from "../../hooks/useLoginModal";
 import { useRecoilState } from "recoil";
+import { showNotification } from "@mantine/notifications";
+import { LoginModal } from "../common/LoginModal";
+
+import {
+  common_loginModal_isOpen,
+  view_actionType,
+  view_axiosProgressed,
+  view_notiModalOpened,
+  view_notiModalStep,
+} from "../states";
+import { NotiModal } from "./NotiModal";
 
 interface VideoTitleProps {
   data: IClipInfo;
@@ -42,14 +54,24 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
   const [userName, setUserName] = useState("");
   const [clipperName, setClipperName] = useState("");
   const [isLike, setIsLike] = useState(false);
-
-  const { openLoginModal } = useLoginModal();
+  const { closeLoginModal, openLoginModal } = useLoginModal();
   const { openShareClipModal } = useShareClipModal();
   const { isClippyLogined } = useClippyLogin();
   const [commentText, setCommentText] = useState("");
+  const [editText, setEditText] = useState("");
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [currentCursor, setCurrentCursor] = useState(-1);
+  const [currentCursor, setCurrentCursor] = useState(0);
   const [editMode, setEditMode] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useRecoilState(
+    common_loginModal_isOpen
+  );
+  const [notiModalStep, setNotiModalStep] =
+    useRecoilState<number>(view_notiModalStep);
+  const [notiModalOpened, setNotiModalOpened] =
+    useRecoilState<boolean>(view_notiModalOpened);
+  const [actionType, setActionType] = useRecoilState(view_actionType);
+  const [axiosProgressed, setAxiosProgressed] =
+    useRecoilState<boolean>(view_axiosProgressed);
   const { loginedClippyUserInfo, goClippyLogout } = useClippyLogin();
   interface commentsUserType {
     id: string;
@@ -79,6 +101,22 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
   }
   interface commentsTypes extends Array<commentsType> {}
   const [comments, setComments] = useState<commentsTypes>([]);
+
+  const getNotification = (apiNameIdx: number, isSuccess: boolean) => {
+    let apiNameSet = ["신고", "삭제", "작성", "수정"];
+    let messageContents =
+      "댓글이 정상적으로 " + apiNameSet[apiNameIdx] + "되었습니다.";
+    if (!isSuccess)
+      messageContents =
+        "댓글이 " +
+        apiNameSet[apiNameIdx] +
+        "되지 않았습니다. 다시 시도해주세요.";
+    showNotification({
+      color: isSuccess ? "green" : "red",
+      title: `댓글 ${apiNameSet[apiNameIdx]} ${isSuccess ? "성공" : "실패"}`,
+      message: messageContents,
+    });
+  };
 
   const getApi = async (userId: number) => {
     const res = await axios.get(`https://twapi.haenu.com/user/id/${userId}`);
@@ -111,12 +149,38 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
 
   const deleteComments = async (clipId: string, clipCommentId: number) => {
     const url = `${apiAddress}/clip/${clipId}/comment/${clipCommentId}`;
-    const res = await axios.delete(url, { withCredentials: true });
+    const res = await axios
+      .delete(url, { withCredentials: true })
+      .then((res) => {
+        setTimeout(() => {
+          getNotification(1, true);
+          setNotiModalStep(2);
+        }, 500);
+        getComments(clipId);
+      })
+      .catch((err) => {
+        setTimeout(() => {
+          getNotification(1, false);
+          setNotiModalStep(3);
+        }, 500);
+        getComments(clipId);
+      });
   };
 
   const reportComments = async (clipId: string, clipCommentId: number) => {
     const url = `${apiAddress}/clip/${clipId}/comment/${clipCommentId}/report`;
-    const res = await axios.post(url, { withCredentials: true });
+    const res = await axios
+      .post(url, {}, { withCredentials: true })
+      .then((res) => {
+        getNotification(0, true);
+        setNotiModalStep(2);
+        getComments(clipId);
+      })
+      .catch((err) => {
+        getNotification(0, false);
+        setNotiModalStep(3);
+        getComments(clipId);
+      });
   };
 
   const postComments = async (clipId: string) => {
@@ -124,32 +188,42 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
     const res = await axios
       .post(url, { comment: commentText }, { withCredentials: true })
       .then((res) => {
+        getNotification(2, true);
         setCurrentDate(new Date());
       })
-      .catch((error) => {});
+      .catch((error) => {
+        getNotification(2, true);
+      });
     getComments(clipId);
     setCommentText("");
   };
 
-  const editComments = async (clipId: string, editText: string) => {
-    const url = `${apiAddress}/clip/${clipId}/comment`;
+  const editComments = async (clipId: string, commentId: number) => {
+    const url = `${apiAddress}/clip/${clipId}/comment/${commentId}`;
     const res = await axios
-      .put(url, { comment: commentText }, { withCredentials: true })
+      .put(url, { comment: editText }, { withCredentials: true })
       .then((res) => {
+        getNotification(3, true);
         setEditMode(false);
         getComments(clipId);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        getNotification(3, false);
+      });
   };
 
-  const getCommentDate = (updatedDate: string, createdDate: string) => {
+  const getCommentDate = (
+    updatedDate: string,
+    createdDate: string,
+    commentState: boolean
+  ) => {
     let prev = {
-      year: updatedDate.substring(0, 4),
-      month: updatedDate.substring(5, 7),
-      day: updatedDate.substring(8, 10),
-      hour: updatedDate.substring(11, 13),
-      minute: updatedDate.substring(14, 16),
-      second: updatedDate.substring(17, 19),
+      year: createdDate.substring(0, 4),
+      month: createdDate.substring(5, 7),
+      day: createdDate.substring(8, 10),
+      hour: createdDate.substring(11, 13),
+      minute: createdDate.substring(14, 16),
+      second: createdDate.substring(17, 19),
     };
     let cur = {
       year: currentDate.getUTCFullYear(),
@@ -175,7 +249,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
         break;
       }
     }
-    if (updatedDate !== createdDate) rt += "(수정됨)";
+    if (updatedDate !== createdDate && !commentState) rt += "(수정됨)";
     return rt;
   };
 
@@ -229,13 +303,28 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
   };
 
   useEffect(() => {
+    if (axiosProgressed === false) return;
+    if (actionType === 0) {
+      reportComments(
+        router.query.clipId as string,
+        comments[Math.abs(currentCursor + 1)]?.commentId
+      );
+    } else if (actionType === 1) {
+      deleteComments(
+        router.query.clipId as string,
+        comments[Math.abs(currentCursor + 1)]?.commentId
+      );
+    }
+    setAxiosProgressed(false);
+  }, [axiosProgressed]);
+
+  useEffect(() => {
     if (data.targetUserId) {
       getUserData();
     }
     if (data.id && isClippyLogined) {
       getLikeStatus();
     }
-    console.log(data);
   }, [data]);
 
   useEffect(() => {
@@ -246,6 +335,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
 
   return (
     <>
+      <NotiModal />
       <div>
         <Flex direction="row" justify="space-between" align="center">
           <Text size={28} weight={300}>
@@ -360,6 +450,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
         </Grid.Col>
         <Grid.Col span="auto">
           <Textarea
+            maxLength={10000}
             spellCheck="false"
             autosize
             minRows={1}
@@ -375,21 +466,25 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
         </Grid.Col>
         <Grid.Col span="content">
           <Group>
-            <Button
-              style={{
-                fontSize: 14,
-                borderRadius: 99,
-                backgroundColor: "white",
-                color: "black",
-                fontWeight: 700,
-              }}
-              h={40}
-              onClick={() => {
-                setCommentText("");
-              }}
-            >
-              취소
-            </Button>
+            {commentText.length === 0 ? (
+              <></>
+            ) : (
+              <Button
+                style={{
+                  fontSize: 14,
+                  borderRadius: 99,
+                  backgroundColor: "white",
+                  color: "black",
+                  fontWeight: 700,
+                }}
+                h={40}
+                onClick={() => {
+                  setCommentText("");
+                }}
+              >
+                취소
+              </Button>
+            )}
             <Button
               leftIcon={<BrandTelegram />}
               style={{
@@ -401,6 +496,13 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
               }}
               h={40}
               onClick={() => {
+                if (isClippyLogined === false) {
+                  setIsLoginModalOpen(true);
+                  return;
+                }
+                if (commentText.length === 0) return;
+                setEditMode(false);
+                setCurrentCursor(0);
                 postComments(router.query.clipId as string);
               }}
             >
@@ -416,15 +518,15 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
         return (
           <Flex
             className={`${
-              editMode && currentCursor === i
+              editMode && currentCursor === i + 1
                 ? "bg-gray-200"
                 : "hover:bg-gray-100"
             } rounded-md`}
             onMouseOver={() => {
-              if (!editMode) setCurrentCursor(i);
+              if (!editMode) setCurrentCursor(i + 1);
             }}
             onMouseLeave={() => {
-              if (!editMode) setCurrentCursor(-1);
+              if (!editMode) setCurrentCursor(-(i + 1));
             }}
             key={i}
             direction={"column"}
@@ -445,45 +547,116 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                   {(commentsUserInfo[i] || { display_name: "" }).display_name}
                 </Text>
                 <Text size={12} weight={300} ml={8}>
-                  {getCommentDate(cur.updatedAt, cur.createdAt)}
+                  {getCommentDate(
+                    cur.updatedAt,
+                    cur.createdAt,
+                    cur.isBlocked || cur.isDeleted
+                  )}
                 </Text>
               </Flex>
-              {!editMode && currentCursor === i ? (
+              {editMode === true && currentCursor === i + 1 ? (
                 <Group mr={8}>
-                  <Edit
-                    onClick={() => {
-                      setEditMode(true);
-                    }}
-                    className="cursor-pointer"
+                  <ArrowBackUp
                     size={20}
-                  />
-                  <Ban
-                    onClick={() => {
-                      reportComments(
-                        router.query.clipId as string,
-                        cur.commentId
-                      );
-                    }}
                     className="cursor-pointer"
-                    size={20}
-                  />
-                  <Trash
                     onClick={() => {
-                      deleteComments(
-                        router.query.clipId as string,
-                        cur.commentId
-                      );
+                      setEditMode(false);
                     }}
-                    className="cursor-pointer"
-                    size={20}
-                  />
+                  >
+                    취소
+                  </ArrowBackUp>
+                  {cur.comment === editText ? (
+                    <Edit
+                      color="gray"
+                      size={20}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        if (editText === cur.comment) return;
+                        editComments(
+                          router.query.clipId as string,
+                          cur.commentId
+                        );
+                        setEditMode(false);
+                      }}
+                    >
+                      수정
+                    </Edit>
+                  ) : (
+                    <Edit
+                      color="black"
+                      size={20}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        if (editText === cur.comment) return;
+                        editComments(
+                          router.query.clipId as string,
+                          cur.commentId
+                        );
+                        setEditMode(false);
+                      }}
+                    >
+                      수정
+                    </Edit>
+                  )}
+                </Group>
+              ) : (
+                <></>
+              )}
+              {isClippyLogined && !editMode && currentCursor === i + 1 ? (
+                <Group mr={8}>
+                  {cur.userId === loginedClippyUserInfo?.twitchId &&
+                  !cur.isDeleted &&
+                  !cur.isBlocked ? (
+                    <Edit
+                      onClick={() => {
+                        setEditText(cur.comment);
+                        setEditMode(true);
+                      }}
+                      className="cursor-pointer"
+                      size={20}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                  {cur.userId === loginedClippyUserInfo?.twitchId ||
+                  cur.isDeleted ||
+                  cur.isBlocked ? (
+                    <></>
+                  ) : (
+                    <Ban
+                      onClick={() => {
+                        setActionType(0);
+                        if (notiModalOpened === false) setNotiModalOpened(true);
+                        reportComments(
+                          router.query.clipId as string,
+                          cur.commentId
+                        );
+                      }}
+                      className="cursor-pointer"
+                      size={20}
+                    />
+                  )}
+                  {cur.userId === loginedClippyUserInfo?.twitchId &&
+                  !cur.isDeleted &&
+                  !cur.isBlocked ? (
+                    <Trash
+                      onClick={() => {
+                        setActionType(1);
+                        if (notiModalOpened === false) setNotiModalOpened(true);
+                      }}
+                      className="cursor-pointer"
+                      size={20}
+                    />
+                  ) : (
+                    <></>
+                  )}
                 </Group>
               ) : (
                 <></>
               )}
               {/* <DotsVertical className="cursor-pointer" size={20} /> */}
             </Group>
-            {editMode === true && currentCursor === i ? (
+            {editMode === true && currentCursor === i + 1 ? (
               <Grid className="w-full">
                 <Grid.Col span="content">
                   <Avatar
@@ -500,35 +673,14 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                     autosize
                     minRows={1}
                     maxRows={64}
-                    defaultValue={cur.comment}
+                    value={editText}
+                    onChange={(e) => {
+                      setEditText(e.currentTarget.value);
+                    }}
                     id=""
                     variant="unstyled"
                     placeholder="댓글 수정"
                   />
-                </Grid.Col>
-                <Grid.Col span="content">
-                  <Group>
-                    <X
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setEditMode(false);
-                      }}
-                    >
-                      취소
-                    </X>
-                    <Edit
-                      className="cursor-pointer"
-                      onClick={() => {
-                        editComments(
-                          router.query.clipId as string,
-                          cur.comment
-                        );
-                        setEditMode(false);
-                      }}
-                    >
-                      수정
-                    </Edit>
-                  </Group>
                 </Grid.Col>
               </Grid>
             ) : (
@@ -539,6 +691,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
           </Flex>
         );
       })}
+      <Stack mb={20} />
     </>
   );
 };

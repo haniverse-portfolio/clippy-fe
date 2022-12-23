@@ -87,10 +87,7 @@ const ViewClip = () => {
                   overflowY: isSm ? "hidden" : "auto",
                 }}
               >
-                <ScrollArea
-                  scrollbarSize={0}
-                  className="w-full h-full block p-5"
-                >
+                <ScrollArea scrollbarSize={0} className="w-full h-full block">
                   <CloudflareVideo
                     videoId={videoId}
                     clipId={clipId}
