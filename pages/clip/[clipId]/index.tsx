@@ -94,15 +94,7 @@ const ViewClip = () => {
                       width: isSm ? "calc(100% + 50px)" : "100%",
                       left: isSm ? "-25px" : "0",
                     }}
-                  >
-                    <GoogleAdsense
-                      className="google-ad-display-h-1 max-h-[120px]"
-                      layoutKey="-h2+d+5c-9-3e"
-                      slot="3846624551"
-                      format="fluid"
-                      responsive={true}
-                    />
-                  </div>
+                  ></div>
                   <CloudflareVideo
                     videoId={videoId}
                     clipId={clipId}
