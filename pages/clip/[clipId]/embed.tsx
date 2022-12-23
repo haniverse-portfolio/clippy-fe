@@ -12,6 +12,9 @@ const ViewClipEmbed: FC = () => {
   const [videoWidth, setVideoWidth] = useState("100%");
   const [videoId, setVideoId] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
+  const [videoAutoPlay, setVideoAutoPlay] = useState(false);
+  const [videoMuted, setVideoMuted] = useState(false);
+  const [videoStartAt, setVideoStartAt] = useState(0);
   const videoPlayState = useState(false);
   const [isVideoPlay] = videoPlayState;
   const [isError, setIsError] = useState(false);
@@ -31,6 +34,18 @@ const ViewClipEmbed: FC = () => {
       clearInterval(interval);
     };
   }, []);
+
+  useEffect(() => {
+    if (router.isReady) {
+      setVideoAutoPlay(router.query.autoplay === "true" ? true : false);
+      setVideoMuted(router.query.muted === "true" ? true : false);
+      setVideoStartAt(
+        router.query.start && (router.query.start as string).match(/^[0-9]+$/)
+          ? parseInt(router.query.start as string)
+          : 0
+      );
+    }
+  }, [router.isReady]);
 
   useEffect(() => {
     if (clipId) {
@@ -71,6 +86,9 @@ const ViewClipEmbed: FC = () => {
               clipId={clipId}
               creating={videoCreating}
               videoPlayState={videoPlayState}
+              autoPlay={videoAutoPlay}
+              muted={videoMuted}
+              startAt={videoStartAt}
             />
             {!isVideoPlay && (
               <>
