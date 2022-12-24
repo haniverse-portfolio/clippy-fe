@@ -1,15 +1,28 @@
 import { Stream } from "@cloudflare/stream-react";
 import { AspectRatio, Flex, Loader, Skeleton, Text } from "@mantine/core";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { apiAddress } from "../constValues";
+
+interface CloudflareVideoProps {
+  videoId: string;
+  clipId: string;
+  creating: boolean;
+  videoPlayState?: [boolean, Dispatch<SetStateAction<boolean>>];
+  autoPlay?: boolean;
+  muted?: boolean;
+  startAt?: number;
+}
 
 export const CloudflareVideo = ({
   videoId,
   clipId,
   creating,
   videoPlayState,
-}: any) => {
+  autoPlay,
+  muted,
+  startAt,
+}: CloudflareVideoProps) => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [onPlay, setOnPlay] = useState<boolean>(false);
   const [videoStatus, setVideoStatus] = useState<any>({
@@ -91,6 +104,9 @@ export const CloudflareVideo = ({
               src={videoId}
               controls={true}
               responsive={true}
+              autoplay={autoPlay}
+              muted={muted}
+              startTime={startAt}
               onLoadStart={() => {
                 setIsLoaded(true);
                 setOnPlay(false);
