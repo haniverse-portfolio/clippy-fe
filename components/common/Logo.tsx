@@ -66,11 +66,15 @@ const Beta = () => (
 );
 
 interface LogoProps {
+  className?: string;
   width?: string | number;
 }
-const Logo = ({ width = "200px" }: LogoProps) => {
+const Logo = ({ className = "", width = "200px" }: LogoProps) => {
   return (
-    <div className="flex justify-start items-center" style={{ width }}>
+    <div
+      className={`flex justify-start items-center ${className}`}
+      style={{ width }}
+    >
       <ClipIcon />
       <ClippyText />
       <Beta />
