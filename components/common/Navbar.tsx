@@ -64,9 +64,8 @@ export function Navbar() {
         <Link href="/">
           <Logo className="w-[150px] md:w-[200px]" />
         </Link>
-        <div className="w-full px-0 md:px-10 lg:px-20">
-          <SearchBar />
-        </div>
+
+        <SearchBar />
 
         <Flex justify="flex-end" align="center">
           <div
