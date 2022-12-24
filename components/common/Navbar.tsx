@@ -86,7 +86,10 @@ export function Navbar() {
               }}
             >
               <AspectRatio ratio={1 / 1}>
-                <Image src={loginedClippyUserInfo?.profileImageUrl} />
+                <Image
+                  src={loginedClippyUserInfo?.profileImageUrl}
+                  alt="user-profile"
+                />
               </AspectRatio>
             </div>
           ) : (

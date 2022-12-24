@@ -15,6 +15,22 @@ import { common_searchText, common_showMobileSearchBar } from "../states";
 import { useInterval } from "../../hooks/useInterval";
 import { getTwitchChannel } from "../../util/clippy";
 
+const addSearchHistory = (keyword: string) => {
+  const history = localStorage.getItem("search-history");
+  localStorage.setItem(
+    "search-history",
+    JSON.stringify(
+      history
+        ? [keyword, ...JSON.parse(history).filter((x: string) => x !== keyword)]
+        : [keyword]
+    )
+  );
+};
+
+const saveSearchHistory = (keywords: string[]) => {
+  localStorage.setItem("search-history", JSON.stringify(keywords));
+};
+
 interface SearchBarProps {
   className?: string;
   value: string;
@@ -24,28 +40,83 @@ interface SearchBarProps {
 }
 
 const SearchBarBottomList = ({
+  isEmpty,
   searchText,
   channelList,
   closeSearchList,
 }: {
+  isEmpty: boolean;
   searchText: string;
   channelList: ISearchChannelInfo[];
   closeSearchList: () => void;
 }) => {
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    const history = localStorage.getItem("search-history");
+    if (history) {
+      setSearchHistory(JSON.parse(history));
+    }
+  }, []);
+
+  useEffect(() => {
+    saveSearchHistory(searchHistory);
+  }, [searchHistory]);
 
   return (
     <div
-      className="max-h-[calc(100vh-150px)] pb-5 block w-full bg-white z-0 overflow-x-hidden overflow-y-auto"
+      className="max-h-[calc(100vh-150px)] block w-full bg-white z-0 overflow-x-hidden overflow-y-auto"
       style={{ borderRadius: "0 0 28px 28px" }}
     >
-      {channelList.length === 0 ? (
+      {isEmpty && (
+        <>
+          {searchHistory.length > 0 &&
+            searchHistory
+              .filter((_, idx) => idx < 10)
+              .map((itm, idx) => (
+                <div
+                  key={idx}
+                  className="w-full py-3 pl-[70px] pr-5 hover:bg-gray-100 cursor-pointer duration-200 flex justify-start items-center gap-[20px] relative"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeSearchList();
+                    router.push(`/search/${itm}`);
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={regular("clock")}
+                    color="#7a7a7a"
+                    width="20px"
+                    className="ml-[-38px] mb-[-2px]"
+                  />
+                  <div className="w-full overflow-hidden whitespace-nowrap text-ellipsis text-lg">
+                    {itm}
+                  </div>
+                  <FontAwesomeIcon
+                    className="cursor-pointer w-5 mb-[-2px]"
+                    icon={regular("circle-xmark")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSearchHistory((state) => {
+                        const arr = [...state];
+                        arr.splice(idx, 1);
+                        return arr;
+                      });
+                    }}
+                  />
+                </div>
+              ))}
+        </>
+      )}
+      {!isEmpty && channelList.length === 0 && (
         <div className="w-full py-3 pl-[70px] pr-5">
           <div className="w-full overflow-hidden whitespace-nowrap text-ellipsis text-lg">
             검색결과가 없습니다.
           </div>
         </div>
-      ) : (
+      )}
+      {!isEmpty && channelList.length > 0 && (
         <>
           <>
             {channelList
@@ -77,7 +148,8 @@ const SearchBarBottomList = ({
             onClick={(e) => {
               e.stopPropagation();
               closeSearchList();
-              router.push(`/search/${searchText}`);
+              addSearchHistory(searchText.trim());
+              router.push(`/search/${searchText.trim()}`);
             }}
           >
             <div className="w-full overflow-hidden whitespace-nowrap text-ellipsis text-lg">
@@ -133,7 +205,7 @@ const SearchBarTextInput: FC<SearchBarProps> = ({
       <div
         className={`search-bar-input-wrap rounded-[25px] bg-white h-max box-content absolute ${className}`}
         style={{
-          border: isFocused ? "1px solid black" : "",
+          border: isFocused || isMouseOver ? "1px solid black" : "",
           boxShadow: "0px 4px 15px rgba(119, 119, 119, 0.25)",
         }}
         onClick={() => {
@@ -144,14 +216,15 @@ const SearchBarTextInput: FC<SearchBarProps> = ({
         }}
       >
         <TextInput
-          className={`search-bar-input relative p-0 z-10 bg-white ${
-            isFocused ? "focused" : ""
+          className={`search-bar-input relative p-0 pr-[50px] z-10 bg-white ${
+            isFocused || isMouseOver ? "focused" : ""
           } ${isEmpty ? "empty" : ""}`}
           style={{
             width: "100%",
             border: 0,
             borderRadius: "28px",
           }}
+          autoComplete="off"
           size="lg"
           radius="xl"
           placeholder="닉네임, 제목 키워드"
@@ -164,16 +237,6 @@ const SearchBarTextInput: FC<SearchBarProps> = ({
           }
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          rightSection={
-            isFocused &&
-            value.trim().length > 0 && (
-              <FontAwesomeIcon
-                className="w-5 mr-[30px] cursor-pointer"
-                icon={regular("circle-xmark")}
-                onClick={clearInputText}
-              />
-            )
-          }
           value={value}
           onChange={onChange}
           onKeyUp={(e) => {
@@ -183,8 +246,20 @@ const SearchBarTextInput: FC<SearchBarProps> = ({
             }
           }}
         />
-        {!isEmpty && (isFocused || isMouseOver) && (
+        {(isFocused || isMouseOver) && value.trim().length > 0 && (
+          <div
+            className="absolute top-[16px] right-[30px] w-[20px] h-[20px] z-10"
+            onClick={clearInputText}
+          >
+            <FontAwesomeIcon
+              className="w-5 cursor-pointer"
+              icon={regular("circle-xmark")}
+            />
+          </div>
+        )}
+        {(isFocused || isMouseOver) && (
           <MemoSearchBarBottomList
+            isEmpty={isEmpty}
             closeSearchList={closeSearchList}
             searchText={value}
             channelList={channelList}
@@ -265,6 +340,7 @@ export const SearchBar = () => {
     if (event.key === "Enter" && searchText.trim() !== "") {
       event.currentTarget.blur();
       setIsMobileSearchBarOpen(false);
+      addSearchHistory(searchText.trim());
       router.push(`/search/${searchText.trim()}`);
     }
   };
