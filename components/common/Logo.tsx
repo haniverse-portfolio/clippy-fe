@@ -2,8 +2,9 @@ import { Flex } from "@mantine/core";
 
 const ClipIcon = () => (
   <svg
-    width="25"
-    height="40"
+    width="18%"
+    height="18%"
+    style={{ marginRight: "5%" }}
     viewBox="0 0 25 40"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -17,8 +18,9 @@ const ClipIcon = () => (
 
 const ClippyText = () => (
   <svg
-    width="108"
-    height="38"
+    width="90%"
+    height="50%"
+    style={{ marginRight: "5%" }}
     viewBox="0 0 108 38"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -49,8 +51,8 @@ const ClippyText = () => (
 
 const Beta = () => (
   <svg
-    width="37"
-    height="20"
+    width="25%"
+    height="25%"
     viewBox="0 0 37 20"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -63,17 +65,16 @@ const Beta = () => (
   </svg>
 );
 
-const Logo = () => {
+interface LogoProps {
+  width?: string | number;
+}
+const Logo = ({ width = "200px" }: LogoProps) => {
   return (
-    <Flex align="center">
-      <span className="mr-3">
-        <ClipIcon />
-      </span>
-      <span className="mr-2 mt-[2px] font-black text-4xl">
-        <ClippyText />
-      </span>
+    <div className="flex justify-start items-center" style={{ width }}>
+      <ClipIcon />
+      <ClippyText />
       <Beta />
-    </Flex>
+    </div>
   );
 };
 

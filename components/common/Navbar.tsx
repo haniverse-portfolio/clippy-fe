@@ -158,7 +158,7 @@ export function Navbar() {
             {searchBarHidden && (
               <div
                 onClick={() => setSearchBarOpen(!searchBarOpen)}
-                className="w-[44px] h-[44px] mr-[10px] rounded-full bg-gray-100 flex justify-center align-middle hover:cursor-pointer"
+                className="w-[44px] h-[44px] mr-[10px] rounded-full bg-gray-100 flex justify-center items-center hover:cursor-pointer"
               >
                 <FontAwesomeIcon
                   icon={
