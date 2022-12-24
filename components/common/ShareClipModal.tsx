@@ -311,6 +311,13 @@ export const ShareClipModal = () => {
                 checked={isMuted}
               />
             </div>
+            {isAutoplay && !isMuted && (
+              <div className="mt-1 text-red-500 text-sm">
+                * 자동재생 기능은 일부 브라우저 정책에 의해 정상 동작하지 않을
+                수 있습니다. 원활한 자동재생 기능을 사용하려면{" "}
+                <strong>음소거</strong> 옵션도 함께 선택해주세요.
+              </div>
+            )}
             <div
               onClick={() => {
                 navigator.clipboard.writeText(embedCode).then(() => {
