@@ -143,3 +143,14 @@ interface mypage_clipType {
   date: string;
   views: string;
 }
+
+/**
+ * 채널검색 결과 Interface
+ */
+interface ISearchChannelInfo {
+  display_name: string;
+  id: string;
+  logo: string;
+  name: string;
+  url: string;
+}
