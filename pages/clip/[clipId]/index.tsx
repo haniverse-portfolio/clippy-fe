@@ -162,14 +162,6 @@ const ViewClip = ({
                     responsive={true}
                   />
                 </div>
-                <CloudflareVideo
-                  videoId={videoId}
-                  clipId={clipId}
-                  creating={videoCreating}
-                />
-                <div className="mt-[25px]">
-                  <VideoTitle data={videoData} />
-                </div>
                   <CloudflareVideo
                     videoId={videoId}
                     clipId={clipId}
