@@ -15,54 +15,30 @@ import { common_searchText, common_showMobileSearchBar } from "../states";
 import { useInterval } from "../../hooks/useInterval";
 import { getTwitchChannel } from "../../util/clippy";
 
-const addSearchHistory = (keyword: string) => {
-  const history = localStorage.getItem("search-history");
-  localStorage.setItem(
-    "search-history",
-    JSON.stringify(
-      history
-        ? [keyword, ...JSON.parse(history).filter((x: string) => x !== keyword)]
-        : [keyword]
-    )
-  );
-};
-
-const saveSearchHistory = (keywords: string[]) => {
-  localStorage.setItem("search-history", JSON.stringify(keywords));
-};
-
 interface SearchBarProps {
   className?: string;
-  value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onKeyUp: (event: KeyboardEvent<HTMLInputElement>) => void;
-  clearInputText: () => void;
 }
 
 const SearchBarBottomList = ({
   isEmpty,
+  selectedIdx,
   searchText,
   channelList,
+  searchHistory,
   closeSearchList,
+  addSearchHistory,
+  clickSearchHistory,
 }: {
   isEmpty: boolean;
+  selectedIdx: number | null;
   searchText: string;
   channelList: ISearchChannelInfo[];
+  searchHistory: string[];
   closeSearchList: () => void;
+  addSearchHistory: (keyword: string) => void;
+  clickSearchHistory: (idx: number) => void;
 }) => {
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const router = useRouter();
-
-  useEffect(() => {
-    const history = localStorage.getItem("search-history");
-    if (history) {
-      setSearchHistory(JSON.parse(history));
-    }
-  }, []);
-
-  useEffect(() => {
-    saveSearchHistory(searchHistory);
-  }, [searchHistory]);
 
   return (
     <div
@@ -83,6 +59,10 @@ const SearchBarBottomList = ({
                     closeSearchList();
                     router.push(`/search/${itm}`);
                   }}
+                  style={{
+                    backgroundColor:
+                      selectedIdx === idx ? "rgb(243 244 246)" : undefined,
+                  }}
                 >
                   <FontAwesomeIcon
                     icon={regular("clock")}
@@ -98,11 +78,7 @@ const SearchBarBottomList = ({
                     icon={regular("circle-xmark")}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSearchHistory((state) => {
-                        const arr = [...state];
-                        arr.splice(idx, 1);
-                        return arr;
-                      });
+                      clickSearchHistory(idx);
                     }}
                   />
                 </div>
@@ -116,46 +92,49 @@ const SearchBarBottomList = ({
           </div>
         </div>
       )}
-      {!isEmpty && channelList.length > 0 && (
+      {!isEmpty && channelList.length > 1 && (
         <>
           <>
-            {channelList
-              .filter((_, idx) => idx < 10)
-              .map((itm, idx) => (
-                <div
-                  key={idx}
-                  className="w-full py-3 pl-[70px] pr-5 hover:bg-gray-100 cursor-pointer duration-200 flex justify-start items-center gap-[10px] relative"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    closeSearchList();
+            {channelList.map((itm, idx) => (
+              <div
+                key={idx}
+                className="w-full py-3 pl-[70px] pr-5 hover:bg-gray-100 cursor-pointer duration-200 flex justify-start items-center gap-[10px] relative"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closeSearchList();
+                  if (
+                    (channelList.length > 11 ? 10 : channelList.length - 1) ===
+                    idx
+                  ) {
+                    addSearchHistory(searchText.trim());
+                    router.push(`/search/${searchText.trim()}`);
+                  } else {
                     router.push(`/channel/${itm.name}`);
-                  }}
-                >
+                  }
+                }}
+                style={{
+                  backgroundColor:
+                    selectedIdx === idx ? "rgb(243 244 246)" : undefined,
+                }}
+              >
+                {(channelList.length > 11 ? 10 : channelList.length - 1) !==
+                  idx && (
                   <Image
                     src={itm.logo}
                     width="32px"
                     className="rounded-full overflow-hidden ml-[-42px]"
                     alt="search-result-profile-image"
                   />
-                  <div className="w-full overflow-hidden whitespace-nowrap text-ellipsis text-lg">
-                    {itm.display_name} ({itm.name})
-                  </div>
+                )}
+                <div className="w-full overflow-hidden whitespace-nowrap text-ellipsis text-lg">
+                  {(channelList.length > 11 ? 10 : channelList.length - 1) ===
+                  idx
+                    ? "검색결과 더보기"
+                    : `${itm.display_name} (${itm.name})`}
                 </div>
-              ))}
+              </div>
+            ))}
           </>
-          <div
-            className="w-full py-3 pl-[70px] pr-5 hover:bg-gray-100 cursor-pointer duration-200 flex justify-start items-center gap-[10px] relative border-t-[1px]"
-            onClick={(e) => {
-              e.stopPropagation();
-              closeSearchList();
-              addSearchHistory(searchText.trim());
-              router.push(`/search/${searchText.trim()}`);
-            }}
-          >
-            <div className="w-full overflow-hidden whitespace-nowrap text-ellipsis text-lg">
-              검색결과 더보기
-            </div>
-          </div>
         </>
       )}
     </div>
@@ -163,36 +142,156 @@ const SearchBarBottomList = ({
 };
 const MemoSearchBarBottomList = memo(SearchBarBottomList);
 
-const SearchBarTextInput: FC<SearchBarProps> = ({
-  className = "",
-  value,
-  onChange,
-  onKeyUp,
-  clearInputText,
-}) => {
+const SearchBarTextInput: FC<SearchBarProps> = ({ className = "" }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isMouseOver, setIsMouseOver] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
+  const [bottomListSelectIdx, setBottomListSelectIdx] = useState<number | null>(
+    null
+  );
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [channelList, setChannelList] = useState<ISearchChannelInfo[]>([]);
+  const [searchText, setSearchText] = useRecoilState(common_searchText);
   const setIsMobileSearchBarOpen = useSetRecoilState(
     common_showMobileSearchBar
   );
 
+  const router = useRouter();
+
+  const addSearchHistory = (keyword: string) => {
+    setSearchHistory((state) => [
+      keyword,
+      ...state.filter((x) => x !== keyword),
+    ]);
+  };
+
+  const saveSearchHistory = (keywords: string[]) => {
+    localStorage.setItem("search-history", JSON.stringify(keywords));
+  };
+
+  const clickSearchHistory = (idx: number) => {
+    setSearchHistory((state) => {
+      const arr = [...state];
+      arr.splice(idx, 1);
+      return arr;
+    });
+  };
+
+  const clearInputText = () => {
+    setSearchText("");
+  };
+
   const searchTwitchChannel = () => {
-    if (value.trim() !== "") {
-      getTwitchChannel(value).then((res) => setChannelList(res));
+    if (searchText.trim() !== "") {
+      getTwitchChannel(searchText.trim()).then((res) =>
+        setChannelList([
+          ...res.filter((_, idx) => idx < 10),
+          { id: "", display_name: "", logo: "", url: "", name: "" },
+        ])
+      );
     }
   };
 
   const closeSearchList = () => {
     setIsFocused(false);
     setIsMouseOver(false);
+    setBottomListSelectIdx(null);
     setIsMobileSearchBarOpen(false);
   };
 
+  const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value.replace(/ /g, "")); //공백문자 제거
+  };
+  const onKeyUpHandlerMap: {
+    [key: string]: (event: KeyboardEvent<HTMLInputElement>) => void;
+  } = {
+    Enter(e) {
+      if (
+        !isEmpty &&
+        bottomListSelectIdx === null &&
+        searchText.trim() !== ""
+      ) {
+        e.currentTarget.blur();
+        closeSearchList();
+        setIsMobileSearchBarOpen(false);
+        addSearchHistory(searchText.trim());
+        router.push(`/search/${searchText.trim()}`);
+      } else if (!isEmpty && bottomListSelectIdx !== null) {
+        e.currentTarget.blur();
+        closeSearchList();
+        setIsMobileSearchBarOpen(false);
+        if (channelList.length - 1 === bottomListSelectIdx) {
+          addSearchHistory(searchText.trim());
+          router.push(`/search/${searchText.trim()}`);
+        } else {
+          router.push(
+            `/channel/${channelList[bottomListSelectIdx].name.trim()}`
+          );
+        }
+      } else if (isEmpty && bottomListSelectIdx !== null) {
+        e.currentTarget.blur();
+        closeSearchList();
+        setIsMobileSearchBarOpen(false);
+        addSearchHistory(searchHistory[bottomListSelectIdx].trim());
+        router.push(`/search/${searchHistory[bottomListSelectIdx].trim()}`);
+      }
+    },
+    Escape(e) {
+      e.currentTarget.blur();
+      closeSearchList();
+    },
+  };
+  const onKeyUpHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    onKeyUpHandlerMap[event.key]?.(event);
+  };
+  const onKeyDownHandlerMap: {
+    [key: string]: (event: KeyboardEvent<HTMLInputElement>) => void;
+  } = {
+    ArrowUp(e) {
+      const length = isEmpty ? searchHistory.length : channelList.length;
+      const limit = isEmpty ? 10 : 11;
+      if (length > 0) {
+        setBottomListSelectIdx((state) => {
+          if (state === null || state === 0)
+            return length > limit ? limit - 1 : length - 1;
+          else return state - 1;
+        });
+      }
+    },
+    ArrowDown(e) {
+      const length = isEmpty ? searchHistory.length : channelList.length;
+      const limit = isEmpty ? 10 : 11;
+      if (length > 0) {
+        setBottomListSelectIdx((state) => {
+          if (
+            state === null ||
+            state === (length > limit ? limit - 1 : length - 1)
+          )
+            return 0;
+          else return state + 1;
+        });
+      }
+    },
+  };
+  const onKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+    onKeyDownHandlerMap[event.key]?.(event);
+  };
+
   useEffect(() => {
-    setIsEmpty(value.trim() === "");
-  }, [value]);
+    const history = localStorage.getItem("search-history");
+    if (history) {
+      setSearchHistory(JSON.parse(history));
+    }
+  }, []);
+
+  useEffect(() => {
+    saveSearchHistory(searchHistory);
+  }, [searchHistory]);
+
+  useEffect(() => {
+    setIsEmpty(searchText.trim() === "");
+    setBottomListSelectIdx(() => null);
+  }, [searchText]);
 
   useEffect(() => {
     if (isFocused) searchTwitchChannel();
@@ -237,16 +336,12 @@ const SearchBarTextInput: FC<SearchBarProps> = ({
           }
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          value={value}
-          onChange={onChange}
-          onKeyUp={(e) => {
-            onKeyUp(e);
-            if (e.key === "Enter" && value.trim() !== "") {
-              closeSearchList();
-            }
-          }}
+          value={searchText}
+          onChange={onChangeHandler}
+          onKeyUp={onKeyUpHandler}
+          onKeyDown={onKeyDownHandler}
         />
-        {(isFocused || isMouseOver) && value.trim().length > 0 && (
+        {(isFocused || isMouseOver) && searchText.trim().length > 0 && (
           <div
             className="absolute top-[16px] right-[30px] w-[20px] h-[20px] z-10"
             onClick={clearInputText}
@@ -260,9 +355,13 @@ const SearchBarTextInput: FC<SearchBarProps> = ({
         {(isFocused || isMouseOver) && (
           <MemoSearchBarBottomList
             isEmpty={isEmpty}
+            selectedIdx={bottomListSelectIdx}
             closeSearchList={closeSearchList}
-            searchText={value}
+            searchText={searchText}
             channelList={channelList}
+            searchHistory={searchHistory}
+            addSearchHistory={addSearchHistory}
+            clickSearchHistory={clickSearchHistory}
           />
         )}
       </div>
@@ -285,26 +384,14 @@ const SearchBarTextInput: FC<SearchBarProps> = ({
   );
 };
 
-const SearchBarMobile: FC<SearchBarProps> = ({
-  className = "",
-  value,
-  onChange,
-  onKeyUp,
-  clearInputText,
-}) => {
+const SearchBarMobile: FC<SearchBarProps> = ({ className = "" }) => {
   const [isOpen, setIsOpen] = useRecoilState(common_showMobileSearchBar);
 
   return (
     <>
       {isOpen && (
         <div className="absolute top-0 left-0 w-full h-full z-20 bg-white p-5 flex justify-end items-center gap-5 animate-fadeIn md:hidden">
-          <SearchBarTextInput
-            className={className}
-            value={value}
-            onChange={onChange}
-            onKeyUp={onKeyUp}
-            clearInputText={clearInputText}
-          />
+          <SearchBarTextInput className={className} />
           <Button
             h={48}
             color="dark"
@@ -325,47 +412,11 @@ const SearchBarMobile: FC<SearchBarProps> = ({
 };
 
 export const SearchBar = () => {
-  const [searchText, setSearchText] = useRecoilState(common_searchText);
-  const setIsMobileSearchBarOpen = useSetRecoilState(
-    common_showMobileSearchBar
-  );
-
-  const router = useRouter();
-
-  const searchBarOnChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchText(event.target.value.replace(/ /g, "")); //공백문자 제거
-  };
-
-  const searchBarOnKeyUpHandler = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && searchText.trim() !== "") {
-      event.currentTarget.blur();
-      setIsMobileSearchBarOpen(false);
-      addSearchHistory(searchText.trim());
-      router.push(`/search/${searchText.trim()}`);
-    }
-  };
-
-  const clearInputText = () => {
-    setSearchText("");
-  };
-
   return (
     <>
-      <SearchBarMobile
-        className="w-[calc(100vw-130px)] top-[calc(60px-24px)] left-5"
-        value={searchText}
-        onChange={searchBarOnChangeHandler}
-        onKeyUp={searchBarOnKeyUpHandler}
-        clearInputText={clearInputText}
-      />
+      <SearchBarMobile className="w-[calc(100vw-130px)] top-[calc(60px-24px)] left-5" />
       <div className="relative w-full h-[50px] px-0 md:px-10 lg:px-20">
-        <SearchBarTextInput
-          className="hidden md:block w-[calc(100vw-500px)] max-w-[min(45vw,588px)] top-0 left-10 lg:left-20"
-          value={searchText}
-          onChange={searchBarOnChangeHandler}
-          onKeyUp={searchBarOnKeyUpHandler}
-          clearInputText={clearInputText}
-        />
+        <SearchBarTextInput className="hidden md:block w-[calc(100vw-500px)] max-w-[min(45vw,588px)] top-0 left-10 lg:left-20" />
       </div>
     </>
   );
