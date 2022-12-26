@@ -19,7 +19,11 @@ export const common_searchText = atom({
 export const common_showMobileSearchBar = atom({
   key: "common_showMobileSearchBar",
   default: false,
-}); // 내비게이션바 - 검색 텍스트
+}); // 내비게이션바 - 모바일 검색바 표시 여부
+export const common_searchHistory = atom<string[]>({
+  key: "common_searchHistory",
+  default: [],
+}); // 내비게이션바 - 검색 히스토리 배열
 
 export const common_followed = atom<ILiveStreamerInfo[]>({
   key: "common_followed",

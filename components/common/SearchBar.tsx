@@ -11,7 +11,11 @@ import {
   useState,
 } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { common_searchText, common_showMobileSearchBar } from "../states";
+import {
+  common_searchHistory,
+  common_searchText,
+  common_showMobileSearchBar,
+} from "../states";
 import { useInterval } from "../../hooks/useInterval";
 import { getTwitchChannel } from "../../util/clippy";
 
@@ -149,7 +153,8 @@ const SearchBarTextInput: FC<SearchBarProps> = ({ className = "" }) => {
   const [bottomListSelectIdx, setBottomListSelectIdx] = useState<number | null>(
     null
   );
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [searchHistory, setSearchHistory] =
+    useRecoilState(common_searchHistory);
   const [channelList, setChannelList] = useState<ISearchChannelInfo[]>([]);
   const [searchText, setSearchText] = useRecoilState(common_searchText);
   const setIsMobileSearchBarOpen = useSetRecoilState(
