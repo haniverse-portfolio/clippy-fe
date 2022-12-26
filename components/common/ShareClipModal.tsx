@@ -1,6 +1,12 @@
 import { useRecoilValue } from "recoil";
 import { common_shareClipModal_content } from "../states";
-import { Modal, TextInput, Textarea } from "@mantine/core";
+import {
+  Checkbox,
+  Modal,
+  NumberInput,
+  TextInput,
+  Textarea,
+} from "@mantine/core";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { useShareClipModal } from "../../hooks/useShareClipModal";
 import { showNotification } from "@mantine/notifications";
@@ -32,6 +38,10 @@ export const ShareClipModal = () => {
   const [URL, setURL] = useState("");
   const [embedCode, setEmbedCode] = useState("");
   const [toggleCopyEmbedCode, setToggleCopyEmbedCode] = useState(false);
+  const [isActiveStartTime, setIsActiveStartTime] = useState(false);
+  const [isAutoplay, setIsAutoplay] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [startTime, setStartTime] = useState(0);
   const shareModalContent = useRecoilValue(common_shareClipModal_content);
 
   const { isShareModalOpen, closeShareClopModal } = useShareClipModal();
@@ -88,13 +98,24 @@ export const ShareClipModal = () => {
   };
 
   useEffect(() => {
-    setURL(window.location.href.split("?")[0]);
+    setURL(
+      window.location.href.split("?")[0] +
+        (isActiveStartTime
+          ? `?start=${startTime > 60 ? 60 : startTime < 0 ? 0 : startTime}`
+          : "")
+    );
     setEmbedCode(
       `<iframe src="${
-        window.location.href.split("?")[0] + "/embed"
+        window.location.href.split("?")[0] +
+        "/embed" +
+        (isActiveStartTime
+          ? `?start=${startTime > 60 ? 60 : startTime < 0 ? 0 : startTime}`
+          : "?start=0") +
+        `&autoplay=${isAutoplay ? "true" : "false"}` +
+        `&muted=${isMuted ? "true" : "false"}`
       }" frameborder="0" width="533" height="300" allowFullscreen></iframe>`
     );
-  }, []);
+  }, [isActiveStartTime, startTime, isAutoplay, isMuted]);
 
   return (
     <>
@@ -243,10 +264,60 @@ export const ShareClipModal = () => {
             링크복사
           </div>
         </div>
+        <div className="flex justify-start items-center gap-3 mt-5">
+          <Checkbox
+            label="시작시간"
+            color="dark"
+            mr={10}
+            onChange={(e) => {
+              setIsActiveStartTime(e.target.checked);
+            }}
+            checked={isActiveStartTime}
+          />
+          <NumberInput
+            w={100}
+            max={60}
+            min={0}
+            mt={-4}
+            error={startTime > 60 || startTime < 0}
+            defaultValue={0}
+            onChange={(value) => {
+              value !== undefined && setStartTime(value);
+            }}
+            disabled={!isActiveStartTime}
+          />
+        </div>
         {toggleCopyEmbedCode && (
           <div className="pt-1 mt-4 border-t-[1px] border-[#ccc]">
             <div className="text-[14px] mt-2">임베드 플레이어 코드</div>
             <Textarea size="xs" mt={10} value={embedCode} />
+            <div className="flex justify-start items-center gap-3 mt-5">
+              <Checkbox
+                label="자동재생"
+                color="dark"
+                mr={10}
+                onChange={(e) => {
+                  setIsAutoplay(e.target.checked);
+                }}
+                checked={isAutoplay}
+              />
+              <Checkbox
+                label="음소거"
+                color="dark"
+                mr={10}
+                onChange={(e) => {
+                  setIsMuted(e.target.checked);
+                }}
+                checked={isMuted}
+              />
+            </div>
+            {isAutoplay && !isMuted && (
+              <div className="mt-1 text-red-500 text-sm">
+                * 자동재생 기능은 일부 브라우저 정책에 의해 정상 동작하지 않을
+                수 있습니다. 원활한 자동재생 기능을 사용하려면{" "}
+                <strong>음소거</strong> 옵션도 함께 선택해주세요.
+              </div>
+            )}
             <div
               onClick={() => {
                 navigator.clipboard.writeText(embedCode).then(() => {

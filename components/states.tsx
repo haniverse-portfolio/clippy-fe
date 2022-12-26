@@ -16,6 +16,14 @@ export const common_searchText = atom({
   key: "common_searchText",
   default: "",
 }); // 내비게이션바 - 검색 텍스트
+export const common_showMobileSearchBar = atom({
+  key: "common_showMobileSearchBar",
+  default: false,
+}); // 내비게이션바 - 모바일 검색바 표시 여부
+export const common_searchHistory = atom<string[]>({
+  key: "common_searchHistory",
+  default: [],
+}); // 내비게이션바 - 검색 히스토리 배열
 
 export const common_followed = atom<ILiveStreamerInfo[]>({
   key: "common_followed",
@@ -56,6 +64,14 @@ export const common_createClipModal_streamer =
 export const common_createClipModal_isClipInitLoading = atom({
   key: "common_createClipModal_isClipInitLoading",
   default: true,
+});
+
+/**
+ * 클립생성모달 - 초기 로딩 여부
+ */
+export const common_createClipModal_isClipInitDone = atom({
+  key: "common_createClipModal_isClipInitDone",
+  default: false,
 });
 
 /**
@@ -109,6 +125,14 @@ export const common_loginModal_isOpen = atom({
   key: "common_loginModal_isOpen",
   default: false,
 });
+
+/**
+ * 사이트정보모달 - Open 여부
+ */
+export const common_siteInfoModal_isOpen = atom({
+  key: "common_siteInfoModal_isOpen",
+  default: false,
+});
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
@@ -155,16 +179,8 @@ export const mypageManage_channelClip = atom({
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
 
 /* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */
-interface searchResultType {
-  id: string;
-  name: string;
-  display_name: string;
-  logo: string;
-  url: string;
-}
-interface searchResultsType extends Array<searchResultType> {}
-export const search_searchResult = atom({
+export const search_searchResult = atom<ISearchChannelInfo[]>({
   key: "search_searchResult",
-  default: [] as searchResultsType,
+  default: [],
 }); // 검색 - 검색 결과 채널목록
 /* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */

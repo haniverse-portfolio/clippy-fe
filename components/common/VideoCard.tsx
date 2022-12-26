@@ -8,6 +8,7 @@ import {
   Stack,
   ActionIcon,
   Group,
+  AspectRatio,
 } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -94,26 +95,28 @@ const VideoCard = ({ clip }: any) => {
             </Flex>
           </div>
         </div>
-        <Image
-          className="cursor-pointer rounded-md"
-          src={clip.cfVideoThumbnail}
-          alt="clip"
-          onClick={() => {
-            router.push(`/clip/${clip.key}`);
-          }}
-          onMouseOver={(e: any) => {
-            // change thumbnail src to thumbnail gif
-            const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
-              clip.cfVideoId
-            }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
-            e.target.src = animatedThumbnail;
-          }}
-          radius={8}
-          onMouseLeave={(e: any) => {
-            // change thumbnail src to thumbnail jpg
-            e.target.src = clip.cfVideoThumbnail;
-          }}
-        />
+        <AspectRatio ratio={239 / 134.438} className="bg-gray-200 rounded-md">
+          <Image
+            className="cursor-pointer rounded-md w-full"
+            src={clip.cfVideoThumbnail}
+            alt="clip"
+            onClick={() => {
+              router.push(`/clip/${clip.key}`);
+            }}
+            onMouseOver={(e: any) => {
+              // change thumbnail src to thumbnail gif
+              const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
+                clip.cfVideoId
+              }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
+              e.target.src = animatedThumbnail;
+            }}
+            radius={8}
+            onMouseLeave={(e: any) => {
+              // change thumbnail src to thumbnail jpg
+              e.target.src = clip.cfVideoThumbnail;
+            }}
+          />
+        </AspectRatio>
         <Group position="apart">
           <Stack spacing={0} style={{ width: "calc(100% - 100px)" }}>
             <Text

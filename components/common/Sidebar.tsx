@@ -1,5 +1,5 @@
 import { Group, Drawer, Stack } from "@mantine/core";
-import { Menu2 } from "tabler-icons-react";
+import { X } from "tabler-icons-react";
 import { useRecoilState } from "recoil";
 import { common_sidebarOpened } from "../states";
 import Logo from "./Logo";
@@ -14,8 +14,8 @@ export const SidebarInner = () => {
       <Stack>
         <div className="p-[36px] h-[120px] bg-white sticky top-0 z-50 shadow-sm">
           <Group position="apart">
-            <Logo />
-            <Menu2
+            <Logo width="200px" />
+            <X
               className="cursor-pointer"
               size={48}
               onClick={() => {
@@ -24,7 +24,12 @@ export const SidebarInner = () => {
             />
           </Group>
         </div>
-        <UserAside forceLarge={true} />
+        <div
+          className="w-full overflow-x-hidden overflow-y-auto"
+          style={{ height: "calc(100vh - 120px)" }}
+        >
+          <UserAside forceLarge={true} />
+        </div>
       </Stack>
     </>
   );

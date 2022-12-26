@@ -18,11 +18,10 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (params?.clipId) {
     const clipInfo = await getClip(params.clipId as string);
     if (clipInfo) {
-      console.log(clipInfo);
       const ogTitle = `[Clippy] ${clipInfo.title}`;
       const ogURL = `https://clippy.kr/clip/${clipInfo.key}`;
       const ogType = "website";
-      const ogImageURL = clipInfo.cfVideoThumbnail;
+      const ogImageURL = `https://clippy.kr/api/thumbnail/${clipInfo.key}`;
       const ogDescription =
         "클립 생성할땐? 클리피! - 지상 최고의 클립 생성/공유 서비스";
       return {
@@ -58,7 +57,7 @@ const ViewClip = ({
 }: ViewClipProps) => {
   // get parameter
   const router = useRouter();
-  const { clipId, creating }: any = router.query;
+  const { clipId, creating, start }: any = router.query;
 
   const [videoCreating, setVideoCreating] = useState<boolean>(
     creating === "true" || creating === true
@@ -166,6 +165,12 @@ const ViewClip = ({
                   videoId={videoId}
                   clipId={clipId}
                   creating={videoCreating}
+                  autoPlay={true}
+                  startAt={
+                    start && (start as string).match(/^[0-9]+$/)
+                      ? parseInt(start as string)
+                      : 0
+                  }
                 />
                 <div className="mt-[25px]">
                   <VideoTitle data={videoData} />

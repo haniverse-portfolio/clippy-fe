@@ -94,7 +94,7 @@ interface ILiveStreamerInfo {
  * 클립을 생성할 스트리머 정보 Interface
  */
 interface ICreateClipStreamerInfo {
-  id: string;
+  id: number;
   login: string;
   name: string;
   image: string;
@@ -105,6 +105,7 @@ interface ICreateClipStreamerInfo {
  */
 interface ICreateClipModalError {
   msg: string;
+  statusCode: number;
 }
 
 /**
@@ -141,4 +142,15 @@ interface mypage_clipType {
   channelName: string;
   date: string;
   views: string;
+}
+
+/**
+ * 채널검색 결과 Interface
+ */
+interface ISearchChannelInfo {
+  display_name: string;
+  id: string;
+  logo: string;
+  name: string;
+  url: string;
 }

@@ -70,6 +70,7 @@ const ViewChannel = () => {
               lg: 1200,
               xl: 1320,
             }}
+            pb={"50px"}
           >
             {isError ? (
               <NotFoundTitle

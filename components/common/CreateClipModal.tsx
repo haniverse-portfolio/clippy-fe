@@ -11,9 +11,10 @@ import {
   TextInput,
 } from "@mantine/core";
 import { FC, useEffect, useRef, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   common_createClipModal_error,
+  common_createClipModal_isClipInitDone,
   common_createClipModal_isClipInitLoading,
   common_createClipModal_liveVideoInfo,
   common_createClipModal_streamer,
@@ -24,6 +25,9 @@ import { apiAddress } from "../constValues";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useCreateClipModal } from "../../hooks/useCreateClipModal";
+import { useInterval } from "../../hooks/useInterval";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 
 const CreateClipModalTitle: FC = () => {
   const streamerInfo = useRecoilValue(common_createClipModal_streamer);
@@ -40,29 +44,68 @@ const CreateClipModalTitle: FC = () => {
 
 const CreateClipModalInitLoading: FC = () => {
   const isLoading = useRecoilValue(common_createClipModal_isClipInitLoading);
+  const [isLoadingDone, setIsLoadingDone] = useRecoilState(
+    common_createClipModal_isClipInitDone
+  );
   const liveVideoInfo = useRecoilValue(common_createClipModal_liveVideoInfo);
   const error = useRecoilValue(common_createClipModal_error);
 
+  const [progressValue, setProgressValue] = useState(0);
+  const [intervalDelay, setIntervalDelay] = useState<number | null>(100);
+
+  useEffect(() => {
+    if (isLoadingDone || error) {
+      setIntervalDelay(null);
+      setProgressValue(0);
+    } else {
+      setProgressValue(0);
+      setIntervalDelay(100);
+    }
+  }, [isLoadingDone, error]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setProgressValue(() => 100);
+      setTimeout(() => {
+        setIsLoadingDone(true);
+      }, 1000);
+    }
+  }, [isLoading]);
+
+  useInterval(() => {
+    setProgressValue((state) =>
+      state === 100 ? 100 : state >= 99.8 ? 99.8 : state + 0.6
+    );
+  }, intervalDelay);
+
   return (
     <>
-      {isLoading && !liveVideoInfo && !error && (
-        <Stack className="flex items-center justify-center h-[600px]">
-          <Stack>
-            <Center>
-              <Loader color="violet" size="xl" />
-            </Center>
-            <p className="text-center text-xl text-gray-500 font-semibold">
-              영상을 불러오는 중...
-            </p>
-          </Stack>
-        </Stack>
+      {!isLoadingDone && !liveVideoInfo && !error && (
+        <div className="w-full h-[600px] flex flex-col justify-center items-center p-20">
+          <p className="text-center text-xl text-gray-500 font-semibold mt-[-20px] mb-10">
+            영상을 불러오는 중...
+          </p>
+          <div className="w-full flex justify-between items-center gap-3">
+            <div className="relative w-full h-[6px] rounded-[3px] bg-gray-200 block">
+              <div
+                className="h-[6px] rounded-[3px] bg-purple-500 block duration-200"
+                style={{ width: `${progressValue}%` }}
+              ></div>
+            </div>
+            <div className="text-right w-[40px] mt-[-.15em] text-gray-500 whitespace-nowrap">
+              {progressValue.toFixed(1)}%
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
 };
 
 const CreateClipModalError: FC = () => {
+  const streamerInfo = useRecoilValue(common_createClipModal_streamer);
   const error = useRecoilValue(common_createClipModal_error);
+  const { retryCreateClip } = useCreateClipModal();
 
   return (
     <>
@@ -75,6 +118,25 @@ const CreateClipModalError: FC = () => {
             <p className="text-center text-xl text-gray-500 font-semibold">
               {error.msg}
             </p>
+            {error.statusCode === 500 && (
+              <Center mt={30}>
+                <Button
+                  w={70}
+                  h={48}
+                  color="dark"
+                  variant="outline"
+                  radius={99}
+                  px={20}
+                  onClick={() => retryCreateClip(streamerInfo?.id as number)}
+                >
+                  <FontAwesomeIcon
+                    icon={solid("rotate-right")}
+                    color="#000"
+                    height="24px"
+                  />
+                </Button>
+              </Center>
+            )}
           </Stack>
         </Stack>
       )}
@@ -83,7 +145,7 @@ const CreateClipModalError: FC = () => {
 };
 
 const CreateClipModalEditor: FC = () => {
-  const isLoading = useRecoilValue(common_createClipModal_isClipInitLoading);
+  const isLoadingDone = useRecoilValue(common_createClipModal_isClipInitDone);
   const error = useRecoilValue(common_createClipModal_error);
   const liveVideoInfo = useRecoilValue(common_createClipModal_liveVideoInfo);
 
@@ -153,7 +215,7 @@ const CreateClipModalEditor: FC = () => {
 
   return (
     <>
-      {!isLoading && liveVideoInfo && !error && (
+      {isLoadingDone && liveVideoInfo && !error && (
         <Stack className="h-[600px] w-full">
           <ReactPlayer
             ref={videoPlayerRef}
@@ -187,7 +249,9 @@ const CreateClipModalEditor: FC = () => {
           <TextInput
             value={createModalClipName}
             onChange={(event) => {
-              setCreateModalClipName(event.currentTarget.value);
+              setCreateModalClipName(
+                event.currentTarget.value.replace(/　/g, "")
+              );
             }}
             size="md"
             placeholder="클립 제목"
@@ -198,7 +262,7 @@ const CreateClipModalEditor: FC = () => {
               className={
                 createModalClipName === "" ? "hover:cursor-not-allowed" : ""
               }
-              disabled={createModalClipName === ""}
+              disabled={createModalClipName.trim() === ""}
               leftIcon={<Paperclip />}
               size="lg"
               color="dark"
@@ -235,9 +299,11 @@ export const CreateClipModal: FC = () => {
       opened={isCreateClipModalOpen}
       onClose={closeCreateClipModal}
     >
-      <CreateClipModalInitLoading />
-      <CreateClipModalEditor />
-      <CreateClipModalError />
+      <div className="h-[600px]">
+        <CreateClipModalInitLoading />
+        <CreateClipModalEditor />
+        <CreateClipModalError />
+      </div>
     </Modal>
   );
 };

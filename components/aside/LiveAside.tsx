@@ -8,6 +8,7 @@ import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { getDefaultLiveStreamer, getFollowedStreamer } from "../../util/clippy";
 import { useRouter } from "next/router";
 import { useLoginModal } from "../../hooks/useLoginModal";
+import { useSiteInfoModal } from "../../hooks/useSiteInfoModal";
 
 interface LiveItemProps {
   item: ILiveStreamerInfo;
@@ -77,6 +78,7 @@ interface LivePropsWrapper {
 const Live = ({ data }: LivePropsWrapper) => {
   const { isClippyLogined } = useClippyLogin();
   const { openLoginModal } = useLoginModal();
+  const { openSiteInfoModal } = useSiteInfoModal();
   const router = useRouter();
 
   return (
@@ -111,6 +113,30 @@ const Live = ({ data }: LivePropsWrapper) => {
         >
           팔로우 중인 스트리머 모두 보기
         </Text>
+        <Text
+          align="center"
+          className="w-[80%] lg:w-full mx-auto break-keep cursor-pointer"
+          size={14}
+          weight={300}
+          mt={15}
+          underline
+          onClick={() => {
+            window.open("https://support.clippy.kr");
+          }}
+        >
+          고객센터 바로가기
+        </Text>
+        {/* <Text
+          align="center"
+          className="w-[80%] lg:w-full mx-auto break-keep cursor-pointer"
+          size={14}
+          weight={300}
+          mt={15}
+          underline
+          onClick={openSiteInfoModal}
+        >
+          사이트정보
+        </Text> */}
       </div>
     </Flex>
   );
@@ -118,7 +144,7 @@ const Live = ({ data }: LivePropsWrapper) => {
 
 export const Footer = () => {
   return (
-    <div className="pt-[50px] pb-20">
+    <div className="pt-[50px] pb-40">
       <Text
         className="w-[75%] lg:w-full mx-auto break-keep"
         size={14}
