@@ -10,7 +10,7 @@ module.exports = {
         text: "text 3s ease infinite",
         textSlow: "textSlow 8s ease infinite",
         fadeUp: "fadeUp 1s ease",
-        fadeIn: "fadeIn 1s ease",
+        fadeIn: "fadeIn .2s ease",
         fadeOut: "fadeOut 1s ease",
         drop: "drop 2s ease-in forwards",
         customSpin: "customSpin 1s linear infinite",

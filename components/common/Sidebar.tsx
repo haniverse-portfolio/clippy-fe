@@ -14,7 +14,7 @@ export const SidebarInner = () => {
       <Stack>
         <div className="p-[36px] h-[120px] bg-white sticky top-0 z-50 shadow-sm">
           <Group position="apart">
-            <Logo />
+            <Logo width="200px" />
             <X
               className="cursor-pointer"
               size={48}
