@@ -224,6 +224,13 @@ const CreateClipModalEditor: FC = () => {
             height="100%"
             playing
             controls
+            config={{
+              file: {
+                attributes: {
+                  controlsList: "nodownload",
+                },
+              },
+            }}
             onDuration={(duration: any) => {
               setVideoDuration(parseInt(duration));
               setClipRangeValue([60, parseInt(duration)]);
