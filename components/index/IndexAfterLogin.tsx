@@ -72,7 +72,7 @@ export function IndexAfterLogin() {
       });
     }
   };
-  
+
   return (
     <div>
       <Sidebar />
@@ -165,7 +165,7 @@ export function IndexAfterLogin() {
                   { maxWidth: 600, cols: 1, spacing: "sm" },
                 ]}
               >
-                {hotclip.map((clip: any) => {
+                {hotclip.map((clip) => {
                   return <VideoCard key={clip.id} clip={clip} />;
                 })}
               </SimpleGrid>
