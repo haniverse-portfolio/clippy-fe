@@ -211,35 +211,45 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
         getNotification(3, false);
       });
   };
+  
+  const getLogDestructor = (arg: string) => {
+    // object consists of number
+    return {
+      year: parseInt(arg.substring(0, 4)),
+      month: parseInt(arg.substring(5, 7)),
+      day: parseInt(arg.substring(8, 10)),
+      hour: parseInt(arg.substring(11, 13)),
+      minute: parseInt(arg.substring(14, 16)),
+      second: parseInt(arg.substring(17, 19)),
+    };
+  };
+
+  const getDateToUTC = (arg: Date) => {
+    // object consists of number
+    return {
+      year: arg.getUTCFullYear(),
+      month: arg.getUTCMonth() + 1,
+      day: arg.getUTCDate(),
+      hour: arg.getUTCHours(),
+      minute: arg.getUTCMinutes(),
+      second: arg.getUTCSeconds(),
+    };
+  };
 
   const getCommentDate = (
     updatedDate: string,
     createdDate: string,
     commentState: boolean
   ) => {
-    let prev = {
-      year: createdDate.substring(0, 4),
-      month: createdDate.substring(5, 7),
-      day: createdDate.substring(8, 10),
-      hour: createdDate.substring(11, 13),
-      minute: createdDate.substring(14, 16),
-      second: createdDate.substring(17, 19),
-    };
-    let cur = {
-      year: currentDate.getUTCFullYear(),
-      month: currentDate.getUTCMonth() + 1,
-      day: currentDate.getUTCDate(),
-      hour: currentDate.getUTCHours(),
-      minute: currentDate.getUTCMinutes(),
-      second: currentDate.getUTCSeconds(),
-    };
+    let prev = getLogDestructor(createdDate);
+    let cur = getDateToUTC(currentDate);
     let flag = [
-      cur.year - parseInt(prev.year),
-      cur.month - parseInt(prev.month),
-      cur.day - parseInt(prev.day),
-      cur.hour - parseInt(prev.hour),
-      cur.minute - parseInt(prev.minute),
-      cur.second - parseInt(prev.second),
+      cur.year - prev.year,
+      cur.month - prev.month,
+      cur.day - prev.day,
+      cur.hour - prev.hour,
+      cur.minute - prev.minute,
+      cur.second - prev.second,
     ];
     let stringSet = ["년", "달", "일", "시간", "분", "초"];
     let rt = "방금";
@@ -439,7 +449,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
           </Text>
         </Flex>
       </div>
-      <Grid mt={20}>
+      <Grid className="w-full" mt={20}>
         <Grid.Col span="content">
           <Avatar
             mt={10}
@@ -487,21 +497,20 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
           </Button>
         )}
         <Button
+          disabled={commentText.length === 0}
           leftIcon={<BrandTelegram />}
-          style={{
-            fontSize: 14,
-            borderRadius: 99,
-            backgroundColor: "black",
-            color: "white",
-            fontWeight: 700,
-          }}
+          color="dark"
+          radius="xl"
           h={40}
           onClick={() => {
             if (isClippyLogined === false) {
+              localStorage.setItem("redirect_url", window.location.href);
               setIsLoginModalOpen(true);
               return;
             }
-            if (commentText.length === 0) return;
+            if (commentText.length === 0) {
+              return;
+            }
             setEditMode(false);
             setCurrentCursor(0);
             postComments(router.query.clipId as string);
