@@ -19,48 +19,27 @@ import { apiAddress } from "../../components/constValues";
 import { Navbar } from "../../components/common/Navbar";
 import { Login } from "tabler-icons-react";
 import { useRouter } from "next/router";
-import {
-  common_searchText,
-  search_searchResult,
-} from "../../components/states";
+import { search_searchResult } from "../../components/states";
 import Link from "next/link";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
 import { Sidebar } from "../../components/common/Sidebar";
 import MainLayout from "../../components/common/MainLayout";
+import { getTwitchChannel } from "../../util/clippy";
 
 export default function Home() {
   const [searchResult, setSearchResult] = useRecoilState(search_searchResult);
-  const [searchText, setSearchText] = useRecoilState(common_searchText);
 
   const { isSm } = useTailwindResponsive();
   const searchHeaderDivRef = useRef<HTMLDivElement>(null);
 
   const router = useRouter();
-
-  const getTwitchChannel = async (routerSearchText: string) => {
-    const url = apiAddress + `/search/channel?q=${routerSearchText}`;
-
-    const res = await axios
-      .get(url, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      })
-      .then((res) => {
-        setSearchResult(res.data.data);
-        return res.data;
-      })
-      .catch((res) => {
-        const errMessage = res.response.data.message;
-
-        // error 표시해주기
-      });
-  };
+  const { keyword } = router.query;
 
   useEffect(() => {
-    getTwitchChannel(router.query.keyword as string);
-  }, [router.isReady]);
+    if (keyword) {
+      getTwitchChannel(keyword as string).then((res) => setSearchResult(res));
+    }
+  }, [keyword]);
 
   return (
     <div>
@@ -165,9 +144,6 @@ export default function Home() {
                           <Container>
                             <Link href={`/channel/${result.name}`}>
                               <Button
-                                onClick={() => {
-                                  setSearchText("");
-                                }}
                                 mt={40}
                                 mb={24}
                                 leftIcon={<Login size={20} />}

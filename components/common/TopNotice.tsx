@@ -116,7 +116,7 @@ export const TopNotice: FC = () => {
               left: 0 !important;
               top: 50% !important;
               transform: translateY(calc(-50% + 2px));
-              animation: notice-scroll 20s linear infinite;
+              animation: notice-scroll 10s linear infinite;
             }
             .clippy-notice-msg.scrollable::after {
               content: attr(data-notice-msg);
@@ -127,7 +127,7 @@ export const TopNotice: FC = () => {
                 transform: translate(0, calc(-50% + 2px));
               }
               to {
-                transform: translate(calc(-100% - 30px), calc(-50% + 2px));
+                transform: translate(calc(-50% - 15px), calc(-50% + 2px));
               }
             }
           `}</style>

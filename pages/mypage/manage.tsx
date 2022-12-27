@@ -33,7 +33,7 @@ export default function Home() {
       <main>
         <DeleteModal />
         <Navbar />
-        <div style={{ height: "calc(100vh - 120px)" }}>
+        <div style={{ height: "calc(100vh - 120px)", paddingBottom: "50px" }}>
           {sectionIndex === 0 ? <MypageMadeClip /> : <MypageChannelClip />}
         </div>
       </main>

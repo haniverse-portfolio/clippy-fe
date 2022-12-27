@@ -57,7 +57,7 @@ const ViewClip = ({
 }: ViewClipProps) => {
   // get parameter
   const router = useRouter();
-  const { clipId, creating }: any = router.query;
+  const { clipId, creating, start }: any = router.query;
 
   const [videoCreating, setVideoCreating] = useState<boolean>(
     creating === "true" || creating === true
@@ -162,15 +162,20 @@ const ViewClip = ({
                     responsive={true}
                   />
                 </div>
-                  <CloudflareVideo
-                    videoId={videoId}
-                    clipId={clipId}
-                    creating={videoCreating}
-                  />
-                  <div className="mt-[25px]">
-                    <VideoTitle data={videoData} />
-                  </div>
-                </ScrollArea>
+                <CloudflareVideo
+                  videoId={videoId}
+                  clipId={clipId}
+                  creating={videoCreating}
+                  autoPlay={true}
+                  startAt={
+                    start && (start as string).match(/^[0-9]+$/)
+                      ? parseInt(start as string)
+                      : 0
+                  }
+                />
+                <div className="mt-[25px]">
+                  <VideoTitle data={videoData} />
+                </div>
               </div>
               <div className="w-full md:w-[350px] h-full block overflow-hidden md:overflow-auto">
                 <Flex

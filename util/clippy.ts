@@ -105,7 +105,7 @@ export const checkStreamerIsLive = (
 
 /**
  * Clippy에 로그인한 사용자가 팔로우 중인 스트리머 정보를 요청하는 함수
- * @returns 팔로우 스트리머 정보 배열
+ * @returns 라이브중인 팔로우한 스트리머 정보 배열
  */
 export const getFollowedStreamer = (): Promise<ILiveStreamerInfo[]> => {
   return axios
@@ -121,12 +121,33 @@ export const getFollowedStreamer = (): Promise<ILiveStreamerInfo[]> => {
     });
 };
 
+/**
+ * 라이브중인 스트리머 정보를 요청하는 함수
+ * @returns 라이브중인 스트리머 정보 배열
+ */
 export const getDefaultLiveStreamer = (): Promise<ILiveStreamerInfo[]> => {
   return axios
     .get(`${apiAddress}/twitch/followed_streams/default`)
     .then((res) => res.data.data)
     .catch((err) => {
       console.error("cannot load default live streamer", err);
+      return [];
+    });
+};
+
+/**
+ * 채널 검색 입력값에 해당하는 Twitch 채널 목록을 요청하는 함수
+ * @param searchText 채널 검색 입력값
+ * @returns
+ */
+export const getTwitchChannel = (
+  searchText: string
+): Promise<ISearchChannelInfo[]> => {
+  return axios
+    .get(`${apiAddress}/search/channel?q=${encodeURIComponent(searchText)}`)
+    .then((res) => res.data.data)
+    .catch((err) => {
+      console.error("cannot load channel search data", err);
       return [];
     });
 };
