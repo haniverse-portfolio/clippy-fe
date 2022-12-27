@@ -340,11 +340,11 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
     }
   }, [data]);
 
-  useEffect(() => {
-    const clipId: string = router.query.clipId as string;
-    if (clipId === undefined) return;
-    getComments(clipId);
-  }, [router.isReady]);
+  const {clipId} = router.query;
+useEffect(() => {
+  if(!clipId) return;
+  getComments(clipId as string);
+}, [clipId]);
 
   return (
     <>
