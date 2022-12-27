@@ -476,7 +476,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
           />
         </Grid.Col>
       </Grid>
-      <Group mt={12} position="right">
+      <Group my={12} position="right">
         {commentText.length === 0 ? (
           <></>
         ) : (
@@ -519,9 +519,6 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
           게시
         </Button>
       </Group>
-
-      <Divider mt={12} mb={16} size="xs" />
-
       {comments.map((cur, i: number) => {
         return (
           <Flex
