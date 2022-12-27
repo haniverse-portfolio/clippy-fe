@@ -11,6 +11,8 @@ import * as gtag from "../lib/gtag";
 import Script from "next/script";
 import { LoginModal } from "../components/common/LoginModal";
 import { SiteInfoModal } from "../components/common/SiteInfoModal";
+import NextNProgress from "nextjs-progressbar";
+
 // import * as dotenv from "dotenv";
 // dotenv.config();
 
@@ -99,6 +101,7 @@ export default function App({ Component, pageProps }: AppProps) {
           theme={{ fontFamily: "Noto Sans KR" }}
         >
           <NotificationsProvider>
+            <NextNProgress color="#A854F7" options={{ showSpinner: false }} />
             <LoginModal />
             <SiteInfoModal />
             <Component {...pageProps} />
