@@ -18,6 +18,8 @@ import {
   ArrowBackUp,
   Ban,
   BrandTelegram,
+  ChevronDown,
+  ChevronUp,
   Edit,
   Heart,
   Trash,
@@ -72,6 +74,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
   const [actionType, setActionType] = useRecoilState(view_actionType);
   const [axiosProgressed, setAxiosProgressed] =
     useRecoilState<boolean>(view_axiosProgressed);
+  const [commentIsFolded, setCommentIsFolded] = useState<boolean>(true);
   const { loginedClippyUserInfo, goClippyLogout } = useClippyLogin();
   interface commentsUserType {
     id: string;
@@ -519,6 +522,28 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
           게시
         </Button>
       </Group>
+      <Divider
+        my="xs"
+        label={
+          <Button
+            leftIcon={
+              commentIsFolded === true ? <ChevronUp /> : <ChevronDown />
+            }
+            color="dark"
+            variant="outline"
+            radius="xl"
+            h={40}
+            onClick={() => {
+              setCommentIsFolded(!commentIsFolded);
+            }}
+          >
+            {commentIsFolded === true ? "댓글 접기" : "댓글 펼치기"}
+          </Button>
+        }
+        labelPosition="center"
+      />
+      {commentIsFolded === true ? (
+        <>
       {comments.map((cur, i: number) => {
         return (
           <Flex
@@ -695,7 +720,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
             )}
           </Flex>
         );
-      })}
+      })}</>):(<></>)}
       <Stack mb={20} />
     </>
   );
