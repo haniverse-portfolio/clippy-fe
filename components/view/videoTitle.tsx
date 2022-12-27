@@ -522,6 +522,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
           게시
         </Button>
       </Group>
+      {comments.length !== 0 ? (
       <Divider
         my="xs"
         label={
@@ -542,6 +543,11 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
         }
         labelPosition="center"
       />
+      ) : (
+        <Text mt={12} align="center" size={16} weight={300} ml={8}>
+          댓글을 작성하고 첫번째 댓글의 주인공이 돼보세요!
+        </Text>
+      )}
       {commentIsFolded === true ? (
         <>
       {comments.map((cur, i: number) => {
