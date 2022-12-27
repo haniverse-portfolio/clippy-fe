@@ -11,6 +11,7 @@ import * as gtag from "../lib/gtag";
 import Script from "next/script";
 import { LoginModal } from "../components/common/LoginModal";
 import { SiteInfoModal } from "../components/common/SiteInfoModal";
+import { ExtInstallCTABanner } from "../components/common/ExtInstallCTABanner";
 // import * as dotenv from "dotenv";
 // dotenv.config();
 
@@ -101,6 +102,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <NotificationsProvider>
             <LoginModal />
             <SiteInfoModal />
+            <ExtInstallCTABanner />
             <Component {...pageProps} />
           </NotificationsProvider>
         </MantineProvider>
