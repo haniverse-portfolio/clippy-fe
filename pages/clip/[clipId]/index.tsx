@@ -176,6 +176,7 @@ const ViewClip = ({
                 <div className="mt-[25px]">
                   <VideoTitle data={videoData} />
                 </div>
+                </ScrollArea>
               </div>
               <div className="w-full md:w-[350px] h-full block overflow-hidden md:overflow-auto">
                 <Flex
