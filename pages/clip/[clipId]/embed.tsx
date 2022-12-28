@@ -7,7 +7,7 @@ import { getClip } from "../../../util/clippy";
 
 const ViewClipEmbed: FC = () => {
   const router = useRouter();
-  const { clipId, creating }: any = router.query;
+  const { clipId }: any = router.query;
 
   const [videoWidth, setVideoWidth] = useState("100%");
   const [videoId, setVideoId] = useState("");
@@ -48,6 +48,7 @@ const ViewClipEmbed: FC = () => {
     if (clipId) {
       getClip(clipId).then((res) => {
         if (res) {
+          console.log(res);
           setVideoId(res.cfVideoId);
           setVideoTitle(res.title);
         } else {
@@ -78,14 +79,16 @@ const ViewClipEmbed: FC = () => {
               width: videoWidth,
             }}
           >
-            <CloudflareVideo
-              videoId={videoId}
-              clipId={clipId}
-              videoPlayState={videoPlayState}
-              autoPlay={videoAutoPlay}
-              muted={videoMuted}
-              startAt={videoStartAt}
-            />
+            {clipId && (
+              <CloudflareVideo
+                videoId={videoId}
+                clipId={clipId}
+                videoPlayState={videoPlayState}
+                autoPlay={videoAutoPlay}
+                muted={videoMuted}
+                startAt={videoStartAt}
+              />
+            )}
             {!isVideoPlay && (
               <>
                 <div className="screen-saver absolute top-0 left-0 w-full h-full bg-black pointer-events-none"></div>
