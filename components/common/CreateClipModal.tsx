@@ -306,7 +306,7 @@ export const CreateClipModal: FC = () => {
       opened={isCreateClipModalOpen}
       onClose={closeCreateClipModal}
     >
-      <div className="h-[600px]">
+      <div className="h-[650px]">
         <CreateClipModalInitLoading />
         <CreateClipModalEditor />
         <CreateClipModalError />

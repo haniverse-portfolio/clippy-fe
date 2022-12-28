@@ -1,4 +1,4 @@
-import { Avatar, Flex, Text } from "@mantine/core";
+import { Avatar, Flex, Loader, Text } from "@mantine/core";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
@@ -58,7 +58,7 @@ const LiveItem = ({ item }: LiveItemProps) => {
                   item.profile_image_url
                 );
               }
-            : openLoginModal
+            : () => openLoginModal()
         }
       >
         <Clip
@@ -72,13 +72,13 @@ const LiveItem = ({ item }: LiveItemProps) => {
 };
 
 interface LivePropsWrapper {
-  data: ILiveStreamerInfo[];
+  data: ILiveStreamerInfo[] | null;
 }
 
 const Live = ({ data }: LivePropsWrapper) => {
   const { isClippyLogined } = useClippyLogin();
   const { openLoginModal } = useLoginModal();
-  const { openSiteInfoModal } = useSiteInfoModal();
+  // const { openSiteInfoModal } = useSiteInfoModal(); // 사이트 정보 모달 hook
   const router = useRouter();
 
   return (
@@ -94,9 +94,16 @@ const Live = ({ data }: LivePropsWrapper) => {
           어떤 스트리머의 클립을 만들까요?
         </Text>
         <Flex direction="column">
-          {data.map((item) => (
-            <LiveItem key={item.id} item={item} />
-          ))}
+          {data === null ? (
+            <div className="w-full h-[200px] flex flex-col justify-center items-center gap-4">
+              <Loader color="violet" />
+              <div>로딩중</div>
+            </div>
+          ) : (
+            data
+              .filter((_, idx) => idx < 8)
+              .map((item) => <LiveItem key={item.id} item={item} />)
+          )}
         </Flex>
         <Text
           align="center"
@@ -108,7 +115,7 @@ const Live = ({ data }: LivePropsWrapper) => {
           onClick={
             isClippyLogined
               ? () => router.push("/mypage/create")
-              : openLoginModal
+              : () => openLoginModal()
           }
         >
           팔로우 중인 스트리머 모두 보기
@@ -179,24 +186,30 @@ const itemMock = [
 
 const LiveAside = () => {
   const { checkClipyLogin } = useClippyLogin();
-  const [followed, setFollowed] = useState<ILiveStreamerInfo[]>([]);
+  const [liveStreamer, setLiveStreamer] = useState<ILiveStreamerInfo[] | null>(
+    null
+  );
 
   useEffect(() => {
     checkClipyLogin().then((isLogined) => {
       if (isLogined)
         getFollowedStreamer().then((res) => {
-          setFollowed(res);
+          if (res.length > 0) setLiveStreamer(res);
+          else
+            getDefaultLiveStreamer().then((res) => {
+              setLiveStreamer(res);
+            });
         });
       else
         getDefaultLiveStreamer().then((res) => {
-          setFollowed(res);
+          setLiveStreamer(res);
         });
     });
   }, []);
 
   return (
     <Flex direction="column" align="center" h="100%" justify="space-between">
-      <Live data={followed.filter((itm, idx) => idx < 8)} />
+      <Live data={liveStreamer} />
       <Footer />
     </Flex>
   );

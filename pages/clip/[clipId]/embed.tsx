@@ -18,9 +18,6 @@ const ViewClipEmbed: FC = () => {
   const videoPlayState = useState(false);
   const [isVideoPlay] = videoPlayState;
   const [isError, setIsError] = useState(false);
-  const [videoCreating, setVideoCreating] = useState<boolean>(
-    creating === "true" || creating === true
-  );
   const wrapDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -84,7 +81,6 @@ const ViewClipEmbed: FC = () => {
             <CloudflareVideo
               videoId={videoId}
               clipId={clipId}
-              creating={videoCreating}
               videoPlayState={videoPlayState}
               autoPlay={videoAutoPlay}
               muted={videoMuted}

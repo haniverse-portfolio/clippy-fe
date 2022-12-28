@@ -18,10 +18,18 @@ import * as util from "../../util/util";
 import { apiAddress } from "../constValues";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { useLoginModal } from "../../hooks/useLoginModal";
+import { IndenterminateProgressBar } from "./IndenterminateProgressBar";
 
-const VideoCard = ({ clip }: any) => {
+interface VideoCardProps {
+  clip: IClipInfo;
+  mode?: "horizontal" | "vertical";
+}
+
+const VideoCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
   const router = useRouter();
   const [isLike, setIsLike] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
+  const [thumbnailSrc, setThumbnailSrc] = useState(clip.cfVideoThumbnail);
 
   const { isClippyLogined } = useClippyLogin();
   const { openLoginModal } = useLoginModal();
@@ -65,115 +73,134 @@ const VideoCard = ({ clip }: any) => {
   }, []);
 
   return (
-    <Card p={0} m={0} key={clip.id}>
-      <Flex justify="center" direction="column">
-        <div style={{ position: "relative" }}>
-          <div
+    <div
+      className="relative w-full p-0 m-0 flex justify-start items-center gap-2 cursor-pointer"
+      key={clip.id}
+      style={{ flexDirection: mode === "horizontal" ? "row" : "column" }}
+      onClick={() => {
+        router.push(`/clip/${clip.key}`);
+      }}
+      onMouseEnter={() => {
+        const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
+          clip.cfVideoId
+        }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
+        setThumbnailSrc(animatedThumbnail);
+        setIsImageLoading(true);
+      }}
+      onMouseLeave={() => {
+        setThumbnailSrc(clip.cfVideoThumbnail);
+        setIsImageLoading(false);
+      }}
+    >
+      <AspectRatio
+        ratio={239 / 134.438}
+        className="bg-gray-200 rounded-md"
+        style={{
+          width: mode === "horizontal" ? "50%" : "100%",
+          minWidth: "140px",
+          maxWidth: mode === "horizontal" ? "200px" : "400px",
+        }}
+      >
+        <Image
+          className="rounded-md"
+          src={thumbnailSrc}
+          alt="clip"
+          onLoad={() => {
+            setIsImageLoading(false);
+          }}
+          onError={() => {
+            setIsImageLoading(false);
+          }}
+          radius={8}
+        />
+        {isImageLoading && (
+          <IndenterminateProgressBar
+            position="relative"
+            className="mt-[-8px]"
+          />
+        )}
+      </AspectRatio>
+      {mode === "vertical" && (
+        <div className="absolute flex justify-center items-center top-[12px] right-[12px] h-[34px] px-[16px] bg-[rgba(0,0,0,0.5)] rounded-full">
+          <FontAwesomeIcon
+            icon={solid("eye")}
             style={{
-              position: "absolute",
-              top: 12,
-              right: 12,
-              height: 34,
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              zIndex: 1,
-              borderRadius: 99,
-            }}
-          >
-            <Flex h={34} align="center" px={16}>
-              <FontAwesomeIcon
-                icon={solid("eye")}
-                style={{
-                  width: 14,
-                  height: 12,
-                  color: "white",
-                  marginRight: 4,
-                }}
-              />
-              <Text size={12} weight={700} color="white">
-                {Intl.NumberFormat("ko-KR").format(clip.viewCount)}
-              </Text>
-            </Flex>
-          </div>
-        </div>
-        <AspectRatio ratio={239 / 134.438} className="bg-gray-200 rounded-md">
-          <Image
-            className="cursor-pointer rounded-md w-full"
-            src={clip.cfVideoThumbnail}
-            alt="clip"
-            onClick={() => {
-              router.push(`/clip/${clip.key}`);
-            }}
-            onMouseOver={(e: any) => {
-              // change thumbnail src to thumbnail gif
-              const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
-                clip.cfVideoId
-              }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
-              e.target.src = animatedThumbnail;
-            }}
-            radius={8}
-            onMouseLeave={(e: any) => {
-              // change thumbnail src to thumbnail jpg
-              e.target.src = clip.cfVideoThumbnail;
+              width: 14,
+              height: 12,
+              color: "white",
+              marginRight: 4,
             }}
           />
-        </AspectRatio>
-        <Group position="apart">
-          <Stack spacing={0} style={{ width: "calc(100% - 100px)" }}>
-            <Text
-              size={16}
-              weight={700}
-              mt={5}
-              align="left"
-              onClick={() => {
-                router.push(`/clip/${clip.key}`);
-              }}
+          <Text size={12} weight={700} color="white">
+            {Intl.NumberFormat("ko-KR").format(clip.viewCount)}
+          </Text>
+        </div>
+      )}
+      <div
+        className="h-full flex flex-col items-start"
+        style={{
+          width: mode === "horizontal" ? "50%" : "100%",
+          justifyContent:
+            mode === "horizontal" ? "space-between" : "flex-start",
+        }}
+      >
+        <div
+          className={`w-[calc(100%-10px)] text-[16px] font-bold break-all mb-2 hover:underline ${
+            mode === "horizontal"
+              ? "whitespace-nowrap text-ellipsis overflow-hidden"
+              : "line-clamp-2"
+          }`}
+        >
+          {clip.title}
+        </div>
+        <div className="w-full flex justify-between items-center text-[14px]">
+          <div
+            className="h-full"
+            style={{
+              width: mode === "horizontal" ? "100%" : "calc(100% - 4em)",
+            }}
+          >
+            <div
+              className="whitespace-nowrap overflow-hidden text-ellipsis mb-1 hover:underline"
               style={{
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-                maxWidth: 280,
-                cursor: "pointer",
+                width: mode === "horizontal" ? "100%" : "calc(100% - 1em)",
               }}
-            >
-              {clip.title}
-            </Text>
-            <Text
-              mt={5}
-              align="left"
-              size={14}
-              weight={400}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 router.push(`/channel/${clip.userInfo.login}`);
-              }}
-              style={{
-                cursor: "pointer",
               }}
             >
               {clip.userInfo.display_name}
-            </Text>
-            <Text mt={5} align="left" size={14}>
+            </div>
+            <div>
               <strong>반응 {clip.commentCount + clip.likeCount} • </strong>
               {util.showTime(clip.createdAt)}
-            </Text>
-          </Stack>
-          <div style={{ marginLeft: 24, marginRight: 24 }}>
-            <ActionIcon
-              variant="transparent"
-              size={36}
-              className="duration-100"
-              style={isLike ? { color: "#000000" } : {}}
-              onClick={isClippyLogined ? toggleLike : openLoginModal}
-            >
-              <Heart
+            </div>
+          </div>
+          {mode === "vertical" && (
+            <div className="w-[4em] h-full relative top-[-8px]">
+              <ActionIcon
+                variant="transparent"
                 size={36}
                 className="duration-100"
-                style={isLike ? { fill: "#000000" } : { fill: "#ffffff" }}
-              />
-            </ActionIcon>
-          </div>
-        </Group>
-      </Flex>
-    </Card>
+                style={isLike ? { color: "#000000" } : {}}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isClippyLogined) toggleLike();
+                  else openLoginModal();
+                }}
+              >
+                <Heart
+                  size={36}
+                  className="duration-100"
+                  style={isLike ? { fill: "#000000" } : { fill: "#ffffff" }}
+                />
+              </ActionIcon>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 

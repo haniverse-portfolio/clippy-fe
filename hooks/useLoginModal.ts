@@ -8,10 +8,11 @@ export const useLoginModal = () => {
     common_loginModal_isOpen
   );
 
-  const openLoginModal = () => {
+  const openLoginModal = (redirectURL?: string) => {
     if (!isLoginModalOpen) {
       checkClipyLogin().then((res) => {
         if (!res) {
+          if (redirectURL) localStorage.setItem("redirect_url", redirectURL);
           setIsLoginModalOpen(true);
         }
       });
@@ -19,6 +20,7 @@ export const useLoginModal = () => {
   };
 
   const closeLoginModal = () => {
+    localStorage.removeItem("redirect_url");
     setIsLoginModalOpen(false);
   };
 

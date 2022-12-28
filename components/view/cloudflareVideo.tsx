@@ -7,7 +7,6 @@ import { apiAddress } from "../constValues";
 interface CloudflareVideoProps {
   videoId: string;
   clipId: string;
-  creating: boolean;
   videoPlayState?: [boolean, Dispatch<SetStateAction<boolean>>];
   autoPlay?: boolean;
   muted?: boolean;
@@ -17,7 +16,6 @@ interface CloudflareVideoProps {
 export const CloudflareVideo = ({
   videoId,
   clipId,
-  creating,
   videoPlayState,
   autoPlay,
   muted,
@@ -29,18 +27,20 @@ export const CloudflareVideo = ({
     state: "queued",
   });
 
-  const [videoCreating, setVideoCreating] = useState<boolean>(creating);
+  const [isVideoReady, setIsVideoReady] = useState<boolean | null>(null);
 
-  const checkStatus = async () => {
-    const res = await axios
+  const checkStatus = () => {
+    axios
       .get(`${apiAddress}/clip/${clipId}/status`)
       .then((res) => {
         const status = res.data.data.result.status;
         setVideoStatus(status);
 
         if (status.state === "ready") {
-          setVideoCreating(false);
+          setIsVideoReady(true);
           setIsLoaded(true);
+        } else {
+          setIsVideoReady(false);
         }
       })
       .catch((err) => {
@@ -49,99 +49,107 @@ export const CloudflareVideo = ({
   };
 
   useEffect(() => {
-    if (!videoCreating) return;
+    checkStatus();
+  }, []);
 
-    const interval: any = setInterval(() => checkStatus(), 1000);
+  useEffect(() => {
+    if (isVideoReady) return;
+
+    const interval = setInterval(() => checkStatus(), 1000);
 
     return () => clearInterval(interval);
-  }, [videoCreating]);
+  }, [isVideoReady]);
 
   return (
     <div style={{ width: "100%", height: "max-content" }}>
       {videoId !== "" ? (
-        videoCreating ? (
-          <div style={{ height: "max-content" }}>
-            <AspectRatio ratio={528 / 297} className="bg-gray-200">
-              <Flex
-                align="center"
-                direction="column"
-                justify="space-evenly"
-                h="100%"
-              >
-                <Loader size="lg" />
-                <Flex align="center" direction="column">
-                  <Text mb={10}>
-                    현재 영상 처리 중입니다. 조금만 더 기다려주세요
-                  </Text>
-                  <Text>
-                    처리 상황 :{" "}
-                    {videoStatus.state === "queued"
-                      ? "대기 중"
-                      : videoStatus.state === "inprogress"
-                      ? `기본화질 인코딩 중 (${parseInt(
-                          videoStatus.pctComplete
-                        )}%)`
-                      : videoStatus.state === "ready"
-                      ? `고화질 인코딩 중 (${parseInt(
-                          videoStatus.pctComplete
-                        )}%)`
-                      : "처리 완료"}
-                  </Text>
+        <>
+          {isVideoReady === false && (
+            <div style={{ height: "max-content" }}>
+              <AspectRatio ratio={528 / 297} className="bg-gray-200">
+                <Flex
+                  align="center"
+                  direction="column"
+                  justify="space-evenly"
+                  gap={4}
+                  h="100%"
+                >
+                  <Loader size="lg" color="violet" />
+                  <Flex align="center" direction="column">
+                    <Text mb={10}>
+                      현재 영상 처리 중입니다. 조금만 더 기다려주세요
+                    </Text>
+                    <Text>
+                      처리 상황 :{" "}
+                      {videoStatus.state === "queued"
+                        ? "대기 중"
+                        : videoStatus.state === "inprogress"
+                        ? `기본화질 인코딩 중 (${parseInt(
+                            videoStatus.pctComplete
+                          )}%)`
+                        : videoStatus.state === "ready"
+                        ? `고화질 인코딩 중 (${parseInt(
+                            videoStatus.pctComplete
+                          )}%)`
+                        : "처리 완료"}
+                    </Text>
+                  </Flex>
                 </Flex>
-              </Flex>
-            </AspectRatio>
-          </div>
-        ) : (
-          <div style={{ height: "max-content" }}>
-            {isLoaded || (
-              <AspectRatio
-                ratio={528 / 297}
-                className="bg-gray-200"
-              ></AspectRatio>
-            )}
+              </AspectRatio>
+            </div>
+          )}
+          {isVideoReady === true && (
+            <div style={{ height: "max-content" }}>
+              {isLoaded || (
+                <AspectRatio
+                  ratio={528 / 297}
+                  className="bg-gray-200"
+                ></AspectRatio>
+              )}
 
-            <Stream
-              src={videoId}
-              controls={true}
-              responsive={true}
-              autoplay={autoPlay}
-              muted={muted}
-              startTime={startAt}
-              onLoadStart={() => {
-                setIsLoaded(true);
-                setOnPlay(false);
-              }}
-              onPause={() => {
-                if (videoPlayState) {
-                  const [_, setIsVideoPlay] = videoPlayState;
-                  setIsVideoPlay(false);
-                }
-              }}
-              onPlaying={() => {
-                if (videoPlayState) {
-                  const [_, setIsVideoPlay] = videoPlayState;
-                  setIsVideoPlay(true);
-                }
-              }}
-              onPlay={async () => {
-                if (onPlay) return;
-                await axios
-                  .post(
-                    `${apiAddress}/analytics/view`,
-                    {
-                      id: clipId,
-                    },
-                    {
-                      withCredentials: true,
-                    }
-                  )
-                  .then(() => {
-                    setOnPlay(true);
-                  });
-              }}
-            ></Stream>
-          </div>
-        )
+              <Stream
+                src={videoId}
+                controls={true}
+                responsive={true}
+                autoplay={autoPlay}
+                muted={muted}
+                startTime={startAt}
+                onLoadStart={() => {
+                  setIsLoaded(true);
+                  setOnPlay(false);
+                }}
+                onPause={() => {
+                  if (videoPlayState) {
+                    const [_, setIsVideoPlay] = videoPlayState;
+                    setIsVideoPlay(false);
+                  }
+                }}
+                onPlaying={() => {
+                  if (videoPlayState) {
+                    const [_, setIsVideoPlay] = videoPlayState;
+                    setIsVideoPlay(true);
+                  }
+                }}
+                onPlay={async () => {
+                  if (onPlay) return;
+                  await axios
+                    .post(
+                      `${apiAddress}/analytics/view`,
+                      {
+                        id: clipId,
+                      },
+                      {
+                        withCredentials: true,
+                      }
+                    )
+                    .then(() => {
+                      setOnPlay(true);
+                    });
+                }}
+              ></Stream>
+            </div>
+          )}
+        </>
       ) : (
         <AspectRatio ratio={528 / 297} className="bg-gray-200"></AspectRatio>
       )}
