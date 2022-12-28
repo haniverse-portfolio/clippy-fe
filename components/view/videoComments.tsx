@@ -256,8 +256,7 @@ const VideoComments = () => {
           h={40}
           onClick={() => {
             if (isClippyLogined === false) {
-              localStorage.setItem("redirect_url", window.location.href);
-              openLoginModal();
+              openLoginModal(window.location.href);
               return;
             }
             if (commentText.length === 0) {

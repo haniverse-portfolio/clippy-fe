@@ -58,7 +58,7 @@ const LiveItem = ({ item }: LiveItemProps) => {
                   item.profile_image_url
                 );
               }
-            : openLoginModal
+            : () => openLoginModal()
         }
       >
         <Clip
@@ -115,7 +115,7 @@ const Live = ({ data }: LivePropsWrapper) => {
           onClick={
             isClippyLogined
               ? () => router.push("/mypage/create")
-              : openLoginModal
+              : () => openLoginModal()
           }
         >
           팔로우 중인 스트리머 모두 보기

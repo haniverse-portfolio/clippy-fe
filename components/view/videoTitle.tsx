@@ -176,7 +176,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
               mx={20}
               className="duration-100"
               style={isLike ? { color: "#000000" } : {}}
-              onClick={isClippyLogined ? toggleLike : openLoginModal}
+              onClick={isClippyLogined ? toggleLike : () => openLoginModal()}
             >
               <Heart
                 size={36}
