@@ -24,29 +24,31 @@ export const ExtInstallCTABanner = () => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      const userAgent = window.navigator.userAgent;
-      const isChrome = !!userAgent.match(/Chrome/i);
-      const isDesktop = !userAgent.match(/(iPhone|iPad|iPod|Android)/i);
-      const isInstalled =
-        document.documentElement.getAttribute("extension-installed") !== null;
+    if (!window.location.href.match(/embed/gi)) {
+      setTimeout(() => {
+        const userAgent = window.navigator.userAgent;
+        const isChrome = !!userAgent.match(/Chrome/i);
+        const isDesktop = !userAgent.match(/(iPhone|iPad|iPod|Android)/i);
+        const isInstalled =
+          document.documentElement.getAttribute("extension-installed") !== null;
 
-      const extInstCTABannerBlockDate = localStorage.getItem(
-        "ext-inst-cta-banner-block-date"
-      );
-      if (
-        (extInstCTABannerBlockDate &&
-          new Date(extInstCTABannerBlockDate).getDate() ===
-            new Date().getDate()) ||
-        !isChrome ||
-        !isDesktop ||
-        isInstalled
-      ) {
-        setIsOpen(false);
-      } else {
-        setIsOpen(true);
-      }
-    }, 3000);
+        const extInstCTABannerBlockDate = localStorage.getItem(
+          "ext-inst-cta-banner-block-date"
+        );
+        if (
+          (extInstCTABannerBlockDate &&
+            new Date(extInstCTABannerBlockDate).getDate() ===
+              new Date().getDate()) ||
+          !isChrome ||
+          !isDesktop ||
+          isInstalled
+        ) {
+          setIsOpen(false);
+        } else {
+          setIsOpen(true);
+        }
+      }, 3000);
+    }
   }, []);
 
   return (
