@@ -132,9 +132,9 @@ interface ILiveVideoInfo {
 }
 
 /**
- * 내가 만든 클립 정보
+ * 마이페이지 클립 정보
  */
-interface mypage_clipType {
+interface IMypageClip {
   info: string;
   clipId: string;
   thumbnail: string;
@@ -153,4 +153,18 @@ interface ISearchChannelInfo {
   logo: string;
   name: string;
   url: string;
+}
+
+/**
+ * 댓글 정보 Interface
+ */
+interface IComments {
+  commentId: number;
+  clipId: string;
+  comment: string;
+  userId: number;
+  isBlocked: boolean;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

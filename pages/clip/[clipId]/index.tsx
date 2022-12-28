@@ -1,4 +1,4 @@
-import { Container, Flex, SimpleGrid } from "@mantine/core";
+import { Button, Container, Flex, SimpleGrid } from "@mantine/core";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Navbar } from "../../../components/common/Navbar";
@@ -10,9 +10,15 @@ import VideoTitle from "../../../components/view/videoTitle";
 import { useTailwindResponsive } from "../../../hooks/useTailwindResponsive";
 import Head from "next/head";
 import { ShareClipModal } from "../../../components/common/ShareClipModal";
-import { getClip, getHotclip } from "../../../util/clippy";
+import {
+  getClip,
+  getHotclip,
+  getStreamerClips,
+  getTwitchUserInfoById,
+} from "../../../util/clippy";
 import GoogleAdsense from "../../../components/common/GoogleAdsense";
 import { GetServerSideProps } from "next";
+import VideoComments from "../../../components/view/videoComments";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (params?.clipId) {
@@ -55,31 +61,47 @@ const ViewClip = ({
   ogImageURL,
   ogDescription,
 }: ViewClipProps) => {
-  // get parameter
-  const router = useRouter();
-  const { clipId, creating, start }: any = router.query;
+  type TSideClipMenu = "hotclip" | "streamer";
 
-  const [videoCreating, setVideoCreating] = useState<boolean>(
-    creating === "true" || creating === true
-  );
   const [videoId, setVideoId] = useState<string>("");
   const [videoTitle, setVideoTitle] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
-  const [videoData, setVideoData] = useState<any>({});
+  const [videoData, setVideoData] = useState<IClipInfo | null>(null);
+  const [selectedSideClipMenu, setSelectedSideClipMenu] =
+    useState<TSideClipMenu>("hotclip");
+  const [hotClip, setHotClip] = useState<IClipInfo[]>([]);
+  const [streamerClip, setStreamerClip] = useState<IClipInfo[]>([]);
+  const [streamerName, setStreamerName] = useState("");
 
-  const { isSm } = useTailwindResponsive();
+  const router = useRouter();
+  const { clipId, start }: any = router.query;
+  const { isSm, isMd } = useTailwindResponsive();
   const scrollDivRef = useRef<HTMLDivElement>(null);
-  const [hotclip, setHotclip] = useState<IClipInfo[]>([]);
+  const sideClipMenuMap: Record<TSideClipMenu, IClipInfo[]> = {
+    hotclip: hotClip,
+    streamer: streamerClip,
+  };
 
   useEffect(() => {
     if (clipId) {
-      if (scrollDivRef && scrollDivRef.current && isSm)
+      if (scrollDivRef && scrollDivRef.current && (isSm || isMd))
         scrollDivRef.current.scrollTo({ top: 0, behavior: "smooth" });
       getClip(clipId).then((res) => {
         if (res) {
           setVideoData(res);
           setVideoId(res.cfVideoId);
           setVideoTitle(res.title);
+
+          getStreamerClips(res.targetUserId.toString()).then((res) => {
+            setStreamerClip(res);
+          });
+          getTwitchUserInfoById(res.targetUserId).then((res) => {
+            if (res) {
+              setStreamerName(res.display_name);
+            }
+          });
+        } else {
+          setIsError(true);
         }
       });
     }
@@ -87,7 +109,7 @@ const ViewClip = ({
 
   useEffect(() => {
     getHotclip().then((res) => {
-      setHotclip(res);
+      setHotClip(res);
     });
   }, []);
 
@@ -127,30 +149,30 @@ const ViewClip = ({
         ) : (
           <div
             ref={scrollDivRef}
-            className="relative top-0 left-0 w-full block overflow-auto md:overflow-hidden"
+            className="relative top-0 left-0 w-full block overflow-auto lg:overflow-hidden"
             style={{ height: "calc(100vh - 120px)" }}
           >
             <Flex
-              direction={isSm ? "column" : "row"}
+              direction={isSm || isMd ? "column" : "row"}
               justify="center"
               align="center"
               wrap="nowrap"
-              className="w-full h-max md:h-[100%] relative md:absolute top-0 left-0"
+              className="w-full h-max lg:h-[100%] relative lg:absolute top-0 left-0"
             >
               <div
-                className="w-full block"
+                className="w-full block overflow-hidden"
                 style={{
-                  height: isSm ? "max-content" : "calc(100vh - 150px)",
+                  height: isSm || isMd ? "max-content" : "calc(100vh - 150px)",
                   padding: "20px 20px 0 20px",
                   marginTop: "-30px",
-                  overflowY: isSm ? "hidden" : "auto",
+                  overflowY: isSm || isMd ? "hidden" : "auto",
                 }}
               >
                 <div
                   className="h-[120px] mb-5 relative top-0 max-h-[120px]"
                   style={{
-                    width: isSm ? "calc(100% + 50px)" : "100%",
-                    left: isSm ? "-25px" : "0",
+                    width: isSm || isMd ? "calc(100% + 50px)" : "100%",
+                    left: isSm || isMd ? "-25px" : "0",
                   }}
                 >
                   <GoogleAdsense
@@ -164,7 +186,6 @@ const ViewClip = ({
                 <CloudflareVideo
                   videoId={videoId}
                   clipId={clipId}
-                  creating={videoCreating}
                   autoPlay={true}
                   startAt={
                     start && (start as string).match(/^[0-9]+$/)
@@ -174,21 +195,52 @@ const ViewClip = ({
                 />
                 <div className="mt-[25px]">
                   <VideoTitle data={videoData} />
+                  <VideoComments />
                 </div>
               </div>
-              <div className="w-full md:w-[350px] h-full block overflow-hidden md:overflow-auto">
-                <Flex
-                  direction={"column"}
-                  justify="flex-start"
-                  align="center"
-                  className="w-full max-w-[700px] h-max mx-auto p-5 pb-20"
-                >
-                  <SimpleGrid w={"full"} cols={1} spacing={24}>
-                    {hotclip.map((clip: any) => {
-                      return <VideoCard key={clip.id} clip={clip} />;
-                    })}
-                  </SimpleGrid>
-                </Flex>
+              <div className="w-full lg:min-w-[350px] lg:max-w-[350px] h-full block lg:border-l-[1px] lg:border-gray-200">
+                <div className="w-full h-[80px] px-5 flex justify-start items-center gap-2 overflow-y-hidden overflow-x-auto">
+                  <Button
+                    color="dark"
+                    variant={
+                      selectedSideClipMenu === "hotclip" ? "filled" : "outline"
+                    }
+                    radius={99999}
+                    onClick={() => setSelectedSideClipMenu("hotclip")}
+                  >
+                    Hot Clip
+                  </Button>
+                  <Button
+                    color="dark"
+                    variant={
+                      selectedSideClipMenu === "streamer" ? "filled" : "outline"
+                    }
+                    radius={99999}
+                    onClick={() => setSelectedSideClipMenu("streamer")}
+                  >
+                    {streamerName} Clip
+                  </Button>
+                </div>
+                <div className="w-full h-[calc(100%-60px)] block overflow-hidden lg:overflow-auto">
+                  <Flex
+                    direction={"column"}
+                    justify="flex-start"
+                    align="center"
+                    className="w-full h-max mx-auto pl-5 pb-20"
+                  >
+                    <SimpleGrid className="w-full" cols={1} spacing={14}>
+                      {sideClipMenuMap[selectedSideClipMenu].map((clip) => {
+                        return (
+                          <VideoCard
+                            mode="horizontal"
+                            key={clip.id}
+                            clip={clip}
+                          />
+                        );
+                      })}
+                    </SimpleGrid>
+                  </Flex>
+                </div>
               </div>
             </Flex>
           </div>

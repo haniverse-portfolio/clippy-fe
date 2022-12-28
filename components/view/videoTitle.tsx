@@ -1,5 +1,4 @@
-import { ActionIcon, Alert, Avatar, Button, Flex, Text } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons";
+import { ActionIcon, Avatar, Button, Flex, Text } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Heart } from "tabler-icons-react";
@@ -11,7 +10,7 @@ import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { useLoginModal } from "../../hooks/useLoginModal";
 
 interface VideoTitleProps {
-  data: IClipInfo;
+  data: IClipInfo | null;
 }
 
 const VideoTitle = ({ data }: VideoTitleProps) => {
@@ -28,62 +27,67 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
   const { isClippyLogined } = useClippyLogin();
 
   const getUserData = () => {
-    getTwitchUserInfoById(data.targetUserId).then((res) => {
-      if (res) {
-        setUserIcon(res.profile_image_url);
-        setUserLogin(res.login);
-        setUserName(res.display_name);
-      }
-    });
-    getTwitchUserInfoById(data.createUserId).then((res) => {
-      if (res) {
-        setClipperName(res.display_name);
-      }
-    });
+    if (data) {
+      getTwitchUserInfoById(data.targetUserId).then((res) => {
+        if (res) {
+          setUserIcon(res.profile_image_url);
+          setUserLogin(res.login);
+          setUserName(res.display_name);
+        }
+      });
+      getTwitchUserInfoById(data.createUserId).then((res) => {
+        if (res) {
+          setClipperName(res.display_name);
+        }
+      });
+    }
   };
 
   const getLikeStatus = async () => {
-    const url = `${apiAddress}/clip/${data.key}/like`;
-    const res = await axios.get(url, { withCredentials: true });
-    setIsLike(res.data.data);
+    if (data) {
+      const url = `${apiAddress}/clip/${data.key}/like`;
+      const res = await axios.get(url, { withCredentials: true });
+      setIsLike(res.data.data);
+    }
   };
 
   const toggleLike = () => {
-    const url = `${apiAddress}/clip/${data.key}/like`;
+    if (data) {
+      const url = `${apiAddress}/clip/${data.key}/like`;
 
-    if (isLike) {
-      axios
-        .delete(url, {
-          withCredentials: true,
-        })
-        .then((res) => {
-          console.log(res);
-          setIsLike(!isLike);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      axios
-        .post(url, {}, { withCredentials: true })
-        .then((res) => {
-          console.log(res);
-          setIsLike(!isLike);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (isLike) {
+        axios
+          .delete(url, {
+            withCredentials: true,
+          })
+          .then((res) => {
+            console.log(res);
+            setIsLike(!isLike);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        axios
+          .post(url, {}, { withCredentials: true })
+          .then((res) => {
+            console.log(res);
+            setIsLike(!isLike);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     }
   };
 
   useEffect(() => {
-    if (data.targetUserId) {
+    if (data?.targetUserId) {
       getUserData();
     }
-    if (data.id && isClippyLogined) {
+    if (data?.id && isClippyLogined) {
       getLikeStatus();
     }
-    console.log(data);
   }, [data]);
 
   return (
@@ -91,7 +95,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
       <div>
         <Flex direction="row" justify="space-between" align="center">
           <Text size={28} weight={300}>
-            {data.title}
+            {data?.title}
           </Text>
         </Flex>
       </div>
@@ -126,7 +130,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                     조회수
                   </Text>
                   <Text size={12} weight={400}>
-                    {data.viewCount}
+                    {data?.viewCount}
                   </Text>
                 </Flex>
                 <Flex>
@@ -134,7 +138,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                     좋아요
                   </Text>
                   <Text size={12} weight={400}>
-                    {data.likeCount}개
+                    {data?.likeCount}개
                   </Text>
                 </Flex>
               </Flex>
@@ -154,13 +158,14 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
               }}
               h={40}
               onClick={() => {
-                openShareClipModal(
-                  userName,
-                  data.cfVideoThumbnail,
-                  data.title,
-                  data.likeCount,
-                  clipperName
-                );
+                if (data)
+                  openShareClipModal(
+                    userName,
+                    data.cfVideoThumbnail,
+                    data.title,
+                    data.likeCount,
+                    clipperName
+                  );
               }}
             >
               공유하기
@@ -171,7 +176,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
               mx={20}
               className="duration-100"
               style={isLike ? { color: "#000000" } : {}}
-              onClick={isClippyLogined ? toggleLike : openLoginModal}
+              onClick={isClippyLogined ? toggleLike : () => openLoginModal()}
             >
               <Heart
                 size={36}
@@ -181,28 +186,6 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
             </ActionIcon>
           </Flex>
         </Flex>
-      </div>
-
-      <div className="mt-[20px]">
-        <Flex>
-          <Text size={16} weight={300} mr={4}>
-            댓글
-          </Text>
-          <Text size={16} weight={400}>
-            0개
-          </Text>
-        </Flex>
-      </div>
-
-      <div className="my-[20px]">
-        <Alert
-          icon={<IconAlertCircle size={16} />}
-          title="댓글 기능 지원예정"
-          color="gray"
-        >
-          Clippy 서비스는 아직 초기 단계로 개발되지 않은 부분이 많습니다. 빠른
-          시일 내에 댓글 기능을 이용하실 수 있도록 준비하겠습니다.
-        </Alert>
       </div>
     </>
   );
