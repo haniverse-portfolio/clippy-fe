@@ -1,35 +1,22 @@
-import {
-  Button,
-  Center,
-  Loader,
-  Modal,
-  ScrollArea,
-  Stack,
-  Text,
-} from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
+import { Button, Center, Loader, Modal, Stack, Text } from "@mantine/core";
 import { useEffect } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { Ban, CircleCheck, CircleX, Trash } from "tabler-icons-react";
 import {
   view_notiModalOpened,
-  common_deleteModalStep,
   view_notiModalStep,
   view_actionType,
   view_axiosProgressed,
 } from "../states";
-import axios, { AxiosResponse } from "axios";
 
 export const CommentsNotiModal = () => {
   const actionText = ["신고", "삭제"];
 
-  const [notiModalStep, setNotiModalStep] =
-    useRecoilState<number>(view_notiModalStep);
+  const [notiModalStep, setNotiModalStep] = useRecoilState(view_notiModalStep);
   const [notiModalOpened, setNotiModalOpened] =
-    useRecoilState<boolean>(view_notiModalOpened);
-  const [actionType, setActionType] = useRecoilState(view_actionType);
-  const [axiosProgressed, setAxiosProgressed] =
-    useRecoilState<boolean>(view_axiosProgressed);
+    useRecoilState(view_notiModalOpened);
+  const actionType = useRecoilValue(view_actionType);
+  const setAxiosProgressed = useSetRecoilState(view_axiosProgressed);
 
   useEffect(() => {
     setTimeout(() => {

@@ -1,5 +1,4 @@
-import { ActionIcon, Alert, Avatar, Button, Flex, Text } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons";
+import { ActionIcon, Avatar, Button, Flex, Text } from "@mantine/core";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Heart } from "tabler-icons-react";

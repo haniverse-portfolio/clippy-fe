@@ -40,7 +40,6 @@ const VideoComments = () => {
   const [comments, setComments] = useState<IComments[]>([]);
   const [editMode, setEditMode] = useState(false);
   const [currentCursor, setCurrentCursor] = useState(0);
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [commentsUserInfo, setCommentsUserInfo] = useState<ITwitchUserInfo[]>(
     []
   );
@@ -81,7 +80,6 @@ const VideoComments = () => {
       .then((res) => {
         setComments(res.data.data.comments);
         getCommentsUserInfo(res.data.data.comments);
-        setCurrentDate(new Date());
       })
       .catch(() => {});
   };
@@ -137,7 +135,6 @@ const VideoComments = () => {
       .post(url, { comment: commentText }, { withCredentials: true })
       .then(() => {
         getNotification(2, true);
-        setCurrentDate(new Date());
       })
       .catch(() => {
         getNotification(2, true);
