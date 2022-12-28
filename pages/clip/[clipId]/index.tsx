@@ -1,4 +1,4 @@
-import { Container, Flex, SimpleGrid } from "@mantine/core";
+import { Container, Flex, ScrollArea, SimpleGrid } from "@mantine/core";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Navbar } from "../../../components/common/Navbar";
@@ -146,7 +146,8 @@ const ViewClip = ({
                   overflowY: isSm ? "hidden" : "auto",
                 }}
               >
-                <div
+                <ScrollArea scrollbarSize={0} className="w-full h-full block">
+                  <div
                   className="h-[120px] mb-5 relative top-0 max-h-[120px]"
                   style={{
                     width: isSm ? "calc(100% + 50px)" : "100%",
@@ -175,6 +176,7 @@ const ViewClip = ({
                 <div className="mt-[25px]">
                   <VideoTitle data={videoData} />
                 </div>
+                </ScrollArea>
               </div>
               <div className="w-full md:w-[350px] h-full block overflow-hidden md:overflow-auto">
                 <Flex

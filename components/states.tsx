@@ -184,3 +184,24 @@ export const search_searchResult = atom<ISearchChannelInfo[]>({
   default: [],
 }); // 검색 - 검색 결과 채널목록
 /* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */
+/* ***** ***** ***** ***** ***** view ***** ***** ***** ***** ***** */
+export const view_notiModalOpened = atom({
+  key: "view_notiModalOpened",
+  default: false,
+});
+
+export const view_notiModalStep = atom({
+  key: "view_notiModalStep",
+  default: 0,
+});
+
+export const view_actionType = atom({
+  key: "view_actionType",
+  default: 0,
+});
+
+export const view_axiosProgressed = atom({
+  key: "view_axiosProgressed",
+  default: false,
+});
+/* ***** ***** ***** ***** ***** view ***** ***** ***** ***** ***** */
