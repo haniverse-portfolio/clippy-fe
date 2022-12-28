@@ -182,28 +182,6 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
           </Flex>
         </Flex>
       </div>
-
-      <div className="mt-[20px]">
-        <Flex>
-          <Text size={16} weight={300} mr={4}>
-            댓글
-          </Text>
-          <Text size={16} weight={400}>
-            0개
-          </Text>
-        </Flex>
-      </div>
-
-      <div className="my-[20px]">
-        <Alert
-          icon={<IconAlertCircle size={16} />}
-          title="댓글 기능 지원예정"
-          color="gray"
-        >
-          Clippy 서비스는 아직 초기 단계로 개발되지 않은 부분이 많습니다. 빠른
-          시일 내에 댓글 기능을 이용하실 수 있도록 준비하겠습니다.
-        </Alert>
-      </div>
     </>
   );
 };

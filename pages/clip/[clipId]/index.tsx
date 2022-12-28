@@ -13,6 +13,7 @@ import { ShareClipModal } from "../../../components/common/ShareClipModal";
 import { getClip, getHotclip } from "../../../util/clippy";
 import GoogleAdsense from "../../../components/common/GoogleAdsense";
 import { GetServerSideProps } from "next";
+import VideoComments from "../../../components/view/videoComments";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (params?.clipId) {
@@ -174,6 +175,7 @@ const ViewClip = ({
                 />
                 <div className="mt-[25px]">
                   <VideoTitle data={videoData} />
+                  <VideoComments />
                 </div>
               </div>
               <div className="w-full md:w-[350px] h-full block overflow-hidden md:overflow-auto">

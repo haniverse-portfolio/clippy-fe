@@ -166,15 +166,14 @@ export const mypageManage_selectedClip = atom({
   default: [] as string[],
 }); // 관리 - 선택된 클립 배열
 
-interface mypage_clipTypes extends Array<mypage_clipType> {}
-export const mypageManage_madeClip = atom({
+export const mypageManage_madeClip = atom<IMypageClip[]>({
   key: "mypageManage_madeClip",
-  default: [] as mypage_clipTypes,
+  default: [],
 }); // 관리 - 내가 만든 클립
 
-export const mypageManage_channelClip = atom({
+export const mypageManage_channelClip = atom<IMypageClip[]>({
   key: "mypageManage_channelClip",
-  default: [] as mypage_clipTypes,
+  default: [],
 }); // 관리 - 내 채널의 클립
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
 
@@ -184,3 +183,24 @@ export const search_searchResult = atom<ISearchChannelInfo[]>({
   default: [],
 }); // 검색 - 검색 결과 채널목록
 /* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */
+/* ***** ***** ***** ***** ***** view ***** ***** ***** ***** ***** */
+export const view_notiModalOpened = atom({
+  key: "view_notiModalOpened",
+  default: false,
+});
+
+export const view_notiModalStep = atom({
+  key: "view_notiModalStep",
+  default: 0,
+});
+
+export const view_actionType = atom({
+  key: "view_actionType",
+  default: 0,
+});
+
+export const view_axiosProgressed = atom({
+  key: "view_axiosProgressed",
+  default: false,
+});
+/* ***** ***** ***** ***** ***** view ***** ***** ***** ***** ***** */
