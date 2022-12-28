@@ -10,7 +10,7 @@ import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { useLoginModal } from "../../hooks/useLoginModal";
 
 interface VideoTitleProps {
-  data: IClipInfo;
+  data: IClipInfo | null;
 }
 
 const VideoTitle = ({ data }: VideoTitleProps) => {
@@ -27,62 +27,67 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
   const { isClippyLogined } = useClippyLogin();
 
   const getUserData = () => {
-    getTwitchUserInfoById(data.targetUserId).then((res) => {
-      if (res) {
-        setUserIcon(res.profile_image_url);
-        setUserLogin(res.login);
-        setUserName(res.display_name);
-      }
-    });
-    getTwitchUserInfoById(data.createUserId).then((res) => {
-      if (res) {
-        setClipperName(res.display_name);
-      }
-    });
+    if (data) {
+      getTwitchUserInfoById(data.targetUserId).then((res) => {
+        if (res) {
+          setUserIcon(res.profile_image_url);
+          setUserLogin(res.login);
+          setUserName(res.display_name);
+        }
+      });
+      getTwitchUserInfoById(data.createUserId).then((res) => {
+        if (res) {
+          setClipperName(res.display_name);
+        }
+      });
+    }
   };
 
   const getLikeStatus = async () => {
-    const url = `${apiAddress}/clip/${data.key}/like`;
-    const res = await axios.get(url, { withCredentials: true });
-    setIsLike(res.data.data);
+    if (data) {
+      const url = `${apiAddress}/clip/${data.key}/like`;
+      const res = await axios.get(url, { withCredentials: true });
+      setIsLike(res.data.data);
+    }
   };
 
   const toggleLike = () => {
-    const url = `${apiAddress}/clip/${data.key}/like`;
+    if (data) {
+      const url = `${apiAddress}/clip/${data.key}/like`;
 
-    if (isLike) {
-      axios
-        .delete(url, {
-          withCredentials: true,
-        })
-        .then((res) => {
-          console.log(res);
-          setIsLike(!isLike);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      axios
-        .post(url, {}, { withCredentials: true })
-        .then((res) => {
-          console.log(res);
-          setIsLike(!isLike);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (isLike) {
+        axios
+          .delete(url, {
+            withCredentials: true,
+          })
+          .then((res) => {
+            console.log(res);
+            setIsLike(!isLike);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        axios
+          .post(url, {}, { withCredentials: true })
+          .then((res) => {
+            console.log(res);
+            setIsLike(!isLike);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     }
   };
 
   useEffect(() => {
-    if (data.targetUserId) {
+    if (data?.targetUserId) {
       getUserData();
     }
-    if (data.id && isClippyLogined) {
+    if (data?.id && isClippyLogined) {
       getLikeStatus();
     }
-    console.log(data);
   }, [data]);
 
   return (
@@ -90,7 +95,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
       <div>
         <Flex direction="row" justify="space-between" align="center">
           <Text size={28} weight={300}>
-            {data.title}
+            {data?.title}
           </Text>
         </Flex>
       </div>
@@ -125,7 +130,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                     조회수
                   </Text>
                   <Text size={12} weight={400}>
-                    {data.viewCount}
+                    {data?.viewCount}
                   </Text>
                 </Flex>
                 <Flex>
@@ -133,7 +138,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                     좋아요
                   </Text>
                   <Text size={12} weight={400}>
-                    {data.likeCount}개
+                    {data?.likeCount}개
                   </Text>
                 </Flex>
               </Flex>
@@ -153,13 +158,14 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
               }}
               h={40}
               onClick={() => {
-                openShareClipModal(
-                  userName,
-                  data.cfVideoThumbnail,
-                  data.title,
-                  data.likeCount,
-                  clipperName
-                );
+                if (data)
+                  openShareClipModal(
+                    userName,
+                    data.cfVideoThumbnail,
+                    data.title,
+                    data.likeCount,
+                    clipperName
+                  );
               }}
             >
               공유하기

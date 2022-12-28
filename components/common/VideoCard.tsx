@@ -145,7 +145,7 @@ const VideoCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
         }}
       >
         <div
-          className={`w-full text-[16px] font-bold break-all mb-2 hover:underline ${
+          className={`w-[calc(100%-10px)] text-[16px] font-bold break-all mb-2 hover:underline ${
             mode === "horizontal"
               ? "whitespace-nowrap text-ellipsis overflow-hidden"
               : "line-clamp-2"

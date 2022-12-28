@@ -293,7 +293,7 @@ const VideoComments = () => {
           labelPosition="center"
         />
       ) : (
-        <Text mt={12} align="center" size={16} weight={300} ml={8}>
+        <Text pt={12} pb={50} align="center" size={16} weight={300}>
           댓글을 작성하고 첫번째 댓글의 주인공이 돼보세요!
         </Text>
       )}
