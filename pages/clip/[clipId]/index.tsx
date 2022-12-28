@@ -100,6 +100,8 @@ const ViewClip = ({
               setStreamerName(res.display_name);
             }
           });
+        } else {
+          setIsError(true);
         }
       });
     }
