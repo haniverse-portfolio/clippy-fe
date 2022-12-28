@@ -108,7 +108,7 @@ export const ExtInstallCTABanner = () => {
               color="dark"
               size="xs"
               radius={9999}
-              onClick={() => window.open("https:/extension.clippy.kr")}
+              onClick={() => window.open("https://extension.clippy.kr")}
             >
               설치하기
             </Button>
