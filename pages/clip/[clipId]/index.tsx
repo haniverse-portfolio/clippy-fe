@@ -158,7 +158,7 @@ const ViewClip = ({
               alignItems: isSm || isMd ? "center" : "flex-start",
             }}
           >
-            <div className="w-full h-max block mt-[-30px] px-[20px] pr-[20px]">
+            <div className="w-full h-max block mt-[-30px] px-0 lg:px-[20px]">
               <div
                 className="h-[120px] mb-5 relative top-0 max-h-[120px]"
                 style={{
@@ -184,7 +184,7 @@ const ViewClip = ({
                     : 0
                 }
               />
-              <div className="mt-[25px]">
+              <div className="mt-[25px] px-[20px] lg:px-0">
                 <VideoTitle data={videoData} />
                 <VideoComments />
               </div>
