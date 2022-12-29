@@ -140,112 +140,95 @@ const ViewClip = ({
       <Navbar />
       <Sidebar />
       <ShareClipModal />
-      <Container size="lg">
-        {isError ? (
-          <NotFoundTitle
-            title="클립을 찾을 수 없어요"
-            message="요청하신 클립을 찾을 수 없어요. 주소를 정확히 입력하셨는지 확인해주세요."
-          />
-        ) : (
+      {isError ? (
+        <NotFoundTitle
+          title="클립을 찾을 수 없어요"
+          message="요청하신 클립을 찾을 수 없어요. 주소를 정확히 입력하셨는지 확인해주세요."
+        />
+      ) : (
+        <div
+          ref={scrollDivRef}
+          className="w-full h-[calc(100vh-120px)] overflow-x-hidden overflow-y-auto"
+        >
           <div
-            ref={scrollDivRef}
-            className="relative top-0 left-0 w-full block overflow-auto lg:overflow-hidden"
-            style={{ height: "calc(100vh - 120px)" }}
+            className="w-full h-max max-w-[1400px] mx-auto relative top-0 left-0 flex"
+            style={{
+              flexDirection: isSm || isMd ? "column" : "row",
+              justifyContent: isSm || isMd ? "flex-start" : "center",
+              alignItems: isSm || isMd ? "center" : "flex-start",
+            }}
           >
-            <Flex
-              direction={isSm || isMd ? "column" : "row"}
-              justify="center"
-              align="center"
-              wrap="nowrap"
-              className="w-full h-max lg:h-[100%] relative lg:absolute top-0 left-0"
-            >
+            <div className="w-full h-max block mt-[-30px] px-0 lg:px-[20px]">
               <div
-                className="w-full block overflow-hidden"
+                className="h-[120px] mb-5 relative top-0 max-h-[120px]"
                 style={{
-                  height: isSm || isMd ? "max-content" : "calc(100vh - 150px)",
-                  padding: "20px 20px 0 20px",
-                  marginTop: "-30px",
-                  overflowY: isSm || isMd ? "hidden" : "auto",
+                  width: isSm || isMd ? "calc(100% + 50px)" : "100%",
+                  left: isSm || isMd ? "-25px" : "0",
                 }}
               >
-                <div
-                  className="h-[120px] mb-5 relative top-0 max-h-[120px]"
-                  style={{
-                    width: isSm || isMd ? "calc(100% + 50px)" : "100%",
-                    left: isSm || isMd ? "-25px" : "0",
-                  }}
-                >
-                  <GoogleAdsense
-                    className="google-ad-display-h-1 max-h-[120px]"
-                    layoutKey="-h2+d+5c-9-3e"
-                    slot="3846624551"
-                    format="fluid"
-                    responsive={true}
-                  />
-                </div>
-                <CloudflareVideo
-                  videoId={videoId}
-                  clipId={clipId}
-                  autoPlay={true}
-                  startAt={
-                    start && (start as string).match(/^[0-9]+$/)
-                      ? parseInt(start as string)
-                      : 0
-                  }
+                <GoogleAdsense
+                  className="google-ad-display-h-1 max-h-[120px]"
+                  layoutKey="-h2+d+5c-9-3e"
+                  slot="3846624551"
+                  format="fluid"
+                  responsive={true}
                 />
-                <div className="mt-[25px]">
-                  <VideoTitle data={videoData} />
-                  <VideoComments />
-                </div>
               </div>
-              <div className="w-full lg:min-w-[350px] lg:max-w-[350px] h-full block lg:border-l-[1px] lg:border-gray-200">
-                <div className="w-full h-[80px] px-5 flex justify-start items-center gap-2 overflow-y-hidden overflow-x-auto">
-                  <Button
-                    color="dark"
-                    variant={
-                      selectedSideClipMenu === "hotclip" ? "filled" : "outline"
-                    }
-                    radius={99999}
-                    onClick={() => setSelectedSideClipMenu("hotclip")}
-                  >
-                    Hot Clip
-                  </Button>
-                  <Button
-                    color="dark"
-                    variant={
-                      selectedSideClipMenu === "streamer" ? "filled" : "outline"
-                    }
-                    radius={99999}
-                    onClick={() => setSelectedSideClipMenu("streamer")}
-                  >
-                    {streamerName} Clip
-                  </Button>
-                </div>
-                <div className="w-full h-[calc(100%-60px)] block overflow-hidden lg:overflow-auto">
-                  <Flex
-                    direction={"column"}
-                    justify="flex-start"
-                    align="center"
-                    className="w-full h-max mx-auto pl-5 pb-20"
-                  >
-                    <SimpleGrid className="w-full" cols={1} spacing={14}>
-                      {sideClipMenuMap[selectedSideClipMenu].map((clip) => {
-                        return (
-                          <VideoCard
-                            mode="horizontal"
-                            key={clip.id}
-                            clip={clip}
-                          />
-                        );
-                      })}
-                    </SimpleGrid>
-                  </Flex>
-                </div>
+              <CloudflareVideo
+                videoId={videoId}
+                clipId={clipId}
+                autoPlay={true}
+                startAt={
+                  start && (start as string).match(/^[0-9]+$/)
+                    ? parseInt(start as string)
+                    : 0
+                }
+              />
+              <div className="mt-[25px] px-[20px] lg:px-0">
+                <VideoTitle data={videoData} />
+                <VideoComments />
               </div>
-            </Flex>
+            </div>
+            <div className="w-full lg:min-w-[450px] lg:max-w-[450px] h-max block lg:border-l-[1px] lg:border-gray-200">
+              <div className="w-full h-[80px] px-5 flex justify-start items-center gap-2 overflow-y-hidden overflow-x-auto">
+                <Button
+                  color="dark"
+                  variant={
+                    selectedSideClipMenu === "hotclip" ? "filled" : "outline"
+                  }
+                  radius={99999}
+                  onClick={() => setSelectedSideClipMenu("hotclip")}
+                >
+                  Hot Clip
+                </Button>
+                <Button
+                  color="dark"
+                  variant={
+                    selectedSideClipMenu === "streamer" ? "filled" : "outline"
+                  }
+                  radius={99999}
+                  onClick={() => setSelectedSideClipMenu("streamer")}
+                >
+                  {streamerName} Clip
+                </Button>
+              </div>
+              <div className="w-full h-max block">
+                <SimpleGrid
+                  className="w-full mx-auto pl-5 pb-20"
+                  cols={1}
+                  spacing={14}
+                >
+                  {sideClipMenuMap[selectedSideClipMenu].map((clip) => {
+                    return (
+                      <VideoCard mode="horizontal" key={clip.id} clip={clip} />
+                    );
+                  })}
+                </SimpleGrid>
+              </div>
+            </div>
           </div>
-        )}
-      </Container>
+        </div>
+      )}
     </>
   );
 };
