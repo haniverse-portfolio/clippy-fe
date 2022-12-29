@@ -73,7 +73,7 @@ export const TopNotice: FC = () => {
       {notice && !isClose && (
         <>
           <div
-            className="relative w-full h-[30px] duration-200 px-16"
+            className="sticky w-full h-[30px] duration-200 px-16"
             style={{ backgroundColor: isIncident ? "#d9571f" : "#75D91F" }}
           >
             <div
