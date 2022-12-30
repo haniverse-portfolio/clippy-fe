@@ -5,6 +5,8 @@ export default function Document() {
   return (
     <Html>
       <Head>
+        {/* Mobile PWA manifest */}
+        <link rel="manifest" href="/manifest.json" />
         {/* Google Adsense */}
         {/* <Script
           id="google-adsense"
