@@ -158,7 +158,7 @@ const ViewClip = ({
               alignItems: isSm || isMd ? "center" : "flex-start",
             }}
           >
-            <div className="w-full h-max block mt-[-30px] px-0 lg:px-[20px]">
+            <div className="w-full h-max block px-0 lg:px-[20px]">
               <div
                 className="h-[120px] mb-5 relative top-0 max-h-[120px]"
                 style={{
@@ -214,7 +214,7 @@ const ViewClip = ({
               </div>
               <div className="w-full h-max block">
                 <SimpleGrid
-                  className="w-full mx-auto pl-5 pb-20"
+                  className="w-full mx-auto pl-5 pb-40"
                   cols={1}
                   spacing={14}
                 >
