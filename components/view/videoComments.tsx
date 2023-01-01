@@ -135,9 +135,11 @@ const VideoComments = () => {
       .post(url, { comment: commentText }, { withCredentials: true })
       .then(() => {
         getNotification(2, true);
+        getComments(clipId);
       })
       .catch(() => {
         getNotification(2, true);
+        getComments(clipId);
       });
     setCommentText("");
   };
