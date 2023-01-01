@@ -51,7 +51,7 @@ const CreateClipModalInitLoading: FC = () => {
   const error = useRecoilValue(common_createClipModal_error);
 
   const [progressValue, setProgressValue] = useState(0);
-  const [intervalDelay, setIntervalDelay] = useState<number | null>(100);
+  const [intervalDelay, setIntervalDelay] = useState<number | null>(55);
 
   useEffect(() => {
     if (isLoadingDone || error) {
@@ -59,13 +59,13 @@ const CreateClipModalInitLoading: FC = () => {
       setProgressValue(0);
     } else {
       setProgressValue(0);
-      setIntervalDelay(100);
+      setIntervalDelay(55);
     }
   }, [isLoadingDone, error]);
 
   useEffect(() => {
     if (!isLoading) {
-      setProgressValue(() => 100);
+      setProgressValue(() => 55);
       setTimeout(() => {
         setIsLoadingDone(true);
       }, 1000);
