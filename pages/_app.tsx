@@ -43,7 +43,8 @@ declare global {
 export default function App({ Component, pageProps }: AppProps) {
   // Kakao SDK 설정 시작
   useEffect(() => {
-    window.Kakao.init("5941386c58984aaa4a1e0e36a4c8fc87");
+    if (window.Kakao && !window.Kakao.isInitialized())
+      window.Kakao.init("5941386c58984aaa4a1e0e36a4c8fc87");
   }, []);
   // Kakao SDK 설정 끝
 
