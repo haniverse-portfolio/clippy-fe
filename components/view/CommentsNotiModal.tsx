@@ -66,7 +66,7 @@ export const CommentsNotiModal = () => {
         <Stack className="flex items-center justify-center w-full">
           <Stack>
             <Center>
-              <Loader color="dark" size="xl" />
+              <Loader color="violet" size="lg" />
             </Center>
             <p className="text-center text-xl text-gray-500 font-semibold">
               {`댓글 ${actionText[actionType]}하는 중...`}
