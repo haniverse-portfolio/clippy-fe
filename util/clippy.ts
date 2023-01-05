@@ -61,8 +61,8 @@ export const getTwitchUserInfoByName = (
   userName: string
 ): Promise<ITwitchUserInfo | null> => {
   return axios
-    .get(`https://api.partyview.tv/streamer/name/${userName}`)
-    .then((res) => res.data.data)
+    .get(`https://twapi.haenu.com/user/name/${userName}`)
+    .then((res) => res.data)
     .catch((err) => {
       console.error("cannot load streamer info", err);
       return null;
@@ -78,8 +78,8 @@ export const getTwitchUserInfoById = (
   userId: number
 ): Promise<ITwitchUserInfo | null> => {
   return axios
-    .get(`https://api.partyview.tv/streamer/id/${userId}`)
-    .then((res) => res.data.data)
+    .get(`https://twapi.haenu.com/user/id/${userId}`)
+    .then((res) => res.data)
     .catch((err) => {
       console.error("cannot load streamer info", err);
       return null;
