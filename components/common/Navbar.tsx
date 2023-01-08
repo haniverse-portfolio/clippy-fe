@@ -87,6 +87,7 @@ export function Navbar() {
             >
               <AspectRatio ratio={1 / 1}>
                 <Image
+                  className="rounded-full"
                   src={loginedClippyUserInfo?.profileImageUrl}
                   alt="user-profile"
                 />

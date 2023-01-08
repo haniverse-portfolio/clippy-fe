@@ -139,6 +139,7 @@ interface IMypageClip {
   clipId: string;
   thumbnail: string;
   channel: string;
+  channelId: number;
   channelName: string;
   date: string;
   views: string;

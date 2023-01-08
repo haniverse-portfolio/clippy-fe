@@ -1,13 +1,17 @@
 import { Flex, Group, Text, Checkbox } from "@mantine/core";
+import axios from "axios";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import { Trash } from "tabler-icons-react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { Download, Trash } from "tabler-icons-react";
+import { showNotification } from "@mantine/notifications";
 import { useTailwindResponsive } from "../../hooks/useTailwindResponsive";
+import { apiAddress } from "../constValues";
 import {
   mypageManage_deleteModalOpened,
   mypageManage_selectedClip,
   common_deleteTargetClips,
+  common_loginUserInfo,
 } from "../states";
 
 interface MyapgeTableRowProps {
@@ -17,6 +21,7 @@ interface MyapgeTableRowProps {
   date: string;
   views: string;
   clipId: string;
+  channelId: number;
   channelName: string;
   disableDelete?: boolean;
 }
@@ -25,6 +30,7 @@ export function MypageTableRow({
   clipId,
   title,
   channel,
+  channelId,
   channelName,
   date,
   views,
@@ -40,11 +46,44 @@ export function MypageTableRow({
     mypageManage_selectedClip
   );
   const [isChecked, setIsChecked] = useState(false);
+  const userInfo = useRecoilValue(common_loginUserInfo);
   const { isSm, isMd } = useTailwindResponsive();
 
   const deleteOneClip = (id: string) => {
     setDeleteTargetClips([id]);
     setDeleteModalOpened(true);
+  };
+
+  const downloadOneClip = async (id: string) => {
+    const downloadUrl = `${apiAddress}/clip/${id}/downloads`;
+    let isError = false;
+    const res = await axios
+      .get(downloadUrl, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((res) => {
+        return res.data.data.downloadLink || "";
+      })
+      .catch((err) => {
+        isError = true;
+        return err.response.data.message;
+      });
+
+    if (res && !isError) {
+      const a = document.createElement("a");
+      a.href = res;
+      a.download = `${title}.mp4`;
+      a.click();
+    } else {
+      showNotification({
+        title: "다운로드 실패",
+        message: res,
+        color: "red",
+      });
+    }
   };
 
   useEffect(() => {
@@ -163,6 +202,14 @@ export function MypageTableRow({
           className="min-w-[50px] sm:min-w-[68px] flex justify-center items-center"
           style={{ height: isSm || isMd ? 150 : 90 }}
         >
+          {userInfo?.twitchId === channelId && (
+            <Download
+              className="cursor-pointer mr-1"
+              onClick={() => {
+                downloadOneClip(clipId);
+              }}
+            />
+          )}
           <Trash
             className="cursor-pointer"
             onClick={() => deleteOneClip(clipId)}
