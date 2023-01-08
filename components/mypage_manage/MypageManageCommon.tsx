@@ -59,6 +59,7 @@ export function MypageManageCommon() {
             clipId: clip.key,
             thumbnail: clip.cfVideoThumbnail,
             channel: clip.userInfo.display_name,
+            channelId: parseInt(clip.userInfo.id),
             channelName: clip.userInfo.login,
             date: util.showTime(clip.createdAt),
             views: clip.viewCount,
@@ -81,8 +82,9 @@ export function MypageManageCommon() {
             info: clip.title,
             clipId: clip.key,
             thumbnail: clip.cfVideoThumbnail,
-            channel: clip.userInfo.display_name,
-            channelName: clip.userInfo.login,
+            channel: clip.createUserInfo.display_name,
+            channelId: parseInt(clip.userInfo.id),
+            channelName: clip.createUserInfo.login,
             date: util.showTime(clip.createdAt),
             views: clip.viewCount,
           };
@@ -123,7 +125,7 @@ export function MypageManageCommon() {
 
   return (
     <Stack className="w-[calc(100vw - 360px)] px-5 mt-12">
-      <p className="text-4xl">클립 관리</p>
+      <p className="text-4xl font-light">클립 관리</p>
       <Group position="apart" className="mt-2">
         <Group>
           <Button
@@ -215,7 +217,7 @@ export function MypageManageCommon() {
             }}
           >
             <Text fw={700} className="text-[16px] whitespace-nowrap">
-              채널
+              {sectionIndex === 0 ? "채널" : "생성자"}
             </Text>
           </div>
         </Flex>
