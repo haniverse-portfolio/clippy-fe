@@ -98,6 +98,7 @@ export const DeleteModal = () => {
                     clipId={cur.clipId}
                     imageURL={cur.thumbnail}
                     channel={cur.channel}
+                    channelId={cur.channelId}
                     channelName={cur.channelName}
                     date={cur.date}
                     views={cur.views}
