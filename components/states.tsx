@@ -1,5 +1,4 @@
 import { atom } from "recoil";
-import { mypageMadeClipDummy } from "./constValues";
 
 /* ***** ***** ***** ***** ***** common ***** ***** ***** ***** ***** */
 export const common_isLogined = atom({
