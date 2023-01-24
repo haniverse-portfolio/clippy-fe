@@ -82,9 +82,9 @@ export function MypageManageCommon() {
             info: clip.title,
             clipId: clip.key,
             thumbnail: clip.cfVideoThumbnail,
-            channel: clip.createUserInfo.display_name,
+            channel: clip.createUserInfo?.display_name || "(계정정보없음)",
             channelId: parseInt(clip.userInfo.id),
-            channelName: clip.createUserInfo.login,
+            channelName: clip.createUserInfo?.login || "(계정정보없음)",
             date: util.showTime(clip.createdAt),
             views: clip.viewCount,
           };
