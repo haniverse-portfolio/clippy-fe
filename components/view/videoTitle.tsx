@@ -8,6 +8,7 @@ import { useShareClipModal } from "../../hooks/useShareClipModal";
 import { getTwitchUserInfoById } from "../../util/clippy";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { useLoginModal } from "../../hooks/useLoginModal";
+import dayjs from "dayjs";
 
 interface VideoTitleProps {
   data: IClipInfo | null;
@@ -15,6 +16,7 @@ interface VideoTitleProps {
 
 const VideoTitle = ({ data }: VideoTitleProps) => {
   const router = useRouter();
+  const numberFormat = new Intl.NumberFormat("ko-KR");
 
   const [userIcon, setUserIcon] = useState("");
   const [userLogin, setUserLogin] = useState("");
@@ -130,7 +132,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                     조회수
                   </Text>
                   <Text size={12} weight={400}>
-                    {data?.viewCount}
+                    {numberFormat.format(data?.viewCount || 0)}회
                   </Text>
                 </Flex>
                 <Flex>
@@ -138,9 +140,17 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                     좋아요
                   </Text>
                   <Text size={12} weight={400}>
-                    {data?.likeCount}개
+                    {numberFormat.format(data?.likeCount || 0)}개
                   </Text>
                 </Flex>
+              </Flex>
+              <Flex mr={16}>
+                <Text size={12} weight={300} mr={4}>
+                  게시일
+                </Text>
+                <Text size={12} weight={400}>
+                  {dayjs(data?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+                </Text>
               </Flex>
             </Flex>
           </Flex>
