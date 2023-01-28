@@ -81,15 +81,19 @@ const VideoCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
         router.push(`/clip/${clip.key}`);
       }}
       onMouseEnter={() => {
-        const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
-          clip.cfVideoId
-        }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
-        setThumbnailSrc(animatedThumbnail);
-        setIsImageLoading(true);
+        if (!clip.isLegacy) {
+          const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
+            clip.cfVideoId
+          }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
+          setThumbnailSrc(animatedThumbnail);
+          setIsImageLoading(true);
+        }
       }}
       onMouseLeave={() => {
-        setThumbnailSrc(clip.cfVideoThumbnail);
-        setIsImageLoading(false);
+        if (!clip.isLegacy) {
+          setThumbnailSrc(clip.cfVideoThumbnail);
+          setIsImageLoading(false);
+        }
       }}
     >
       <AspectRatio

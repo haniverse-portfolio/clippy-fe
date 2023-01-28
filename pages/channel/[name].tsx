@@ -1,4 +1,4 @@
-import { Avatar, Button, Container, Flex, Text } from "@mantine/core";
+import { Avatar, Badge, Button, Container, Flex, Text } from "@mantine/core";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Paperclip } from "tabler-icons-react";
@@ -11,10 +11,12 @@ import { useCreateClipModal } from "../../hooks/useCreateClipModal";
 import {
   checkStreamerIsLive,
   getStreamerClips,
+  getStreamerLegacyClips,
   getTwitchUserInfoByName,
 } from "../../util/clippy";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
 import MainLayout from "../../components/common/MainLayout";
+import loadCustomRoutes from "next/dist/lib/load-custom-routes";
 
 const ViewChannel = () => {
   const [streamerInfo, setStreamerInfo] = useState<ITwitchUserInfo | null>(
@@ -24,6 +26,9 @@ const ViewChannel = () => {
   const [isLive, setIsLive] = useState<boolean>(false);
   const [tab, setTab] = useState<string>("explore");
   const [clips, setClips] = useState<IClipInfo[]>([]);
+  const [legacyClips, setLegacyClips] = useState<IClipInfo[]>([]);
+  const [legacyCursor, setLegacyCursor] = useState<string>("");
+  const [isLegacyLoading, setIsLegacyLoading] = useState<boolean>(false);
 
   const { openCreateClipModal } = useCreateClipModal();
 
@@ -52,8 +57,23 @@ const ViewChannel = () => {
       getStreamerClips(streamerInfo.id).then((res) => {
         setClips(res);
       });
+      getStreamerLegacyClips(streamerInfo.id).then((res) => {
+        setLegacyClips(res[0]);
+        setLegacyCursor(res[1]);
+      });
     }
   }, [streamerInfo]);
+
+  const legacyLoadMore = async () => {
+    if (streamerInfo) {
+      setIsLegacyLoading(true);
+      const data = await getStreamerLegacyClips(streamerInfo?.id, legacyCursor);
+
+      setLegacyClips([...legacyClips, ...data[0]]);
+      setLegacyCursor(data[1]);
+      setIsLegacyLoading(false);
+    }
+  };
 
   return (
     <>
@@ -124,8 +144,52 @@ const ViewChannel = () => {
                           onClick={() => {
                             setTab("explore");
                           }}
+                          mr={8}
                         >
-                          클립구경
+                          클리피 클립
+                        </Button>
+                        <Button
+                          h={58}
+                          color="dark"
+                          variant={tab === "legacy" ? "filled" : "outline"}
+                          radius={99}
+                          px={20}
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 700,
+                          }}
+                          onClick={() => {
+                            setTab("legacy");
+                          }}
+                          mr={8}
+                        >
+                          <Badge
+                            color="green"
+                            variant={tab === "legacy" ? "light" : "filled"}
+                            mr={4}
+                          >
+                            NEW
+                          </Badge>{" "}
+                          트위치 클립
+                        </Button>
+                        <Button
+                          h={58}
+                          color="dark"
+                          variant={tab === "vod" ? "filled" : "outline"}
+                          radius={99}
+                          px={20}
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 700,
+                          }}
+                          onClick={() => {
+                            setTab("vod");
+                          }}
+                        >
+                          <Badge color="dark" variant="light" mr={4}>
+                            COMING SOON
+                          </Badge>{" "}
+                          다시보기
                         </Button>
                       </Flex>
 
@@ -173,6 +237,54 @@ const ViewChannel = () => {
                               등록된 클립이 없습니다
                             </div>
                           )}
+                        </>
+                      )}
+
+                      {tab === "legacy" && (
+                        <>
+                          {legacyClips && legacyClips.length > 0 ? (
+                            <div>
+                              <Explore clips={legacyClips} />
+                              {legacyCursor !== "" && legacyCursor !== null && (
+                                <Flex justify="center">
+                                  <Button
+                                    h={58}
+                                    color="dark"
+                                    variant="outline"
+                                    radius={99}
+                                    px={20}
+                                    mt={40}
+                                    style={{
+                                      fontSize: 16,
+                                      fontWeight: 700,
+                                    }}
+                                    onClick={() => {
+                                      legacyLoadMore();
+                                    }}
+                                    loading={isLegacyLoading}
+                                  >
+                                    + 더 불러오기
+                                  </Button>
+                                </Flex>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="w-full h-[400px]  border-gray-300 border-[1px] rounded-md flex justify-center items-center text-xl">
+                              등록된 클립이 없습니다
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {tab === "vod" && (
+                        <>
+                          {/* {legacyClips && legacyClips.length > 0 ? (
+                            <Explore clips={legacyClips} />
+                          ) : ( */}
+                          <div className="w-full h-[400px]  border-gray-300 border-[1px] rounded-md flex justify-center items-center text-xl">
+                            다시보기 서비스 오픈 준비 중입니다
+                          </div>
+                          {/* )} */}
                         </>
                       )}
                     </Flex>
