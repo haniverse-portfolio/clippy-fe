@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Button,
   Divider,
@@ -9,6 +10,7 @@ import {
   Textarea,
 } from "@mantine/core";
 import {
+  AlertCircle,
   ArrowBackUp,
   Ban,
   BrandTelegram,
@@ -34,7 +36,7 @@ import { useRouter } from "next/router";
 import { CommentsNotiModal } from "./CommentsNotiModal";
 import { showTime } from "../../util/util";
 
-const VideoComments = () => {
+const VideoComments = ({ data }: any) => {
   const [commentText, setCommentText] = useState("");
   const [editText, setEditText] = useState("");
   const [comments, setComments] = useState<IComments[]>([]);
@@ -202,284 +204,301 @@ const VideoComments = () => {
           </Text>
         </Flex>
       </div>
-      <Grid className="w-full" mt={20}>
-        <Grid.Col span="content">
-          <Avatar
-            mt={10}
-            src={loginedClippyUserInfo?.profileImageUrl}
-            size={24}
-            radius={99}
-          />
-        </Grid.Col>
-        <Grid.Col span="auto">
-          <Textarea
-            className="border-b-2 border-gray-300"
-            maxLength={10000}
-            spellCheck="false"
-            autosize
-            minRows={1}
-            maxRows={64}
-            value={commentText}
-            onChange={(e) => {
-              setCommentText(e.currentTarget.value);
-            }}
-            id=""
-            variant="unstyled"
-            placeholder="댓글 추가"
-          />
-        </Grid.Col>
-      </Grid>
-      <Group my={12} position="right">
-        {commentText.length === 0 ? (
-          <></>
-        ) : (
-          <Button
-            style={{
-              fontSize: 14,
-              borderRadius: 99,
-              backgroundColor: "white",
-              color: "black",
-              fontWeight: 700,
-            }}
-            h={40}
-            onClick={() => {
-              setCommentText("");
-            }}
-          >
-            취소
-          </Button>
-        )}
-        <Button
-          disabled={commentText.length === 0}
-          leftIcon={<BrandTelegram />}
-          color="dark"
-          radius="xl"
-          h={40}
-          onClick={() => {
-            if (isClippyLogined === false) {
-              openLoginModal(window.location.href);
-              return;
-            }
-            if (commentText.length === 0) {
-              return;
-            }
-            setEditMode(false);
-            setCurrentCursor(0);
-            postComments(clipId as string);
-          }}
+      {data?.isLegacy && data.isLegacy ? (
+        <Alert
+          icon={<AlertCircle size={16} />}
+          title="트위치 클립 댓글 기능 지원 예정"
+          color="green"
+          mt={20}
         >
-          게시
-        </Button>
-      </Group>
-      {comments.length !== 0 ? (
-        <Divider
-          my="xs"
-          label={
+          아직 트위치 클립은 댓글 기능을 지원하지 않고 있어요. 빠르게 지원할 수
+          있도록 준비할게요
+        </Alert>
+      ) : (
+        <>
+          <Grid className="w-full" mt={20}>
+            <Grid.Col span="content">
+              <Avatar
+                mt={10}
+                src={loginedClippyUserInfo?.profileImageUrl}
+                size={24}
+                radius={99}
+              />
+            </Grid.Col>
+            <Grid.Col span="auto">
+              <Textarea
+                className="border-b-2 border-gray-300"
+                maxLength={10000}
+                spellCheck="false"
+                autosize
+                minRows={1}
+                maxRows={64}
+                value={commentText}
+                onChange={(e) => {
+                  setCommentText(e.currentTarget.value);
+                }}
+                id=""
+                variant="unstyled"
+                placeholder="댓글 추가"
+              />
+            </Grid.Col>
+          </Grid>
+          <Group my={12} position="right">
+            {commentText.length === 0 ? (
+              <></>
+            ) : (
+              <Button
+                style={{
+                  fontSize: 14,
+                  borderRadius: 99,
+                  backgroundColor: "white",
+                  color: "black",
+                  fontWeight: 700,
+                }}
+                h={40}
+                onClick={() => {
+                  setCommentText("");
+                }}
+              >
+                취소
+              </Button>
+            )}
             <Button
-              leftIcon={
-                commentIsFolded === true ? <ChevronUp /> : <ChevronDown />
-              }
+              disabled={commentText.length === 0}
+              leftIcon={<BrandTelegram />}
               color="dark"
-              variant="outline"
               radius="xl"
               h={40}
               onClick={() => {
-                setCommentIsFolded(!commentIsFolded);
+                if (isClippyLogined === false) {
+                  openLoginModal(window.location.href);
+                  return;
+                }
+                if (commentText.length === 0) {
+                  return;
+                }
+                setEditMode(false);
+                setCurrentCursor(0);
+                postComments(clipId as string);
               }}
             >
-              {commentIsFolded === true ? "댓글 접기" : "댓글 펼치기"}
+              게시
             </Button>
-          }
-          labelPosition="center"
-        />
-      ) : (
-        <Text pt={24} align="center" size={16} weight={300}>
-          댓글을 작성하고 첫번째 댓글의 주인공이 돼보세요!
-        </Text>
-      )}
-      {commentIsFolded === true ? (
-        <>
-          {comments.map((cur, i: number) => {
-            return (
-              <Flex
-                className={`${
-                  editMode && currentCursor === i + 1
-                    ? "bg-gray-200"
-                    : "hover:bg-gray-100"
-                } rounded-md`}
-                onMouseOver={() => {
-                  if (!editMode) setCurrentCursor(i + 1);
-                }}
-                onMouseLeave={() => {
-                  if (!editMode) setCurrentCursor(-(i + 1));
-                }}
-                key={i}
-                direction={"column"}
-                justify={"center"}
-                align={"flex-start"}
-              >
-                <Group
-                  mt={10}
-                  className="w-full"
-                  align="center"
-                  position="apart"
+          </Group>
+          {comments.length !== 0 ? (
+            <Divider
+              my="xs"
+              label={
+                <Button
+                  leftIcon={
+                    commentIsFolded === true ? <ChevronUp /> : <ChevronDown />
+                  }
+                  color="dark"
+                  variant="outline"
+                  radius="xl"
+                  h={40}
+                  onClick={() => {
+                    setCommentIsFolded(!commentIsFolded);
+                  }}
                 >
-                  <Flex align="center">
-                    <Avatar
-                      src={
-                        (commentsUserInfo[i] || { profile_image_url: "" })
-                          .profile_image_url
-                      }
-                      size={24}
-                      radius={99}
-                    />
-                    <Text size={16} weight={500} ml={8}>
-                      {
-                        (commentsUserInfo[i] || { display_name: "" })
-                          .display_name
-                      }
-                    </Text>
-                    <Text size={12} weight={300} ml={8}>
-                      {getCommentDate(
-                        cur.updatedAt,
-                        cur.createdAt,
-                        cur.isBlocked || cur.isDeleted
+                  {commentIsFolded === true ? "댓글 접기" : "댓글 펼치기"}
+                </Button>
+              }
+              labelPosition="center"
+            />
+          ) : (
+            <Text pt={24} align="center" size={16} weight={300}>
+              댓글을 작성하고 첫번째 댓글의 주인공이 돼보세요!
+            </Text>
+          )}
+          {commentIsFolded === true ? (
+            <>
+              {comments.map((cur, i: number) => {
+                return (
+                  <Flex
+                    className={`${
+                      editMode && currentCursor === i + 1
+                        ? "bg-gray-200"
+                        : "hover:bg-gray-100"
+                    } rounded-md`}
+                    onMouseOver={() => {
+                      if (!editMode) setCurrentCursor(i + 1);
+                    }}
+                    onMouseLeave={() => {
+                      if (!editMode) setCurrentCursor(-(i + 1));
+                    }}
+                    key={i}
+                    direction={"column"}
+                    justify={"center"}
+                    align={"flex-start"}
+                  >
+                    <Group
+                      mt={10}
+                      className="w-full"
+                      align="center"
+                      position="apart"
+                    >
+                      <Flex align="center">
+                        <Avatar
+                          src={
+                            (commentsUserInfo[i] || { profile_image_url: "" })
+                              .profile_image_url
+                          }
+                          size={24}
+                          radius={99}
+                        />
+                        <Text size={16} weight={500} ml={8}>
+                          {
+                            (commentsUserInfo[i] || { display_name: "" })
+                              .display_name
+                          }
+                        </Text>
+                        <Text size={12} weight={300} ml={8}>
+                          {getCommentDate(
+                            cur.updatedAt,
+                            cur.createdAt,
+                            cur.isBlocked || cur.isDeleted
+                          )}
+                        </Text>
+                      </Flex>
+                      {editMode === true && currentCursor === i + 1 ? (
+                        <Group mr={8}>
+                          <ArrowBackUp
+                            size={20}
+                            className="cursor-pointer"
+                            onClick={() => {
+                              setEditMode(false);
+                            }}
+                          >
+                            취소
+                          </ArrowBackUp>
+                          {cur.comment === editText ? (
+                            <Edit
+                              color="gray"
+                              size={20}
+                              className="cursor-pointer"
+                              onClick={() => {
+                                if (editText === cur.comment) return;
+                                editComments(clipId as string, cur.commentId);
+                                setEditMode(false);
+                              }}
+                            >
+                              수정
+                            </Edit>
+                          ) : (
+                            <Edit
+                              color="black"
+                              size={20}
+                              className="cursor-pointer"
+                              onClick={() => {
+                                if (editText === cur.comment) return;
+                                editComments(clipId as string, cur.commentId);
+                                setEditMode(false);
+                              }}
+                            >
+                              수정
+                            </Edit>
+                          )}
+                        </Group>
+                      ) : (
+                        <></>
                       )}
-                    </Text>
+                      {isClippyLogined &&
+                      !editMode &&
+                      currentCursor === i + 1 ? (
+                        <Group mr={8}>
+                          {cur.userId === loginedClippyUserInfo?.twitchId &&
+                          !cur.isDeleted &&
+                          !cur.isBlocked ? (
+                            <Edit
+                              onClick={() => {
+                                setEditText(cur.comment);
+                                setEditMode(true);
+                              }}
+                              className="cursor-pointer"
+                              size={20}
+                            />
+                          ) : (
+                            <></>
+                          )}
+                          {cur.userId === loginedClippyUserInfo?.twitchId ||
+                          cur.isDeleted ||
+                          cur.isBlocked ? (
+                            <></>
+                          ) : (
+                            <Ban
+                              onClick={() => {
+                                setActionType(0);
+                                reportComments(clipId as string, cur.commentId);
+                              }}
+                              className="cursor-pointer"
+                              size={20}
+                            />
+                          )}
+                          {cur.userId === loginedClippyUserInfo?.twitchId &&
+                          !cur.isDeleted &&
+                          !cur.isBlocked ? (
+                            <Trash
+                              onClick={() => {
+                                setActionType(1);
+                                if (notiModalOpened === false)
+                                  setNotiModalOpened(true);
+                              }}
+                              className="cursor-pointer"
+                              size={20}
+                            />
+                          ) : (
+                            <></>
+                          )}
+                        </Group>
+                      ) : (
+                        <></>
+                      )}
+                      {/* <DotsVertical className="cursor-pointer" size={20} /> */}
+                    </Group>
+                    {editMode === true && currentCursor === i + 1 ? (
+                      <Grid className="w-full">
+                        <Grid.Col span="content">
+                          <Avatar
+                            className="invisible"
+                            mt={10}
+                            src={""}
+                            size={24}
+                            radius={99}
+                          />
+                        </Grid.Col>
+                        <Grid.Col span="auto">
+                          <Textarea
+                            className="border-b-2 border-gray-300"
+                            spellCheck="false"
+                            autosize
+                            minRows={1}
+                            maxRows={64}
+                            value={editText}
+                            onChange={(e) => {
+                              setEditText(e.currentTarget.value);
+                            }}
+                            id=""
+                            variant="unstyled"
+                            placeholder="댓글 수정"
+                          />
+                        </Grid.Col>
+                      </Grid>
+                    ) : (
+                      <Text size={16} weight={400} ml={32} mt={12} mb={10}>
+                        {cur.comment}
+                      </Text>
+                    )}
                   </Flex>
-                  {editMode === true && currentCursor === i + 1 ? (
-                    <Group mr={8}>
-                      <ArrowBackUp
-                        size={20}
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setEditMode(false);
-                        }}
-                      >
-                        취소
-                      </ArrowBackUp>
-                      {cur.comment === editText ? (
-                        <Edit
-                          color="gray"
-                          size={20}
-                          className="cursor-pointer"
-                          onClick={() => {
-                            if (editText === cur.comment) return;
-                            editComments(clipId as string, cur.commentId);
-                            setEditMode(false);
-                          }}
-                        >
-                          수정
-                        </Edit>
-                      ) : (
-                        <Edit
-                          color="black"
-                          size={20}
-                          className="cursor-pointer"
-                          onClick={() => {
-                            if (editText === cur.comment) return;
-                            editComments(clipId as string, cur.commentId);
-                            setEditMode(false);
-                          }}
-                        >
-                          수정
-                        </Edit>
-                      )}
-                    </Group>
-                  ) : (
-                    <></>
-                  )}
-                  {isClippyLogined && !editMode && currentCursor === i + 1 ? (
-                    <Group mr={8}>
-                      {cur.userId === loginedClippyUserInfo?.twitchId &&
-                      !cur.isDeleted &&
-                      !cur.isBlocked ? (
-                        <Edit
-                          onClick={() => {
-                            setEditText(cur.comment);
-                            setEditMode(true);
-                          }}
-                          className="cursor-pointer"
-                          size={20}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                      {cur.userId === loginedClippyUserInfo?.twitchId ||
-                      cur.isDeleted ||
-                      cur.isBlocked ? (
-                        <></>
-                      ) : (
-                        <Ban
-                          onClick={() => {
-                            setActionType(0);
-                            reportComments(clipId as string, cur.commentId);
-                          }}
-                          className="cursor-pointer"
-                          size={20}
-                        />
-                      )}
-                      {cur.userId === loginedClippyUserInfo?.twitchId &&
-                      !cur.isDeleted &&
-                      !cur.isBlocked ? (
-                        <Trash
-                          onClick={() => {
-                            setActionType(1);
-                            if (notiModalOpened === false)
-                              setNotiModalOpened(true);
-                          }}
-                          className="cursor-pointer"
-                          size={20}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                    </Group>
-                  ) : (
-                    <></>
-                  )}
-                  {/* <DotsVertical className="cursor-pointer" size={20} /> */}
-                </Group>
-                {editMode === true && currentCursor === i + 1 ? (
-                  <Grid className="w-full">
-                    <Grid.Col span="content">
-                      <Avatar
-                        className="invisible"
-                        mt={10}
-                        src={""}
-                        size={24}
-                        radius={99}
-                      />
-                    </Grid.Col>
-                    <Grid.Col span="auto">
-                      <Textarea
-                        className="border-b-2 border-gray-300"
-                        spellCheck="false"
-                        autosize
-                        minRows={1}
-                        maxRows={64}
-                        value={editText}
-                        onChange={(e) => {
-                          setEditText(e.currentTarget.value);
-                        }}
-                        id=""
-                        variant="unstyled"
-                        placeholder="댓글 수정"
-                      />
-                    </Grid.Col>
-                  </Grid>
-                ) : (
-                  <Text size={16} weight={400} ml={32} mt={12} mb={10}>
-                    {cur.comment}
-                  </Text>
-                )}
-              </Flex>
-            );
-          })}
+                );
+              })}
+            </>
+          ) : (
+            <></>
+          )}
         </>
-      ) : (
-        <></>
       )}
+
       <div className="h-[60px]"></div>
     </>
   );

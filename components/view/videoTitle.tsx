@@ -170,20 +170,22 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
             >
               공유하기
             </Button>
-            <ActionIcon
-              variant="transparent"
-              size={32}
-              mx={20}
-              className="duration-100"
-              style={isLike ? { color: "#000000" } : {}}
-              onClick={isClippyLogined ? toggleLike : () => openLoginModal()}
-            >
-              <Heart
-                size={36}
+            {data?.isLegacy || (
+              <ActionIcon
+                variant="transparent"
+                size={32}
+                mx={20}
                 className="duration-100"
-                style={isLike ? { fill: "#000000" } : { fill: "#FFFFFF" }}
-              />
-            </ActionIcon>
+                style={isLike ? { color: "#000000" } : {}}
+                onClick={isClippyLogined ? toggleLike : () => openLoginModal()}
+              >
+                <Heart
+                  size={36}
+                  className="duration-100"
+                  style={isLike ? { fill: "#000000" } : { fill: "#FFFFFF" }}
+                />
+              </ActionIcon>
+            )}
           </Flex>
         </Flex>
       </div>

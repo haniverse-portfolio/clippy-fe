@@ -18,6 +18,7 @@ import {
 } from "../../../util/clippy";
 import { GetServerSideProps } from "next";
 import VideoComments from "../../../components/view/videoComments";
+import { VidStackVideo } from "../../../components/view/vidstack";
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (params?.clipId) {
@@ -65,6 +66,7 @@ const ViewClip = ({
   const [videoId, setVideoId] = useState<string>("");
   const [videoTitle, setVideoTitle] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
+  const [isLegacy, setIsLegacy] = useState<boolean>(false);
   const [videoData, setVideoData] = useState<IClipInfo | null>(null);
   const [selectedSideClipMenu, setSelectedSideClipMenu] =
     useState<TSideClipMenu>("hotclip");
@@ -88,7 +90,10 @@ const ViewClip = ({
       getClip(clipId).then((res) => {
         if (res) {
           setVideoData(res);
-          setVideoId(res.cfVideoId);
+          setIsLegacy(res.isLegacy);
+          if (!res.isLegacy) {
+            setVideoId(res.cfVideoId);
+          }
           setVideoTitle(res.title);
 
           getStreamerClips(res.targetUserId.toString()).then((res) => {
@@ -158,19 +163,27 @@ const ViewClip = ({
             }}
           >
             <div className="w-full h-max block px-0 pt-[20px] lg:px-[20px]">
-              <CloudflareVideo
-                videoId={videoId}
-                clipId={clipId}
-                autoPlay={true}
-                startAt={
-                  start && (start as string).match(/^[0-9]+$/)
-                    ? parseInt(start as string)
-                    : 0
-                }
-              />
+              {isLegacy ? (
+                <div>
+                  <VidStackVideo data={videoData?.legacyInfo} />
+                </div>
+              ) : (
+                <div>
+                  <CloudflareVideo
+                    videoId={videoId}
+                    clipId={clipId}
+                    autoPlay={true}
+                    startAt={
+                      start && (start as string).match(/^[0-9]+$/)
+                        ? parseInt(start as string)
+                        : 0
+                    }
+                  />
+                </div>
+              )}
               <div className="mt-[25px] px-[20px] lg:px-0">
                 <VideoTitle data={videoData} />
-                <VideoComments />
+                <VideoComments data={videoData} />
               </div>
             </div>
             <div className="w-full lg:min-w-[450px] lg:max-w-[450px] h-max block lg:border-l-[1px] lg:border-gray-200">
