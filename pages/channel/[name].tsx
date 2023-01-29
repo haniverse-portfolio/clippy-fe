@@ -62,7 +62,7 @@ const ViewChannel = () => {
           checkStreamerIsLive(res.login).then((res) => {
             console.log("streamer is live", res);
             setIsLive(res);
-            if (res) setTab("live");
+            if (res && !queryTab) setTab("live");
           });
       });
     }
