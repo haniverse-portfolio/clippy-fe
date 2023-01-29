@@ -1,8 +1,14 @@
 import Plyr from "plyr-react";
 import "plyr-react/plyr.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
-export const VidStackVideo = ({ data }: any) => {
+export const VidStackVideo = ({
+  data,
+  videoPlayState,
+  autoPlay = true,
+  muted = false,
+  startsAt = 0,
+}: any) => {
   const [plyrProps, setPlyrProps] = useState<any>(null);
 
   useEffect(() => {
@@ -33,9 +39,11 @@ export const VidStackVideo = ({ data }: any) => {
             "settings",
             "pip",
             "airplay",
+            "download",
             "fullscreen",
           ],
-          autoplay: true,
+          autoplay: autoPlay,
+          muted: muted,
           keyboard: {
             focused: true,
             global: true,

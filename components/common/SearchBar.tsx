@@ -309,7 +309,7 @@ const SearchBarTextInput: FC<SearchBarProps> = ({ className = "" }) => {
       <div
         className={`search-bar-input-wrap rounded-[25px] bg-white h-max box-content absolute ${className}`}
         style={{
-          border: isFocused || isMouseOver ? "1px solid black" : "",
+          border: isFocused || isMouseOver ? "1px solid black" : "none",
           boxShadow: "0px 4px 15px rgba(119, 119, 119, 0.25)",
         }}
         onClick={() => {

@@ -102,6 +102,7 @@ export function IndexAfterLogin() {
                     gap="xs"
                     style={{
                       maxWidth: "calc(100% - 80px)",
+                      padding: "5px 0",
                       overflowY: "hidden",
                       overflowX: "auto",
                     }}
@@ -114,6 +115,7 @@ export function IndexAfterLogin() {
                         variant={selectedMenu === itm ? "filled" : "outline"}
                         radius={99}
                         px={20}
+                        py={5}
                         style={{
                           fontSize: 16,
                           fontWeight: 700,

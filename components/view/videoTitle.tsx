@@ -9,6 +9,7 @@ import { getTwitchUserInfoById } from "../../util/clippy";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { useLoginModal } from "../../hooks/useLoginModal";
 import dayjs from "dayjs";
+import Link from "next/link";
 
 interface VideoTitleProps {
   data: IClipInfo | null;
@@ -105,18 +106,14 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
       <div className="mt-[20px]">
         <Flex direction="row" justify="space-between" align="center">
           <Flex direction={"column"} justify={"center"} align={"flex-start"}>
-            <Flex
-              align="center"
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                router.push(`/channel/${userLogin}`);
-              }}
-            >
-              <Avatar src={userIcon} size={24} mr={8} radius={99}></Avatar>
-              <Text size={20} weight={700}>
-                {userName}
-              </Text>
-            </Flex>
+            <Link href={`/channel/${userLogin}`}>
+              <Flex align="center" style={{ cursor: "pointer" }}>
+                <Avatar src={userIcon} size={24} mr={8} radius={99}></Avatar>
+                <Text size={20} weight={700}>
+                  {userName}
+                </Text>
+              </Flex>
+            </Link>
             <Flex direction="column" mt={8}>
               <Flex mr={16}>
                 <Text size={12} weight={300} mr={4}>
@@ -149,7 +146,8 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                   게시일
                 </Text>
                 <Text size={12} weight={400}>
-                  {dayjs(data?.createdAt).format("YYYY-MM-DD HH:mm:ss")}
+                  {data?.createdAt &&
+                    dayjs(data?.createdAt).format("YYYY.MM.DD HH:mm")}
                 </Text>
               </Flex>
             </Flex>
