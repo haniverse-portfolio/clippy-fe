@@ -53,6 +53,8 @@ interface IClipInfo {
   };
   videoDuration: number;
   viewCount: number;
+  isLegacy: boolean;
+  legacyInfo?: any;
 }
 
 interface ITwitchUserInfo {

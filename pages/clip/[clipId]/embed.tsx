@@ -4,6 +4,7 @@ import { CloudflareVideo } from "../../../components/view/cloudflareVideo";
 import Head from "next/head";
 import { NotFoundTitle } from "../../../components/common/NotFound";
 import { getClip } from "../../../util/clippy";
+import { VidStackVideo } from "../../../components/view/vidstack";
 
 const ViewClipEmbed: FC = () => {
   const router = useRouter();
@@ -18,6 +19,8 @@ const ViewClipEmbed: FC = () => {
   const videoPlayState = useState(false);
   const [isVideoPlay] = videoPlayState;
   const [isError, setIsError] = useState(false);
+  const [isLegacy, setIsLegacy] = useState(false);
+  const [legacyData, setLegacyData] = useState<any>([]);
   const wrapDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,6 +54,8 @@ const ViewClipEmbed: FC = () => {
           console.log(res);
           setVideoId(res.cfVideoId);
           setVideoTitle(res.title);
+          setIsLegacy(res.isLegacy);
+          setLegacyData(res.legacyInfo);
         } else {
           setIsError(true);
         }
@@ -79,16 +84,19 @@ const ViewClipEmbed: FC = () => {
               width: videoWidth,
             }}
           >
-            {clipId && (
-              <CloudflareVideo
-                videoId={videoId}
-                clipId={clipId}
-                videoPlayState={videoPlayState}
-                autoPlay={videoAutoPlay}
-                muted={videoMuted}
-                startAt={videoStartAt}
-              />
-            )}
+            {clipId &&
+              (isLegacy ? (
+                <VidStackVideo data={legacyData} />
+              ) : (
+                <CloudflareVideo
+                  videoId={videoId}
+                  clipId={clipId}
+                  videoPlayState={videoPlayState}
+                  autoPlay={videoAutoPlay}
+                  muted={videoMuted}
+                  startAt={videoStartAt}
+                />
+              ))}
             {!isVideoPlay && (
               <>
                 <div className="screen-saver absolute top-0 left-0 w-full h-full bg-black pointer-events-none"></div>

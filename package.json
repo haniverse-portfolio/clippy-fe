@@ -12,6 +12,7 @@
     "@cloudflare/stream-react": "^1.8.0",
     "@emotion/react": "^11.10.5",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-brands-svg-icons": "^6.2.1",
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -29,6 +30,7 @@
     "@types/react-dom": "18.0.9",
     "@vidstack/player": "^1.6.5",
     "@vidstack/player-react": "^1.6.5",
+    "@vidstack/react": "^0.1.5",
     "axios": "^1.2.1",
     "babel-plugin-macros": "^3.1.0",
     "dayjs": "^1.11.7",
@@ -38,6 +40,7 @@
     "lit": "^2.5.0",
     "next": "13.0.4",
     "nextjs-progressbar": "^0.0.16",
+    "plyr-react": "^5.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-player": "^2.11.0",
@@ -45,7 +48,8 @@
     "recoil": "^0.7.6",
     "sass": "^1.56.2",
     "tabler-icons-react": "^1.56.0",
-    "typescript": "4.9.3"
+    "typescript": "4.9.3",
+    "vidstack": "^0.1.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",

@@ -38,6 +38,33 @@ export const getStreamerClips = (
 };
 
 /**
+ * 특정 스트리머의 레거시 클립들을 요청하는 함수
+ * @param streamerNumericId 스트리머 숫자형 ID
+ * @returns 클립 정보 배열
+ */
+export const getStreamerLegacyClips = (
+  streamerNumericId: string,
+  cursor?: string
+): Promise<any> => {
+  let url = `${apiAddress}/clip/user/${streamerNumericId}/legacy`;
+  if (cursor) {
+    url += `?cursor=${cursor}`;
+  }
+
+  return axios
+    .get(url, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      return [res.data.data.clips, res.data.data.cursor];
+    })
+    .catch((err) => {
+      console.error("cannot load streamer clips", err);
+      return [];
+    });
+};
+
+/**
  * 특정 클립의 정보를 요청하는 함수
  * @param clipId 클립 ID
  * @returns 클립 정보

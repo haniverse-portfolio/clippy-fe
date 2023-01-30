@@ -1,4 +1,4 @@
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { brands, solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Card,
@@ -12,8 +12,9 @@ import {
 } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Heart } from "tabler-icons-react";
+import { Heart, Paperclip } from "tabler-icons-react";
 import * as util from "../../util/util";
 import { apiAddress } from "../constValues";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
@@ -77,23 +78,24 @@ const VideoCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
       className="relative w-full p-0 m-0 flex justify-start items-center gap-2 cursor-pointer"
       key={clip.id}
       style={{ flexDirection: mode === "horizontal" ? "row" : "column" }}
-      onClick={() => {
-        router.push(`/clip/${clip.key}`);
-      }}
       onMouseEnter={() => {
-        const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
-          clip.cfVideoId
-        }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
-        setThumbnailSrc(animatedThumbnail);
-        setIsImageLoading(true);
+        if (!clip.isLegacy) {
+          const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
+            clip.cfVideoId
+          }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
+          setThumbnailSrc(animatedThumbnail);
+          setIsImageLoading(true);
+        }
       }}
       onMouseLeave={() => {
-        setThumbnailSrc(clip.cfVideoThumbnail);
-        setIsImageLoading(false);
+        if (!clip.isLegacy) {
+          setThumbnailSrc(clip.cfVideoThumbnail);
+          setIsImageLoading(false);
+        }
       }}
     >
-      <AspectRatio
-        ratio={239 / 134.438}
+      <Link
+        href={`/clip/${clip.key}`}
         className="bg-gray-200 rounded-md"
         style={{
           width: mode === "horizontal" ? "50%" : "100%",
@@ -101,25 +103,27 @@ const VideoCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
           maxWidth: mode === "horizontal" ? "200px" : "400px",
         }}
       >
-        <Image
-          className="rounded-md"
-          src={thumbnailSrc}
-          alt="clip"
-          onLoad={() => {
-            setIsImageLoading(false);
-          }}
-          onError={() => {
-            setIsImageLoading(false);
-          }}
-          radius={8}
-        />
-        {isImageLoading && (
-          <IndenterminateProgressBar
-            position="relative"
-            className="mt-[-8px]"
+        <AspectRatio ratio={239 / 134.438}>
+          <Image
+            className="rounded-md"
+            src={thumbnailSrc}
+            alt="clip"
+            onLoad={() => {
+              setIsImageLoading(false);
+            }}
+            onError={() => {
+              setIsImageLoading(false);
+            }}
+            radius={8}
           />
-        )}
-      </AspectRatio>
+          {isImageLoading && (
+            <IndenterminateProgressBar
+              position="relative"
+              className="mt-[-8px]"
+            />
+          )}
+        </AspectRatio>
+      </Link>
       {mode === "vertical" && (
         <div className="absolute flex justify-center items-center top-[12px] right-[12px] h-[34px] px-[16px] bg-[rgba(0,0,0,0.5)] rounded-full">
           <FontAwesomeIcon
@@ -136,6 +140,24 @@ const VideoCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
           </Text>
         </div>
       )}
+      {mode === "vertical" && (
+        <div className="absolute flex justify-center items-center top-[12px] left-[12px] h-[34px] w-[34px] bg-[rgba(255,255,255,0.5)] rounded-full">
+          {clip.isLegacy ? (
+            <FontAwesomeIcon
+              icon={brands("twitch")}
+              // icon={solid("twitch")}
+              style={{
+                width: 16,
+                // height: 12,
+                color: "#6441A4",
+                // marginRight: 4,
+              }}
+            />
+          ) : (
+            <Paperclip size={16} />
+          )}
+        </div>
+      )}
       <div
         className="h-full flex flex-col items-start"
         style={{
@@ -144,15 +166,16 @@ const VideoCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
             mode === "horizontal" ? "space-between" : "flex-start",
         }}
       >
-        <div
-          className={`w-[calc(100%-10px)] text-[16px] font-bold break-all mb-2 hover:underline ${
+        <Link
+          href={`/clip/${clip.key}`}
+          className={`w-[calc(100%-10px)] text-[16px] font-bold break-all mb-2 hover:underline block ${
             mode === "horizontal"
               ? "whitespace-nowrap text-ellipsis overflow-hidden"
               : "line-clamp-2"
           }`}
         >
           {clip.title}
-        </div>
+        </Link>
         <div className="w-full flex justify-between items-center text-[14px]">
           <div
             className="h-full"
@@ -160,32 +183,28 @@ const VideoCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
               width: mode === "horizontal" ? "100%" : "calc(100% - 4em)",
             }}
           >
-            <div
-              className="whitespace-nowrap overflow-hidden text-ellipsis mb-1 hover:underline"
+            <Link
+              href={`/channel/${clip.userInfo.login}`}
+              className="whitespace-nowrap overflow-hidden text-ellipsis mb-1 hover:underline block"
               style={{
                 width: mode === "horizontal" ? "100%" : "calc(100% - 1em)",
               }}
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`/channel/${clip.userInfo.login}`);
-              }}
             >
               {clip.userInfo.display_name}
-            </div>
+            </Link>
             <div>
               <strong>반응 {clip.commentCount + clip.likeCount} • </strong>
               {util.showTime(clip.createdAt)}
             </div>
           </div>
-          {mode === "vertical" && (
+          {mode === "vertical" && !clip.isLegacy && (
             <div className="w-[4em] h-full relative top-[-8px]">
               <ActionIcon
                 variant="transparent"
                 size={36}
                 className="duration-100"
                 style={isLike ? { color: "#000000" } : {}}
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={() => {
                   if (isClippyLogined) toggleLike();
                   else openLoginModal();
                 }}
