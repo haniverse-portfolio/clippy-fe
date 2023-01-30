@@ -128,7 +128,7 @@ const Live = ({ data }: LivePropsWrapper) => {
           mt={15}
           underline
           onClick={() => {
-            window.open("https://support.clippy.kr");
+            window.open("https://clippy.oqupie.com/portal/1994");
           }}
         >
           고객센터 바로가기
