@@ -51,7 +51,6 @@ const ViewClipEmbed: FC = () => {
     if (clipId) {
       getClip(clipId).then((res) => {
         if (res) {
-          console.log(res);
           setVideoId(res.cfVideoId);
           setVideoTitle(res.title);
           setIsLegacy(res.isLegacy);
