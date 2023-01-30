@@ -39,6 +39,7 @@ interface IClipInfo {
   title: string;
   updatedAt: string;
   updated_at: string;
+  isAdult?: number;
   userInfo: {
     broadcaster_type: string;
     created_at: string;

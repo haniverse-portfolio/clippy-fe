@@ -16,11 +16,11 @@ const ClipIcon = () => (
   </svg>
 );
 
-const ClippyText = () => (
+const ClippyText = ({ hasMargin = true }: any) => (
   <svg
     width="90%"
     height="50%"
-    style={{ marginRight: "5%" }}
+    style={{ marginRight: hasMargin ? "5%" : "0" }}
     viewBox="0 0 108 38"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -78,6 +78,18 @@ const Logo = ({ className = "", width }: LogoProps) => {
       <ClipIcon />
       <ClippyText />
       <Beta />
+    </div>
+  );
+};
+
+export const LogoWithoutBeta = ({ className = "", width }: LogoProps) => {
+  return (
+    <div
+      className={`flex justify-start items-center ${className}`}
+      style={{ width }}
+    >
+      <ClipIcon />
+      <ClippyText hasMargin={false} />
     </div>
   );
 };
