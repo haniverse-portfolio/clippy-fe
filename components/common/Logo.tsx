@@ -82,4 +82,16 @@ const Logo = ({ className = "", width }: LogoProps) => {
   );
 };
 
+export const LogoWithoutBeta = ({ className = "", width }: LogoProps) => {
+  return (
+    <div
+      className={`flex justify-start items-center ${className}`}
+      style={{ width }}
+    >
+      <ClipIcon />
+      <ClippyText />
+    </div>
+  );
+};
+
 export default Logo;

@@ -52,3 +52,7 @@ textarea::placeholder {
     background: black;
   }
 }
+
+.nsfw .mantine-Image-image {
+  filter: blur(20px);
+}

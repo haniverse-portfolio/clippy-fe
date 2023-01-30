@@ -20,6 +20,7 @@ import { apiAddress } from "../constValues";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { useLoginModal } from "../../hooks/useLoginModal";
 import { IndenterminateProgressBar } from "./IndenterminateProgressBar";
+import { LogoWithoutBeta } from "./Logo";
 
 interface VideoCardProps {
   clip: IClipInfo;
@@ -79,7 +80,7 @@ const VideoCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
       key={clip.id}
       style={{ flexDirection: mode === "horizontal" ? "row" : "column" }}
       onMouseEnter={() => {
-        if (!clip.isLegacy) {
+        if (!clip.isLegacy && !clip?.isAdult) {
           const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
             clip.cfVideoId
           }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
@@ -104,8 +105,22 @@ const VideoCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
         }}
       >
         <AspectRatio ratio={239 / 134.438}>
+          {clip?.isAdult ? (
+            <div
+              style={{
+                position: "absolute",
+                zIndex: 10,
+                width: "30%",
+                left: "35%",
+              }}
+            >
+              <LogoWithoutBeta />
+            </div>
+          ) : (
+            <></>
+          )}
           <Image
-            className="rounded-md"
+            className={clip?.isAdult ? "rounded-md nsfw" : "rounded-md"}
             src={thumbnailSrc}
             alt="clip"
             onLoad={() => {
