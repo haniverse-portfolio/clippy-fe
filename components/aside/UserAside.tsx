@@ -146,7 +146,7 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
           icon={<InfoCircle size={18} />}
           text={"고객 센터"}
           onClick={() => {
-            window.open("https://support.clippy.kr");
+            window.open("https://clippy.oqupie.com/portal/1994");
           }}
         />
         <UserAsideMenu
@@ -154,7 +154,7 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
           icon={<MessageCircle2 size={18} />}
           text={"의견 보내기"}
           onClick={() => {
-            window.open("https://forms.gle/sEVEFUuxFnwpqLav6");
+            window.open("https://clippy.oqupie.com/portal/1994/request");
           }}
         />
         <UserAsideMenu
