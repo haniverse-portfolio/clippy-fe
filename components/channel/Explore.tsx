@@ -13,7 +13,7 @@ const Explore = ({ clips }: any) => {
       ]}
     >
       {clips.map((clip: any) => {
-        return <VideoCard key={clip.id} clip={clip} />;
+        return <VideoCard key={clip.key} clip={clip} />;
       })}
     </SimpleGrid>
   );

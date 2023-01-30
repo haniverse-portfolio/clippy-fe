@@ -8,6 +8,8 @@ import { useShareClipModal } from "../../hooks/useShareClipModal";
 import { getTwitchUserInfoById } from "../../util/clippy";
 import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { useLoginModal } from "../../hooks/useLoginModal";
+import dayjs from "dayjs";
+import Link from "next/link";
 
 interface VideoTitleProps {
   data: IClipInfo | null;
@@ -15,6 +17,7 @@ interface VideoTitleProps {
 
 const VideoTitle = ({ data }: VideoTitleProps) => {
   const router = useRouter();
+  const numberFormat = new Intl.NumberFormat("ko-KR");
 
   const [userIcon, setUserIcon] = useState("");
   const [userLogin, setUserLogin] = useState("");
@@ -103,18 +106,14 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
       <div className="mt-[20px]">
         <Flex direction="row" justify="space-between" align="center">
           <Flex direction={"column"} justify={"center"} align={"flex-start"}>
-            <Flex
-              align="center"
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                router.push(`/channel/${userLogin}`);
-              }}
-            >
-              <Avatar src={userIcon} size={24} mr={8} radius={99}></Avatar>
-              <Text size={20} weight={700}>
-                {userName}
-              </Text>
-            </Flex>
+            <Link href={`/channel/${userLogin}`}>
+              <Flex align="center" style={{ cursor: "pointer" }}>
+                <Avatar src={userIcon} size={24} mr={8} radius={99}></Avatar>
+                <Text size={20} weight={700}>
+                  {userName}
+                </Text>
+              </Flex>
+            </Link>
             <Flex direction="column" mt={8}>
               <Flex mr={16}>
                 <Text size={12} weight={300} mr={4}>
@@ -130,7 +129,7 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                     조회수
                   </Text>
                   <Text size={12} weight={400}>
-                    {data?.viewCount}
+                    {numberFormat.format(data?.viewCount || 0)}회
                   </Text>
                 </Flex>
                 <Flex>
@@ -138,9 +137,18 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
                     좋아요
                   </Text>
                   <Text size={12} weight={400}>
-                    {data?.likeCount}개
+                    {numberFormat.format(data?.likeCount || 0)}개
                   </Text>
                 </Flex>
+              </Flex>
+              <Flex mr={16}>
+                <Text size={12} weight={300} mr={4}>
+                  게시일
+                </Text>
+                <Text size={12} weight={400}>
+                  {data?.createdAt &&
+                    dayjs(data?.createdAt).format("YYYY.MM.DD HH:mm")}
+                </Text>
               </Flex>
             </Flex>
           </Flex>
@@ -170,20 +178,22 @@ const VideoTitle = ({ data }: VideoTitleProps) => {
             >
               공유하기
             </Button>
-            <ActionIcon
-              variant="transparent"
-              size={32}
-              mx={20}
-              className="duration-100"
-              style={isLike ? { color: "#000000" } : {}}
-              onClick={isClippyLogined ? toggleLike : () => openLoginModal()}
-            >
-              <Heart
-                size={36}
+            {data?.isLegacy || (
+              <ActionIcon
+                variant="transparent"
+                size={32}
+                mx={20}
                 className="duration-100"
-                style={isLike ? { fill: "#000000" } : { fill: "#FFFFFF" }}
-              />
-            </ActionIcon>
+                style={isLike ? { color: "#000000" } : {}}
+                onClick={isClippyLogined ? toggleLike : () => openLoginModal()}
+              >
+                <Heart
+                  size={36}
+                  className="duration-100"
+                  style={isLike ? { fill: "#000000" } : { fill: "#FFFFFF" }}
+                />
+              </ActionIcon>
+            )}
           </Flex>
         </Flex>
       </div>
