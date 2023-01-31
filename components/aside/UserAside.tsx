@@ -122,7 +122,7 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
           onClick={() => {
             setSidebarOpened(false);
           }}
-          href={`/clipmanage/${loginedClippyUserInfo?.twitchName}`}
+          href={`/mypage/manage/twitch`}
         >
           <UserAsideMenu
             forceLarge={forceLarge}

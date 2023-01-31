@@ -10,20 +10,20 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Eye, Paperclip } from "tabler-icons-react";
-import Explore from "../../components/channel/Explore";
-import TwitchLive from "../../components/channel/TwitchLive";
-import { Navbar } from "../../components/common/Navbar";
-import { NotFoundTitle } from "../../components/common/NotFound";
-import { Sidebar } from "../../components/common/Sidebar";
-import { useCreateClipModal } from "../../hooks/useCreateClipModal";
+import Explore from "../../../components/channel/Explore";
+import TwitchLive from "../../../components/channel/TwitchLive";
+import { Navbar } from "../../../components/common/Navbar";
+import { NotFoundTitle } from "../../../components/common/NotFound";
+import { Sidebar } from "../../../components/common/Sidebar";
+import { useCreateClipModal } from "../../../hooks/useCreateClipModal";
 import {
   checkStreamerIsLive,
   getStreamerClips,
   getStreamerLegacyClips,
   getTwitchUserInfoByName,
-} from "../../util/clippy";
-import { useClippyLogin } from "../../hooks/useClippyAPI";
-import MainLayout from "../../components/common/MainLayout";
+} from "../../../util/clippy";
+import { useClippyLogin } from "../../../hooks/useClippyAPI";
+import MainLayout from "../../../components/common/MainLayout";
 import loadCustomRoutes from "next/dist/lib/load-custom-routes";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -46,7 +46,9 @@ const ViewChannel = () => {
   const { isClippyLogined, goClippyLogin } = useClippyLogin();
 
   const router = useRouter();
-  const { name }: any = router.query;
+  const { loginedClippyUserInfo, goClippyLogout } = useClippyLogin();
+  const name = "hanryang1125"; // test dummy
+  // const name = loginedClippyUserInfo?.twitchName;
 
   useEffect(() => {
     if (name) {
