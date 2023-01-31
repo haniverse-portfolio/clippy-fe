@@ -5,6 +5,7 @@ import {
   Container,
   Flex,
   Group,
+  SimpleGrid,
   Text,
 } from "@mantine/core";
 import { useRouter } from "next/router";
@@ -20,6 +21,7 @@ import {
   checkStreamerIsLive,
   getStreamerClips,
   getStreamerLegacyClips,
+  getStreamerManageClips,
   getTwitchUserInfoByName,
 } from "../../../util/clippy";
 import { useClippyLogin } from "../../../hooks/useClippyAPI";
@@ -28,6 +30,11 @@ import loadCustomRoutes from "next/dist/lib/load-custom-routes";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import VideoManageCard from "../../../components/common/VideoManageCard";
+import { apiAddress } from "../../../components/constValues";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { mypageManage_twitch_legacyClipPolicy } from "../../../components/states";
 
 const ViewChannel = () => {
   const [streamerInfo, setStreamerInfo] = useState<ITwitchUserInfo | null>(
@@ -39,7 +46,11 @@ const ViewChannel = () => {
   const [legacyClips, setLegacyClips] = useState<IClipInfo[]>([]);
   const [legacyCursor, setLegacyCursor] = useState<string>("");
   const [isLegacyLoading, setIsLegacyLoading] = useState<boolean>(false);
-  const [isMaskAll, setIsMaskAll] = useState<boolean>(false);
+  const [legacyClipPolicy, setLegacyClipPolicy] = useRecoilState(
+    mypageManage_twitch_legacyClipPolicy
+  );
+  const [isLegacyClipPolicyLoading, setIsLegacyClipPolicyLoading] =
+    useState<boolean>(false);
 
   const { openCreateClipModal } = useCreateClipModal();
 
@@ -47,8 +58,37 @@ const ViewChannel = () => {
 
   const router = useRouter();
   const { loginedClippyUserInfo, goClippyLogout } = useClippyLogin();
-  const name = "hanryang1125"; // test dummy
-  // const name = loginedClippyUserInfo?.twitchName;
+  const name = loginedClippyUserInfo?.twitchName;
+
+  const getLegacyClipPolicy = async () => {
+    const url = `${apiAddress}/user/me/legacy-policy`;
+    const res = await axios.get(url, { withCredentials: true });
+    setLegacyClipPolicy(res.data.data);
+    setIsLegacyClipPolicyLoading(false);
+  };
+
+  const legacyClipPolicyShow = async () => {
+    setIsLegacyClipPolicyLoading(true);
+    const url = `${apiAddress}/user/me/legacy-policy/hide`;
+    const res = await axios.delete(url, { withCredentials: true });
+    await getLegacyClipPolicy();
+  };
+
+  const legacyClipPolicyHide = async () => {
+    setIsLegacyClipPolicyLoading(true);
+    const url = `${apiAddress}/user/me/legacy-policy/hide`;
+    const res = await axios
+      .post(url, {}, { withCredentials: true })
+      .then((res) => {})
+      .catch((err) => {
+        console.log(err);
+      });
+    await getLegacyClipPolicy();
+  };
+
+  useEffect(() => {
+    getLegacyClipPolicy();
+  }, []);
 
   useEffect(() => {
     if (name) {
@@ -69,7 +109,7 @@ const ViewChannel = () => {
       getStreamerClips(streamerInfo.id).then((res) => {
         setClips(res);
       });
-      getStreamerLegacyClips(streamerInfo.id).then((res) => {
+      getStreamerManageClips().then((res) => {
         setLegacyClips(res[0]);
         setLegacyCursor(res[1]);
       });
@@ -155,7 +195,9 @@ const ViewChannel = () => {
                         <Button
                           h={48}
                           color="dark"
-                          variant={isMaskAll ? "filled" : "outline"}
+                          variant={
+                            legacyClipPolicy.hideAll ? "filled" : "outline"
+                          }
                           radius={99}
                           px={20}
                           style={{
@@ -163,26 +205,49 @@ const ViewChannel = () => {
                             fontWeight: 700,
                           }}
                           onClick={() => {
-                            setIsMaskAll(!isMaskAll);
+                            if (legacyClipPolicy.hideAll === true)
+                              legacyClipPolicyShow();
+                            else legacyClipPolicyHide();
                           }}
                           mr={8}
+                          loading={isLegacyClipPolicyLoading}
                         >
                           <FontAwesomeIcon
-                            icon={isMaskAll ? solid("eye-slash") : solid("eye")}
+                            icon={
+                              legacyClipPolicy.hideAll
+                                ? solid("eye-slash")
+                                : solid("eye")
+                            }
                             style={{
                               width: 14,
                               height: 12,
-                              color: isMaskAll ? "white" : "black",
+                              color: legacyClipPolicy.hideAll
+                                ? "white"
+                                : "black",
                               marginRight: 4,
                             }}
                           />
-                          전체 클립 가리기
+                          {`전체 클립 ${legacyClipPolicy ? "공개" : "비공개"}`}
                         </Button>
                       </Group>
 
                       {legacyClips && legacyClips.length > 0 ? (
                         <div>
-                          <Explore clips={legacyClips} />
+                          <SimpleGrid
+                            cols={4}
+                            spacing={24}
+                            breakpoints={[
+                              { maxWidth: 1400, cols: 3, spacing: "md" },
+                              { maxWidth: 980, cols: 2, spacing: "sm" },
+                              { maxWidth: 600, cols: 1, spacing: "sm" },
+                            ]}
+                          >
+                            {legacyClips.map((clip: any) => {
+                              return (
+                                <VideoManageCard key={clip.key} clip={clip} />
+                              );
+                            })}
+                          </SimpleGrid>
                           {legacyCursor !== "" && legacyCursor !== null && (
                             <Flex justify="center">
                               <Button

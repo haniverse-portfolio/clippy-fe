@@ -37,6 +37,20 @@ export const getStreamerClips = (
     });
 };
 
+export const getStreamerManageClips = (cursor?: string): Promise<any> => {
+  return axios
+    .get(`${apiAddress}/user/me/clipped/legacy`, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      return [res.data.data.clips, res.data.data.cursor];
+    })
+    .catch((err) => {
+      console.error("cannot load streamer manage clips", err);
+      return [];
+    });
+};
+
 /**
  * 특정 스트리머의 레거시 클립들을 요청하는 함수
  * @param streamerNumericId 스트리머 숫자형 ID

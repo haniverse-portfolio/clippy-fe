@@ -174,6 +174,11 @@ export const mypageManage_channelClip = atom<IMypageClip[]>({
   key: "mypageManage_channelClip",
   default: [],
 }); // 관리 - 내 채널의 클립
+
+export const mypageManage_twitch_legacyClipPolicy = atom({
+  key: "mypageManage_twitch_legacyClipPolicy",
+  default: { hideAll: false },
+}); // 관리 - 트위치 클립 관리 정책 로딩 여부
 /* ***** ***** ***** ***** ***** mypage_manage ***** ***** ***** ***** ***** */
 
 /* ***** ***** ***** ***** ***** search ***** ***** ***** ***** ***** */

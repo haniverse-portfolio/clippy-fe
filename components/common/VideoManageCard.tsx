@@ -9,6 +9,7 @@ import {
   ActionIcon,
   Group,
   AspectRatio,
+  Button,
 } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -21,6 +22,8 @@ import { useClippyLogin } from "../../hooks/useClippyAPI";
 import { useLoginModal } from "../../hooks/useLoginModal";
 import { IndenterminateProgressBar } from "./IndenterminateProgressBar";
 import { LogoWithoutBeta } from "./Logo";
+import { useRecoilState } from "recoil";
+import { mypageManage_twitch_legacyClipPolicy } from "../states";
 
 interface VideoCardProps {
   clip: IClipInfo;
@@ -32,47 +35,12 @@ const VideoManageCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
   const [isMask, setIsMask] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [thumbnailSrc, setThumbnailSrc] = useState(clip.cfVideoThumbnail);
+  const [legacyClipPolicy, setLegacyClipPolicy] = useRecoilState(
+    mypageManage_twitch_legacyClipPolicy
+  );
 
   const { isClippyLogined } = useClippyLogin();
   const { openLoginModal } = useLoginModal();
-
-  const getMaskStatus = async () => {
-    const url = `${apiAddress}/clip/${clip.key}/mask`;
-    const res = await axios.get(url, { withCredentials: true });
-    setIsMask(res.data.data);
-  };
-
-  const toggleMask = () => {
-    const url = `${apiAddress}/clip/${clip.key}/mask`;
-
-    if (isMask) {
-      axios
-        .delete(url, {
-          withCredentials: true,
-        })
-        .then((res) => {
-          console.log(res);
-          setIsMask(!isMask);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      axios
-        .post(url, {}, { withCredentials: true })
-        .then((res) => {
-          console.log(res);
-          setIsMask(!isMask);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
-
-  useEffect(() => {
-    if (isClippyLogined) getMaskStatus();
-  }, []);
 
   return (
     <div
@@ -120,7 +88,9 @@ const VideoManageCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
             <></>
           )}
           <Image
-            className={clip?.isAdult ? "rounded-md nsfw" : "rounded-md"}
+            className={`${
+              clip?.isAdult ? "rounded-md nsfw" : "rounded-md"
+            } grayscale-20`}
             src={thumbnailSrc}
             alt="clip"
             onLoad={() => {
@@ -212,24 +182,20 @@ const VideoManageCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
               {util.showTime(clip.createdAt)}
             </div>
           </div>
-          {mode === "vertical" && !clip.isLegacy && (
+          {mode === "vertical" && clip.isLegacy && (
             <div className="w-[4em] h-full relative top-[-8px]">
-              <ActionIcon
-                variant="transparent"
-                size={36}
-                className="duration-100"
-                style={isMask ? { color: "#000000" } : {}}
+              <Button
+                color="dark"
+                radius="xl"
+                variant={
+                  legacyClipPolicy.hideAll || clip.isHide ? "filled" : "outline"
+                }
                 onClick={() => {
-                  if (isClippyLogined) toggleMask();
-                  else openLoginModal();
+                  if (!isClippyLogined) openLoginModal();
                 }}
               >
-                <Eye
-                  size={36}
-                  className="duration-100"
-                  style={isMask ? { fill: "#000000" } : { fill: "#ffffff" }}
-                />
-              </ActionIcon>
+                {legacyClipPolicy.hideAll || clip.isHide ? "공개" : "비공개"}
+              </Button>
             </div>
           )}
         </div>
