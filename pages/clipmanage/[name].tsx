@@ -35,7 +35,6 @@ const ViewChannel = () => {
   );
   const [isError, setIsError] = useState<boolean>(false);
   const [isLive, setIsLive] = useState<boolean>(false);
-  const [tab, setTab] = useState<string>("explore");
   const [clips, setClips] = useState<IClipInfo[]>([]);
   const [legacyClips, setLegacyClips] = useState<IClipInfo[]>([]);
   const [legacyCursor, setLegacyCursor] = useState<string>("");
@@ -47,22 +46,7 @@ const ViewChannel = () => {
   const { isClippyLogined, goClippyLogin } = useClippyLogin();
 
   const router = useRouter();
-  const { name, tab: queryTab }: any = router.query;
-
-  useEffect(() => {
-    if (queryTab) setTab(queryTab);
-  }, [queryTab]);
-
-  // when setTab is called, change url
-  useEffect(() => {
-    if (!streamerInfo) return;
-    router.push({
-      query: {
-        name: streamerInfo?.login,
-        tab,
-      },
-    });
-  }, [tab]);
+  const { name }: any = router.query;
 
   useEffect(() => {
     if (name) {
@@ -73,7 +57,6 @@ const ViewChannel = () => {
           checkStreamerIsLive(res.login).then((res) => {
             console.log("streamer is live", res);
             setIsLive(res);
-            if (res && !queryTab) setTab("live");
           });
       });
     }
@@ -148,119 +131,24 @@ const ViewChannel = () => {
                           align="center"
                           style={{ overflowX: "auto" }}
                         >
-                          <Link
-                            href={{
-                              query: {
-                                name: streamerInfo.login,
-                                tab: "live",
-                              },
+                          <Button
+                            h={48}
+                            color="dark"
+                            variant="filled"
+                            radius={99}
+                            px={20}
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 700,
                             }}
+                            onClick={() => {}}
+                            mr={8}
                           >
-                            <Button
-                              h={48}
-                              color="dark"
-                              variant={tab === "live" ? "filled" : "outline"}
-                              radius={99}
-                              px={20}
-                              style={{
-                                fontSize: 16,
-                                fontWeight: 700,
-                              }}
-                              onClick={() => {
-                                setTab("live");
-                              }}
-                              mr={8}
-                            >
-                              {isLive ? "방송중" : "오프라인"}
-                            </Button>
-                          </Link>
-                          <Link
-                            href={{
-                              query: {
-                                name: streamerInfo.login,
-                                tab: "explore",
-                              },
-                            }}
-                          >
-                            <Button
-                              h={48}
-                              color="dark"
-                              variant={tab === "explore" ? "filled" : "outline"}
-                              radius={99}
-                              px={20}
-                              style={{
-                                fontSize: 16,
-                                fontWeight: 700,
-                              }}
-                              onClick={() => {
-                                setTab("explore");
-                              }}
-                              mr={8}
-                            >
-                              클리피 클립
-                            </Button>
-                          </Link>
-                          <Link
-                            href={{
-                              query: {
-                                name: streamerInfo.login,
-                                tab: "legacy",
-                              },
-                            }}
-                          >
-                            <Button
-                              h={48}
-                              color="dark"
-                              variant={tab === "legacy" ? "filled" : "outline"}
-                              radius={99}
-                              px={20}
-                              style={{
-                                fontSize: 16,
-                                fontWeight: 700,
-                              }}
-                              onClick={() => {
-                                setTab("legacy");
-                              }}
-                              mr={8}
-                            >
-                              <Badge
-                                color="green"
-                                variant={tab === "legacy" ? "light" : "filled"}
-                                mr={8}
-                              >
-                                NEW
-                              </Badge>{" "}
-                              트위치 클립
-                            </Button>
-                          </Link>
-                          <Link
-                            href={{
-                              query: {
-                                name: streamerInfo.login,
-                                tab: "vod",
-                              },
-                            }}
-                          >
-                            <Button
-                              h={48}
-                              color="dark"
-                              variant={tab === "vod" ? "filled" : "outline"}
-                              radius={99}
-                              px={20}
-                              style={{
-                                fontSize: 16,
-                                fontWeight: 700,
-                              }}
-                              onClick={() => {
-                                setTab("vod");
-                              }}
-                            >
-                              <Badge color="dark" variant="light" mr={8}>
-                                COMING SOON
-                              </Badge>{" "}
-                              다시보기
-                            </Button>
-                          </Link>
+                            <Badge color="green" variant="light" mr={8}>
+                              NEW
+                            </Badge>{" "}
+                            트위치 클립
+                          </Button>
                         </Flex>
                         <Button
                           h={48}
@@ -290,99 +178,36 @@ const ViewChannel = () => {
                         </Button>
                       </Group>
 
-                      {tab === "live" && (
-                        <>
-                          {/* {isLive ? ( */}
-                          <TwitchLive user={name} />
-                          {/* ) : (
-                  <div className="w-full h-[400px]  border-gray-300 border-[1px] rounded-md flex justify-center items-center text-xl">
-                    {streamerInfo.display_name} 님은 오프라인 상태입니다
-                  </div>
-                )} */}
-
-                          <Flex align="right" mt={30} justify="flex-end">
-                            <Button
-                              leftIcon={isClippyLogined && <Paperclip />}
-                              size="lg"
-                              color="dark"
-                              disabled={!isLive}
-                              radius="xl"
-                              onClick={() => {
-                                if (isClippyLogined) {
-                                  openCreateClipModal(
-                                    parseInt(streamerInfo.id),
-                                    streamerInfo.display_name,
-                                    streamerInfo.profile_image_url
-                                  );
-                                } else {
-                                  goClippyLogin(window.location.href);
-                                }
-                              }}
-                            >
-                              {isClippyLogined ? "클립 생성" : "트위치 로그인"}
-                            </Button>
-                          </Flex>
-                        </>
-                      )}
-
-                      {tab === "explore" && (
-                        <>
-                          {clips && clips.length > 0 ? (
-                            <Explore clips={clips} />
-                          ) : (
-                            <div className="w-full h-[400px]  border-gray-300 border-[1px] rounded-md flex justify-center items-center text-xl">
-                              등록된 클립이 없습니다
-                            </div>
+                      {legacyClips && legacyClips.length > 0 ? (
+                        <div>
+                          <Explore clips={legacyClips} />
+                          {legacyCursor !== "" && legacyCursor !== null && (
+                            <Flex justify="center">
+                              <Button
+                                h={58}
+                                color="dark"
+                                variant="outline"
+                                radius={99}
+                                px={20}
+                                mt={40}
+                                style={{
+                                  fontSize: 16,
+                                  fontWeight: 700,
+                                }}
+                                onClick={() => {
+                                  legacyLoadMore();
+                                }}
+                                loading={isLegacyLoading}
+                              >
+                                + 더 불러오기
+                              </Button>
+                            </Flex>
                           )}
-                        </>
-                      )}
-
-                      {tab === "legacy" && (
-                        <>
-                          {legacyClips && legacyClips.length > 0 ? (
-                            <div>
-                              <Explore clips={legacyClips} />
-                              {legacyCursor !== "" && legacyCursor !== null && (
-                                <Flex justify="center">
-                                  <Button
-                                    h={58}
-                                    color="dark"
-                                    variant="outline"
-                                    radius={99}
-                                    px={20}
-                                    mt={40}
-                                    style={{
-                                      fontSize: 16,
-                                      fontWeight: 700,
-                                    }}
-                                    onClick={() => {
-                                      legacyLoadMore();
-                                    }}
-                                    loading={isLegacyLoading}
-                                  >
-                                    + 더 불러오기
-                                  </Button>
-                                </Flex>
-                              )}
-                            </div>
-                          ) : (
-                            <div className="w-full h-[400px]  border-gray-300 border-[1px] rounded-md flex justify-center items-center text-xl">
-                              등록된 클립이 없습니다
-                            </div>
-                          )}
-                        </>
-                      )}
-
-                      {tab === "vod" && (
-                        <>
-                          {/* {legacyClips && legacyClips.length > 0 ? (
-                            <Explore clips={legacyClips} />
-                          ) : ( */}
-                          <div className="w-full h-[400px]  border-gray-300 border-[1px] rounded-md flex justify-center items-center text-xl">
-                            다시보기 서비스 오픈 준비 중입니다
-                          </div>
-                          {/* )} */}
-                        </>
+                        </div>
+                      ) : (
+                        <div className="w-full h-[400px]  border-gray-300 border-[1px] rounded-md flex justify-center items-center text-xl">
+                          등록된 클립이 없습니다
+                        </div>
                       )}
                     </Flex>
                   </div>
