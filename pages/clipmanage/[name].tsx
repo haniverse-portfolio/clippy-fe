@@ -140,127 +140,155 @@ const ViewChannel = () => {
                           {streamerInfo.display_name || ""}
                         </Text>
                       </Flex>
-                      <Flex
-                        mt={30}
-                        mb={30}
-                        h={65}
-                        align="center"
-                        style={{ overflowX: "auto" }}
-                      >
-                        <Link
-                          href={{
-                            query: {
-                              name: streamerInfo.login,
-                              tab: "live",
-                            },
-                          }}
+                      <Group position="apart">
+                        <Flex
+                          mt={30}
+                          mb={30}
+                          h={65}
+                          align="center"
+                          style={{ overflowX: "auto" }}
                         >
-                          <Button
-                            h={48}
-                            color="dark"
-                            variant={tab === "live" ? "filled" : "outline"}
-                            radius={99}
-                            px={20}
-                            style={{
-                              fontSize: 16,
-                              fontWeight: 700,
+                          <Link
+                            href={{
+                              query: {
+                                name: streamerInfo.login,
+                                tab: "live",
+                              },
                             }}
-                            onClick={() => {
-                              setTab("live");
-                            }}
-                            mr={8}
                           >
-                            {isLive ? "방송중" : "오프라인"}
-                          </Button>
-                        </Link>
-                        <Link
-                          href={{
-                            query: {
-                              name: streamerInfo.login,
-                              tab: "explore",
-                            },
-                          }}
-                        >
-                          <Button
-                            h={48}
-                            color="dark"
-                            variant={tab === "explore" ? "filled" : "outline"}
-                            radius={99}
-                            px={20}
-                            style={{
-                              fontSize: 16,
-                              fontWeight: 700,
-                            }}
-                            onClick={() => {
-                              setTab("explore");
-                            }}
-                            mr={8}
-                          >
-                            클리피 클립
-                          </Button>
-                        </Link>
-                        <Link
-                          href={{
-                            query: {
-                              name: streamerInfo.login,
-                              tab: "legacy",
-                            },
-                          }}
-                        >
-                          <Button
-                            h={48}
-                            color="dark"
-                            variant={tab === "legacy" ? "filled" : "outline"}
-                            radius={99}
-                            px={20}
-                            style={{
-                              fontSize: 16,
-                              fontWeight: 700,
-                            }}
-                            onClick={() => {
-                              setTab("legacy");
-                            }}
-                            mr={8}
-                          >
-                            <Badge
-                              color="green"
-                              variant={tab === "legacy" ? "light" : "filled"}
+                            <Button
+                              h={48}
+                              color="dark"
+                              variant={tab === "live" ? "filled" : "outline"}
+                              radius={99}
+                              px={20}
+                              style={{
+                                fontSize: 16,
+                                fontWeight: 700,
+                              }}
+                              onClick={() => {
+                                setTab("live");
+                              }}
                               mr={8}
                             >
-                              NEW
-                            </Badge>{" "}
-                            트위치 클립
-                          </Button>
-                        </Link>
-                        <Link
-                          href={{
-                            query: {
-                              name: streamerInfo.login,
-                              tab: "vod",
-                            },
-                          }}
-                        >
-                          <Button
-                            h={48}
-                            color="dark"
-                            variant={tab === "vod" ? "filled" : "outline"}
-                            radius={99}
-                            px={20}
-                            style={{
-                              fontSize: 16,
-                              fontWeight: 700,
-                            }}
-                            onClick={() => {
-                              setTab("vod");
+                              {isLive ? "방송중" : "오프라인"}
+                            </Button>
+                          </Link>
+                          <Link
+                            href={{
+                              query: {
+                                name: streamerInfo.login,
+                                tab: "explore",
+                              },
                             }}
                           >
-                            <Badge color="dark" variant="light" mr={8}>
-                              COMING SOON
-                            </Badge>{" "}
-                            다시보기
-                          </Button>
-                        </Link>
-                      </Flex>
+                            <Button
+                              h={48}
+                              color="dark"
+                              variant={tab === "explore" ? "filled" : "outline"}
+                              radius={99}
+                              px={20}
+                              style={{
+                                fontSize: 16,
+                                fontWeight: 700,
+                              }}
+                              onClick={() => {
+                                setTab("explore");
+                              }}
+                              mr={8}
+                            >
+                              클리피 클립
+                            </Button>
+                          </Link>
+                          <Link
+                            href={{
+                              query: {
+                                name: streamerInfo.login,
+                                tab: "legacy",
+                              },
+                            }}
+                          >
+                            <Button
+                              h={48}
+                              color="dark"
+                              variant={tab === "legacy" ? "filled" : "outline"}
+                              radius={99}
+                              px={20}
+                              style={{
+                                fontSize: 16,
+                                fontWeight: 700,
+                              }}
+                              onClick={() => {
+                                setTab("legacy");
+                              }}
+                              mr={8}
+                            >
+                              <Badge
+                                color="green"
+                                variant={tab === "legacy" ? "light" : "filled"}
+                                mr={8}
+                              >
+                                NEW
+                              </Badge>{" "}
+                              트위치 클립
+                            </Button>
+                          </Link>
+                          <Link
+                            href={{
+                              query: {
+                                name: streamerInfo.login,
+                                tab: "vod",
+                              },
+                            }}
+                          >
+                            <Button
+                              h={48}
+                              color="dark"
+                              variant={tab === "vod" ? "filled" : "outline"}
+                              radius={99}
+                              px={20}
+                              style={{
+                                fontSize: 16,
+                                fontWeight: 700,
+                              }}
+                              onClick={() => {
+                                setTab("vod");
+                              }}
+                            >
+                              <Badge color="dark" variant="light" mr={8}>
+                                COMING SOON
+                              </Badge>{" "}
+                              다시보기
+                            </Button>
+                          </Link>
+                        </Flex>
+                        <Button
+                          h={48}
+                          color="dark"
+                          variant={isMaskAll ? "filled" : "outline"}
+                          radius={99}
+                          px={20}
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 700,
+                          }}
+                          onClick={() => {
+                            setIsMaskAll(!isMaskAll);
+                          }}
+                          mr={8}
+                        >
+                          <FontAwesomeIcon
+                            icon={isMaskAll ? solid("eye-slash") : solid("eye")}
+                            style={{
+                              width: 14,
+                              height: 12,
+                              color: isMaskAll ? "white" : "black",
+                              marginRight: 4,
+                            }}
+                          />
+                          전체 클립 가리기
+                        </Button>
+                      </Group>
 
                       {tab === "live" && (
                         <>
