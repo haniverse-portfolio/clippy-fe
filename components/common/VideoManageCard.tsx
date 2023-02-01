@@ -1,18 +1,7 @@
 import { brands, solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Card,
-  Flex,
-  Text,
-  Image,
-  Stack,
-  ActionIcon,
-  Group,
-  AspectRatio,
-  Button,
-} from "@mantine/core";
+import { Text, Image, AspectRatio, Switch, Tooltip } from "@mantine/core";
 import axios from "axios";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Eye, Heart, Paperclip } from "tabler-icons-react";
@@ -31,40 +20,59 @@ interface VideoCardProps {
 }
 
 const VideoManageCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
-  const router = useRouter();
-  const [isMask, setIsMask] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
-  const [thumbnailSrc, setThumbnailSrc] = useState(clip.cfVideoThumbnail);
+  const [clipInfo, setClipInfo] = useState<IClipInfo>(clip);
+  const [thumbnailSrc, setThumbnailSrc] = useState(clipInfo.cfVideoThumbnail);
   const [legacyClipPolicy, setLegacyClipPolicy] = useRecoilState(
     mypageManage_twitch_legacyClipPolicy
   );
+  const [isToggleLegacyClipHideReady, setIsToggleLegacyClipHideReady] =
+    useState(true);
 
   const { isClippyLogined } = useClippyLogin();
   const { openLoginModal } = useLoginModal();
 
+  const toggleLegacyClipHide = async () => {
+    if (!isClippyLogined) {
+      openLoginModal();
+      return;
+    }
+    if (!isToggleLegacyClipHideReady || legacyClipPolicy.hideAll) return;
+    setIsToggleLegacyClipHideReady(() => false);
+    const url = `${apiAddress}/clip/legacy/${clipInfo.key}/hide`;
+    if (clipInfo.isHide) await axios.delete(url, { withCredentials: true });
+    else await axios.post(url, {}, { withCredentials: true });
+    setClipInfo((state) => ({ ...state, isHide: !state.isHide }));
+    setIsToggleLegacyClipHideReady(() => true);
+  };
+
+  useEffect(() => {
+    setClipInfo(clip);
+  }, [clip]);
+
   return (
     <div
       className="relative w-full p-0 m-0 flex justify-start items-center gap-2 cursor-pointer"
-      key={clip.id}
+      key={clipInfo.id}
       style={{ flexDirection: mode === "horizontal" ? "row" : "column" }}
       onMouseEnter={() => {
-        if (!clip.isLegacy && !clip?.isAdult) {
+        if (!clipInfo.isLegacy && !clipInfo?.isAdult) {
           const animatedThumbnail = `https://customer-m033z5x00ks6nunl.cloudflarestream.com/${
-            clip.cfVideoId
+            clipInfo.cfVideoId
           }/thumbnails/thumbnail.gif?time=0s&height=500&duration=5s&${Date.now()}}`;
           setThumbnailSrc(animatedThumbnail);
           setIsImageLoading(true);
         }
       }}
       onMouseLeave={() => {
-        if (!clip.isLegacy) {
-          setThumbnailSrc(clip.cfVideoThumbnail);
+        if (!clipInfo.isLegacy) {
+          setThumbnailSrc(clipInfo.cfVideoThumbnail);
           setIsImageLoading(false);
         }
       }}
     >
       <Link
-        href={`/clip/${clip.key}`}
+        href={`/clip/${clipInfo.key}`}
         className="bg-gray-200 rounded-md"
         style={{
           width: mode === "horizontal" ? "50%" : "100%",
@@ -73,7 +81,7 @@ const VideoManageCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
         }}
       >
         <AspectRatio ratio={239 / 134.438}>
-          {clip?.isAdult ? (
+          {clipInfo?.isAdult ? (
             <div
               style={{
                 position: "absolute",
@@ -89,7 +97,7 @@ const VideoManageCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
           )}
           <Image
             className={`${
-              clip?.isAdult ? "rounded-md nsfw" : "rounded-md"
+              clipInfo?.isAdult ? "rounded-md nsfw" : "rounded-md"
             } grayscale-20`}
             src={thumbnailSrc}
             alt="clip"
@@ -121,13 +129,13 @@ const VideoManageCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
             }}
           />
           <Text size={12} weight={700} color="white">
-            {Intl.NumberFormat("ko-KR").format(clip.viewCount)}
+            {Intl.NumberFormat("ko-KR").format(clipInfo.viewCount)}
           </Text>
         </div>
       )}
       {mode === "vertical" && (
         <div className="absolute flex justify-center items-center top-[12px] left-[12px] h-[34px] w-[34px] bg-[rgba(255,255,255,0.5)] rounded-full">
-          {clip.isLegacy ? (
+          {clipInfo.isLegacy ? (
             <FontAwesomeIcon
               icon={brands("twitch")}
               // icon={solid("twitch")}
@@ -152,50 +160,59 @@ const VideoManageCard = ({ clip, mode = "vertical" }: VideoCardProps) => {
         }}
       >
         <Link
-          href={`/clip/${clip.key}`}
+          href={`/clip/${clipInfo.key}`}
           className={`w-[calc(100%-10px)] text-[16px] font-bold break-all mb-2 hover:underline block ${
             mode === "horizontal"
               ? "whitespace-nowrap text-ellipsis overflow-hidden"
               : "line-clamp-2"
           }`}
         >
-          {clip.title}
+          {clipInfo.title}
         </Link>
         <div className="w-full flex justify-between items-center text-[14px]">
           <div
             className="h-full"
             style={{
-              width: mode === "horizontal" ? "100%" : "calc(100% - 4em)",
+              width: mode === "horizontal" ? "100%" : "calc(100% - 8em)",
             }}
           >
             <Link
-              href={`/channel/${clip.userInfo.login}`}
+              href={`/channel/${clipInfo.userInfo.login}`}
               className="whitespace-nowrap overflow-hidden text-ellipsis mb-1 hover:underline block"
               style={{
                 width: mode === "horizontal" ? "100%" : "calc(100% - 1em)",
               }}
             >
-              {clip.userInfo.display_name}
+              {clipInfo.userInfo.display_name}
             </Link>
             <div>
-              <strong>반응 {clip.commentCount + clip.likeCount} • </strong>
-              {util.showTime(clip.createdAt)}
+              <strong>
+                반응 {clipInfo.commentCount + clipInfo.likeCount} •{" "}
+              </strong>
+              {util.showTime(clipInfo.createdAt)}
             </div>
           </div>
-          {mode === "vertical" && clip.isLegacy && (
-            <div className="w-[4em] h-full relative top-[-8px]">
-              <Button
-                color="dark"
-                radius="xl"
-                variant={
-                  legacyClipPolicy.hideAll || clip.isHide ? "filled" : "outline"
+          {mode === "vertical" && clipInfo.isLegacy && (
+            <div className="w-[8em] h-full relative flex justify-end items-center">
+              <Tooltip
+                label={
+                  "전체 비공개 상태에서는 개별 클립의 공개 상태를 변경할 수 없습니다."
                 }
-                onClick={() => {
-                  if (!isClippyLogined) openLoginModal();
-                }}
+                disabled={!legacyClipPolicy.hideAll}
               >
-                {legacyClipPolicy.hideAll || clip.isHide ? "공개" : "비공개"}
-              </Button>
+                <div className="hover:cursor-pointer h-max">
+                  <Switch
+                    color="dark"
+                    checked={
+                      legacyClipPolicy.hideAll ? false : !clipInfo.isHide
+                    }
+                    onLabel="공개상태"
+                    offLabel="비공개상태"
+                    size="lg"
+                    onClick={toggleLegacyClipHide}
+                  />
+                </div>
+              </Tooltip>
             </div>
           )}
         </div>

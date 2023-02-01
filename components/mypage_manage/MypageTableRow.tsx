@@ -199,12 +199,12 @@ export function MypageTableRow({
       </Flex>
       {!disableDelete && (
         <div
-          className="min-w-[50px] sm:min-w-[68px] flex justify-center items-center"
+          className="min-w-[50px] sm:min-w-[68px] flex flex-col justify-center items-center gap-2"
           style={{ height: isSm || isMd ? 150 : 90 }}
         >
           {userInfo?.twitchId === channelId && (
             <Download
-              className="cursor-pointer mr-1"
+              className="cursor-pointer"
               onClick={() => {
                 downloadOneClip(clipId);
               }}

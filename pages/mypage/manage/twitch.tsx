@@ -5,18 +5,15 @@ import {
   Container,
   Flex,
   Group,
+  Loader,
   SimpleGrid,
+  Switch,
   Text,
 } from "@mantine/core";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Eye, Paperclip } from "tabler-icons-react";
-import Explore from "../../../components/channel/Explore";
-import TwitchLive from "../../../components/channel/TwitchLive";
 import { Navbar } from "../../../components/common/Navbar";
 import { NotFoundTitle } from "../../../components/common/NotFound";
 import { Sidebar } from "../../../components/common/Sidebar";
-import { useCreateClipModal } from "../../../hooks/useCreateClipModal";
 import {
   checkStreamerIsLive,
   getStreamerClips,
@@ -26,10 +23,6 @@ import {
 } from "../../../util/clippy";
 import { useClippyLogin } from "../../../hooks/useClippyAPI";
 import MainLayout from "../../../components/common/MainLayout";
-import loadCustomRoutes from "next/dist/lib/load-custom-routes";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import VideoManageCard from "../../../components/common/VideoManageCard";
 import { apiAddress } from "../../../components/constValues";
 import axios from "axios";
@@ -52,12 +45,7 @@ const ViewChannel = () => {
   const [isLegacyClipPolicyLoading, setIsLegacyClipPolicyLoading] =
     useState<boolean>(false);
 
-  const { openCreateClipModal } = useCreateClipModal();
-
-  const { isClippyLogined, goClippyLogin } = useClippyLogin();
-
-  const router = useRouter();
-  const { loginedClippyUserInfo, goClippyLogout } = useClippyLogin();
+  const { loginedClippyUserInfo } = useClippyLogin();
   const name = loginedClippyUserInfo?.twitchName;
 
   const getLegacyClipPolicy = async () => {
@@ -67,22 +55,17 @@ const ViewChannel = () => {
     setIsLegacyClipPolicyLoading(false);
   };
 
-  const legacyClipPolicyShow = async () => {
+  const changeLegacyClipPolicy = async () => {
+    if (isLegacyClipPolicyLoading) return;
     setIsLegacyClipPolicyLoading(true);
     const url = `${apiAddress}/user/me/legacy-policy/hide`;
-    const res = await axios.delete(url, { withCredentials: true });
-    await getLegacyClipPolicy();
-  };
-
-  const legacyClipPolicyHide = async () => {
-    setIsLegacyClipPolicyLoading(true);
-    const url = `${apiAddress}/user/me/legacy-policy/hide`;
-    const res = await axios
-      .post(url, {}, { withCredentials: true })
-      .then((res) => {})
-      .catch((err) => {
+    if (legacyClipPolicy.hideAll) {
+      await axios.delete(url, { withCredentials: true });
+    } else {
+      await axios.post(url, {}, { withCredentials: true }).catch((err) => {
         console.log(err);
       });
+    }
     await getLegacyClipPolicy();
   };
 
@@ -192,43 +175,23 @@ const ViewChannel = () => {
                             트위치 클립
                           </Button>
                         </Flex>
-                        <Button
-                          h={48}
-                          color="dark"
-                          variant={
-                            legacyClipPolicy.hideAll ? "filled" : "outline"
-                          }
-                          radius={99}
-                          px={20}
-                          style={{
-                            fontSize: 16,
-                            fontWeight: 700,
-                          }}
-                          onClick={() => {
-                            if (legacyClipPolicy.hideAll === true)
-                              legacyClipPolicyShow();
-                            else legacyClipPolicyHide();
-                          }}
-                          mr={8}
-                          loading={isLegacyClipPolicyLoading}
-                        >
-                          <FontAwesomeIcon
-                            icon={
-                              legacyClipPolicy.hideAll
-                                ? solid("eye-slash")
-                                : solid("eye")
-                            }
-                            style={{
-                              width: 14,
-                              height: 12,
-                              color: legacyClipPolicy.hideAll
-                                ? "white"
-                                : "black",
-                              marginRight: 4,
-                            }}
+                        <div className="flex justify-end items-center gap-5 scale-125 origin-bottom-right">
+                          {isLegacyClipPolicyLoading && (
+                            <Loader
+                              className="mt-[17px] -mr-[10px]"
+                              color="dark"
+                              height={34}
+                            />
+                          )}
+                          <Switch
+                            color="dark"
+                            checked={!legacyClipPolicy.hideAll}
+                            onLabel="전체 공개 상태"
+                            offLabel="전체 비공개 상태"
+                            size="xl"
+                            onClick={changeLegacyClipPolicy}
                           />
-                          {`전체 클립 ${legacyClipPolicy ? "공개" : "비공개"}`}
-                        </Button>
+                        </div>
                       </Group>
 
                       {legacyClips && legacyClips.length > 0 ? (
