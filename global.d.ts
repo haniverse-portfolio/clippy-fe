@@ -52,6 +52,7 @@ interface IClipInfo {
     type: string;
     view_count: number;
   };
+  isHide?: boolean;
   videoDuration: number;
   viewCount: number;
   isLegacy: boolean;

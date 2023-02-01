@@ -1,8 +1,9 @@
-import { Avatar, Center, Stack } from "@mantine/core";
+import { Avatar, Button, Center, Stack } from "@mantine/core";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { useRecoilState } from "recoil";
 import {
+  BrandTwitch,
   InfoCircle,
   Logout,
   MessageCircle2,
@@ -100,7 +101,7 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
         className="text-[16px] text-center mt-[-10px] lg:mt-[-5px]"
         style={{ marginTop: forceLarge ? "-5px" : "" }}
       >
-        <Link href={`/channel/${loginedClippyUserInfo?.twitchName}`}>
+        <Link href={`/channel/${loginedClippyUserInfo?.twitchName}?tab=legacy`}>
           {loginedClippyUserInfo?.twitchDisplayName}
         </Link>
       </span>
@@ -115,6 +116,18 @@ const UserAside = ({ forceLarge }: UserAsideProps) => {
             forceLarge={forceLarge}
             icon={<Settings size={18} />}
             text={"클립 관리"}
+          />
+        </Link>
+        <Link
+          onClick={() => {
+            setSidebarOpened(false);
+          }}
+          href={`/mypage/manage/twitch`}
+        >
+          <UserAsideMenu
+            forceLarge={forceLarge}
+            icon={<BrandTwitch size={18} />}
+            text={"트위치 클립 관리"}
           />
         </Link>
         <Link

@@ -1,7 +1,15 @@
-import { Avatar, Badge, Button, Container, Flex, Text } from "@mantine/core";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Container,
+  Flex,
+  Group,
+  Text,
+} from "@mantine/core";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Paperclip } from "tabler-icons-react";
+import { Eye, Paperclip } from "tabler-icons-react";
 import Explore from "../../components/channel/Explore";
 import TwitchLive from "../../components/channel/TwitchLive";
 import { Navbar } from "../../components/common/Navbar";
@@ -18,6 +26,8 @@ import { useClippyLogin } from "../../hooks/useClippyAPI";
 import MainLayout from "../../components/common/MainLayout";
 import loadCustomRoutes from "next/dist/lib/load-custom-routes";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 
 const ViewChannel = () => {
   const [streamerInfo, setStreamerInfo] = useState<ITwitchUserInfo | null>(
@@ -30,6 +40,7 @@ const ViewChannel = () => {
   const [legacyClips, setLegacyClips] = useState<IClipInfo[]>([]);
   const [legacyCursor, setLegacyCursor] = useState<string>("");
   const [isLegacyLoading, setIsLegacyLoading] = useState<boolean>(false);
+  const [isMaskAll, setIsMaskAll] = useState<boolean>(false);
 
   const { openCreateClipModal } = useCreateClipModal();
 
