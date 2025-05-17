@@ -13,8 +13,6 @@
 
 # Clippy - 트위치 클립 생성 및 공유 서비스
 
-![Clippy Logo](/public/logo.png)
-
 Clippy는 트위치의 클리핑 기능을 대체하는 서드파티 서비스로, 트위치 스트림 영상을 쉽게 클립으로 만들고 공유할 수 있는 플랫폼입니다.
 
 ## 시연 영상
@@ -177,23 +175,7 @@ npm run start
 yarn start
 ```
 
-## 기여하기
-
-1. 이 저장소를 포크합니다.
-2. 새 기능 브랜치를 생성합니다 (`git checkout -b feature/amazing-feature`).
-3. 변경 사항을 커밋합니다 (`git commit -m 'Add some amazing feature'`).
-4. 브랜치에 푸시합니다 (`git push origin feature/amazing-feature`).
-5. Pull Request를 생성합니다.
-
-## 라이선스
-
-이 프로젝트는 [라이선스 이름] 라이선스 하에 배포됩니다.
-
----
-
 # Clippy - Twitch Clip Creation and Sharing Service
-
-![Clippy Logo](/public/logo.png)
 
 Clippy is a third-party service that replaces Twitch's clipping functionality, allowing users to easily create and share clips from Twitch stream videos.
 
@@ -356,15 +338,3 @@ npm run start
 # or
 yarn start
 ```
-
-## Contributing
-
-1. Fork this repository.
-2. Create a new feature branch (`git checkout -b feature/amazing-feature`).
-3. Commit your changes (`git commit -m 'Add some amazing feature'`).
-4. Push to the branch (`git push origin feature/amazing-feature`).
-5. Create a Pull Request.
-
-## License
-
-This project is distributed under the [License Name] license.
